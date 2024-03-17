@@ -43,6 +43,18 @@ html {
   border-radius: 10px;
 }
 
+.franklin-content .container-50 img {
+  width: 50%;
+  padding-left: 0;
+  border-radius: 10px;
+}
+
+.franklin-content .container-40 img {
+  width: 40%;
+  padding-left: 0;
+  border-radius: 10px;
+}
+
 .franklin-content .memberimg img {
   width: 200px;
   height: 200px;
