@@ -4,8 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
-   <link rel="stylesheet" href="/libs/highlight/styles/github.min.css">
-   
+  
   <link rel="stylesheet" href="/css/franklin.css">
 <link rel="stylesheet" href="/css/poole_hyde.css">
 <!-- style adjustments -->
@@ -21,7 +20,7 @@
 </style>
 <link rel="icon" href="/assets/favicon.png">
 
-   <title>Menu 3</title>  
+   <title>Projects</title>  
 </head>
 <body>
 <div class="sidebar">
@@ -37,7 +36,7 @@
       <a class="sidebar-nav-item active" href="/projects/">Projects</a>
       <a class="sidebar-nav-item " href="/publications/">Publications</a>
       <a class="sidebar-nav-item " href="/teaching/">Teaching</a>
-      <a class="sidebar-nav-item " href="/menu6/">Tags</a>
+      <a class="sidebar-nav-item " href="/contacts/">Contacts</a>
     </nav>
     <p>&copy; Septimia Zenobia.</p>
   </div>
@@ -46,103 +45,32 @@
 
 <!-- Content appended here -->
 <div class="franklin-content">
-<h1 id="projects"><a href="#projects" class="header-anchor">Projects</a></h1>
-<h1 id="working_with_tags"><a href="#working_with_tags" class="header-anchor">Working with tags</a></h1>
-<p><strong>Example</strong>:</p>
-<ul>
-<li><p>page with tag <a href="/tag/syntax/"><code>syntax</code></a></p>
-</li>
-<li><p>page with tag <a href="/tag/image/"><code>image</code></a></p>
-</li>
-<li><p>page with tag <a href="/tag/code/"><code>code</code></a></p>
-</li>
-</ul>
-<div class="franklin-toc"><ol><li><a href="#indicating_tags">Indicating tags</a></li><li><a href="#customising_tag_pages">Customising tag pages</a></li><li><a href="#customising_tag_lists">Customising tag lists</a></li></ol></div>
-<h2 id="indicating_tags"><a href="#indicating_tags" class="header-anchor">Indicating tags</a></h2>
-<p>To mark a page with tags, add:</p>
-<pre><code class="language-markdown">&#43;&#43;&#43;
-tags &#61; &#91;&quot;tag1&quot;, &quot;tag2&quot;&#93;
-&#43;&#43;&#43;</code></pre>
-<p>then that page, along with all others that have the tag <code>tag1</code> will be listed at <code>/tag/tag1/</code>.</p>
-<h2 id="customising_tag_pages"><a href="#customising_tag_pages" class="header-anchor">Customising tag pages</a></h2>
-<p>You can change how a <code>/tag/...</code> page looks like by modifying the <code>_layout/tag.html</code>. An important note is that you can <strong>only</strong> use <strong>global</strong> page variables &#40;defined in <code>config.md</code>&#41;.</p>
-<p>There are three &quot;exceptions&quot;:</p>
-<ol>
-<li><p>you can still use <code>&#123;&#123;ispage /tag/tagname/&#125;&#125; ... &#123;&#123;end&#125;&#125;</code> &#40;or <code>&#123;&#123;isnotpage ...&#125;&#125;</code>&#41; to have a different layout depending on the tag,</p>
-</li>
-<li><p>you can use the <code>fd_tag</code> variable which contains the  name of the tag so <code>&#123;&#123;fill fd_tag&#125;&#125;</code> will input the tag string as is,</p>
-</li>
-<li><p>you can use <code>&#123;&#123;fill varname path/to/page&#125;&#125;</code> to exploit a page variable defined in a specific page.</p>
-</li>
-</ol>
-<h2 id="customising_tag_lists"><a href="#customising_tag_lists" class="header-anchor">Customising tag lists</a></h2>
-<p>By default the tag list is very simple: it just collects all pages that match the tags and it shows them in a simple list by anti-chronological order &#40;more recent at the top&#41;.</p>
-<p>You can customise this by defining your own <code>hfun_custom_taglist</code> function in the <code>utils.jl</code> file. The commented blueprint for the simple default setting is below and should give you an idea of how to  write your own generator.</p>
-<p>Assuming you&#39;ve defined such a function, don&#39;t forget to use <code>&#123;&#123;custom_taglist&#125;&#125;</code> in the <code>_layout/tag.html</code> instead of the default <code>&#123;&#123;taglist&#125;&#125;</code>.</p>
-<pre><code class="language-julia">function hfun_custom_taglist&#40;&#41;::String
-    # -----------------------------------------
-    # Part1: Retrieve all pages associated with
-    #  the tag &amp; sort them
-    # -----------------------------------------
-    # retrieve the tag string
-    tag &#61; locvar&#40;:fd_tag&#41;
-    # recover the relative paths to all pages that have that
-    # tag, these are paths like /blog/page1
-    rpaths &#61; globvar&#40;&quot;fd_tag_pages&quot;&#41;&#91;tag&#93;
-    # you might want to sort these pages by chronological order
-    # you could also only show the most recent 5 etc...
-    sorter&#40;p&#41; &#61; begin
-        # retrieve the &quot;date&quot; field of the page if defined, otherwise
-        # use the date of creation of the file
-        pvd &#61; pagevar&#40;p, :date&#41;
-        if isnothing&#40;pvd&#41;
-            return Date&#40;Dates.unix2datetime&#40;stat&#40;p * &quot;.md&quot;&#41;.ctime&#41;&#41;
-        end
-        return pvd
-    end
-    sort&#33;&#40;rpaths, by&#61;sorter, rev&#61;true&#41;
-
-    # --------------------------------
-    # Part2: Write the HTML to plug in
-    # --------------------------------
-    # instantiate a buffer in which we will write the HTML
-    # to plug in the tag page
-    c &#61; IOBuffer&#40;&#41;
-    write&#40;c, &quot;...1...&quot;&#41;
-    # go over all paths
-    for rpath in rpaths
-        # recover the url corresponding to the rpath
-        url &#61; get_url&#40;rpath&#41;
-        # recover the title of the page if there is one defined,
-        # if there isn&#39;t, fallback on the path to the page
-        title &#61; pagevar&#40;rpath, &quot;title&quot;&#41;
-        if isnothing&#40;title&#41;
-            title &#61; &quot;/&#36;rpath/&quot;
-        end
-        # write some appropriate HTML
-        write&#40;c, &quot;...2...&quot;&#41;
-    end
-    # finish the HTML
-    write&#40;c, &quot;...3...&quot;&#41;
-    # return the HTML string
-    return String&#40;take&#33;&#40;c&#41;&#41;
-end</code></pre>
-<p>For instance the default uses:</p>
-<pre><code class="language-html">&lt;&#33;-- 1, 3: simple list--&gt;
-&lt;ul&gt;...&lt;/ul&gt;
-&lt;&#33;-- 2: simple list item plugging in path &#43; title --&gt;
-&lt;li&gt;&lt;a href&#61;&quot;/&#36;rpath/&quot;&gt;&#36;title&lt;/a&gt;&lt;/li&gt;</code></pre>
+<h1 id="on-going_projects"><a href="#on-going_projects" class="header-anchor">On-going Projects</a></h1>
+<h2 id="관절_강직_해결을_위한_스마트_재활_로봇"><a href="#관절_강직_해결을_위한_스마트_재활_로봇" class="header-anchor">관절 강직 해결을 위한 스마트 재활 로봇</a></h2>
+<p><strong>지원기관: 광주선한병원</strong></p>
+<p><strong>PI: 허필원</strong></p>
+<h2 id="감각운동제어이론에_기반한_착용형_하지보조로봇의_성능_향상"><a href="#감각운동제어이론에_기반한_착용형_하지보조로봇의_성능_향상" class="header-anchor">감각운동제어이론에 기반한 착용형 하지보조로봇의 성능 향상</a></h2>
+<p><strong>지원기관: 보건북지부 국립재활원</strong></p>
+<p><strong>PI: 허필원</strong></p>
+<h2 id="편마비_환자를_위한_인공지능_기반_보행재활_외골격로봇_중개연구"><a href="#편마비_환자를_위한_인공지능_기반_보행재활_외골격로봇_중개연구" class="header-anchor">편마비 환자를 위한 인공지능 기반 보행재활 외골격로봇 중개연구</a></h2>
+<p><strong>지원기관: 보건북지부 국립재활원</strong></p>
+<p><strong>PI: 김경환&#40;NT 로봇&#41;</strong></p>
+<h2 id="양궁_국가대표_경기력_향상을_위한_선수동작_데이터_분석_기법_개발_연구"><a href="#양궁_국가대표_경기력_향상을_위한_선수동작_데이터_분석_기법_개발_연구" class="header-anchor">양궁 국가대표 경기력 향상을 위한 선수동작 데이터 분석 기법 개발 연구</a></h2>
+<p><strong>지원기관: 문체부</strong></p>
+<p><strong>PI: 스위트케이</strong></p>
+<h2 id="로봇_청소기_장애물_회피_및_경로_생성"><a href="#로봇_청소기_장애물_회피_및_경로_생성" class="header-anchor">로봇 청소기 장애물 회피 및 경로 생성</a></h2>
+<p><strong>지원기관: LG전자</strong></p>
+<p><strong>PI: 허필원</strong></p>
+<h2 id="공개_의료_영상_및_보행데이터를_이용한_발과_발목_질환_진단_모델_개발_및_해석"><a href="#공개_의료_영상_및_보행데이터를_이용한_발과_발목_질환_진단_모델_개발_및_해석" class="header-anchor">공개 의료 영상 및 보행데이터를 이용한 발과 발목 질환 진단 모델 개발 및 해석</a></h2>
+<p><strong>지원기관: 광주과학기술원 AI기반 융합인재 양성 지원사업</strong></p>
+<p><strong>PI: 허필원</strong></p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: March 16, 2024.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: March 20, 2024.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->
     </div>  <!-- div: content container -->
     
-    
-        <script src="/libs/highlight/highlight.min.js"></script>
-<script>hljs.highlightAll();hljs.configure({tabReplace: '    '});</script>
-
     
   </body>
 </html>
