@@ -62,6 +62,27 @@ html {
   border-radius: 10px;
 }
 
+.franklin-content .container-250 img {
+  width: 250px;
+  padding-left: 0;
+  margin: 10px;
+  border-radius: 10px;
+}
+
+.franklin-content .container-200 img {
+  width: 200px;
+  padding-left: 0;
+  margin: 10px;
+  border-radius: 10px;
+}
+
+.franklin-content .container-150 img {
+  width: 150px;
+  padding-left: 0;
+  margin: 10px;
+  border-radius: 10px;
+}
+
 .franklin-content .container-100 img {
   width: 100%;
   padding-left: 0;
