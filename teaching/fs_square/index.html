@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/styles/github.min.css">
+   
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.png">
+
+   <title>Fourier Series of Square Wave</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">HUR Group</a></h1>
+      <p class="lead">Dynamics and Biomechatronics Lab</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+      <a class="sidebar-nav-item " href="/members/">Members</a>
+      <a class="sidebar-nav-item " href="/research/">Research</a>
+      <a class="sidebar-nav-item " href="/publications/">Publications</a>
+      <a class="sidebar-nav-item active" href="/teaching/">Teaching</a>
+      <a class="sidebar-nav-item " href="/blog/">Blog</a>
+      <a class="sidebar-nav-item " href="/contacts/">Contacts</a>
+      <a class="sidebar-nav-item " href="/tag/">Tags</a>
+    </nav>
+    <p>&copy; Pilwon Hur.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h2 id="fourier_series_of_square_wave"><a href="#fourier_series_of_square_wave" class="header-anchor">Fourier Series of Square Wave</a></h2>
+<p>Periodic function can be expressed as follows.</p>
+\[ f(t) = f(t+T) \]
+<p>A signal can be viewed from time domain and also from frequency domain.</p>
+\[ y(t)=sin(wt)+sin(2wt)+sin(3wt) \]
+\[ y(w)=sin(wt)+sin(2wt)+sin(3wt) \]
+<pre><code class="language-julia">using Plots
+
+# Define the square wave function
+function square_wave&#40;t&#41;
+    return sign&#40;sin&#40;t&#41;&#41;
+end
+
+# Fourier series approximation of the square wave
+function fourier_series&#40;t, n_terms&#41;
+    approximation &#61; 0.0
+    for n in 1:n_terms
+        harmonic &#61; 2n - 1 # Odd harmonics
+        approximation &#43;&#61; &#40;sin&#40;harmonic * t&#41;&#41; / harmonic
+    end
+    return &#40;4 / π&#41; * approximation
+end
+
+# Time domain for plotting
+t &#61; 0:0.01:4π
+
+# Plot the original square wave
+p &#61; plot&#40;t, square_wave.&#40;t&#41;, label&#61;&quot;Square Wave&quot;, linewidth&#61;2&#41;
+
+# Add Fourier approximations with increasing number of terms
+for n_terms in &#91;1, 3, 5, 10, 50&#93;
+    approximation &#61; fourier_series.&#40;t, n_terms&#41;
+    plot&#33;&#40;p, t, approximation, label&#61;&quot;n&#61;&#36;n_terms Terms&quot;, linewidth&#61;2&#41;
+end
+
+# Display the plot
+display&#40;p&#41;</code></pre>
+
+<img src="/assets/teaching/fs_square/output/plot4.svg" alt="">
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Pilwon Hur. Last modified: March 27, 2024.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.min.js"></script>
+<script>hljs.highlightAll();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>
