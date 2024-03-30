@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
   
   <link rel="stylesheet" href="/css/franklin.css">
 <link rel="stylesheet" href="/css/poole_hyde.css">
@@ -49,29 +50,102 @@
 <div class="franklin-content">
 <h1 id="teaching"><a href="#teaching" class="header-anchor">Teaching</a></h1>
 <h2 id="gist"><a href="#gist" class="header-anchor">GIST</a></h2>
-<p>MC3215: Mechanical Signals and Systems <a href="/teaching/julia_script">&#91;code&#93;</a></p>
 <p>MC2103: Dynamics</p>
+<p>MC3215: Mechanical Signals and Systems <a href="/teaching/julia_script">&#91;code&#93;</a></p>
 <p>ME5160: Advanced Dynamics</p>
-<p>ME8102: Robust Control</p>
 <p>ME5166: Intelligent Motor Integration Project</p>
+<p>
+<details>
+  <summary>ME8102: Robust Control</summary>
+ <a href="/teaching/robust_control_spring2024">&#91;detailed information&#93;</a><br />Semesters: Spring 2024<br /><em>ME8102</em>, grounded in the principles outlined in the &quot;Essentials of Robust Control&quot; textbook, embarks on an in-depth exploration of robust \( H_{\infty} \) and control theory, tailored for systems encountering multiple sources of uncertainties, noises, and disturbances. Beginning with a foundational overview of linear systems and basic linear algebra, the course progressively delves into advanced topics including the intricacies of \( H_{2} \) and \( H_{\infty} \) spaces &#40;Hardy spaces&#41;, and the critical roles they play in control system analysis and design. Through a structured journey from the basics of system theoretical concepts to the complexities of controller synthesis and performance evaluation, students will engage with both theoretical frameworks and practical methodologies. The course aims to equip students with the knowledge and tools to analyze and design controllers that ensure desired performance and robustness in the face of system uncertainties, laying a solid foundation for advanced studies in control theory.</p>
+<p>Textbook: Essentials of Robust Control by K. Zhou and JC Doyle, Prentice Hall, 1999. 
+</details>
+</p>
 <h2 id="texas_am_university"><a href="#texas_am_university" class="header-anchor">Texas A&amp;M University</a></h2>
-<p>MEEN 655: Design of Nonlinear Control Systems Semesters: Spring 2016 <em>MEEN 655</em> is a first year graduate course in nonlinear systems and control. Nonlinear phenomena such as multiple equilibria, limit cycles, and complex behavior will be introduced. Planer dynamical systems will be considered adn theorems characterizing their behavior will be discussed. Foundational thorems for nonlinear systems such as existence and uniqueness will be proven. Stability of nonlinear systems will be considered in grat detail, introducing Lyapunov&#39;s theorem as well as the converse stability theorems. Reviews of set theory, topology, linear algebra, and linear systems theory will be given in the beginging. Several nonlinear control techniques will be covered. Furthermore, geometric controls of both linear and nonlinear systems will be covered. For geometric control of nonlinear systems, differentiable geometry will be reviewed. Prerequites for this course include linear algebra, MEEN 651 &#40;Control System Design&#41;, and some knowledges on Matlab. Textbook: Nonlinear Systems, 3rd Edition by Khalil, Prentice Hall 2002 Nonlinear Systems, Stability and Control by Sastry, Springer, 1999 Robust Nonlinear Control Design by Freeman, Birkhauser, 2008</p>
-<p>MEEN 652: Multivariable Control System Design Semesters: Spring 2017 <em>MEEN 652</em> is a first year graduate course in the analysis and design of multivariable control systems.nonlinear systems and control. The course handles analysis of multiple input multiple output &#40;MIMO&#41; systems. The course covers LQR/LQG, H2, Hinf controls and the related mathematical tools. Especially, it treats uncertainty and robustness issues in the linear MIMO systems. The course requires several mathematical tools such as in-depth knowledge of linear algebra, introductory materials of real analysis &#40;e.g., Hilbert spaces, function spaces, operator norms&#41; and complex analysis &#40;e.g., open mapping theorem, maximum modulus theorem, Cauchy&#39;s integral theorem, residue theorem&#41;. Prerequites for this course include linear algebra, MEEN 651 &#40;Control System Design&#41;, and some knowledges on Matlab. Textbook: &#40;Required&#41; Essentials of Robust Control by K. Zhou and JC Doyle, Prentice Hall, 1999. &#40;Recommended&#41; Multivariable Feedback Control – Analysis and Design by S. Skogestad and I. Postlethwaite, John Wiley and Sons, 1996</p>
-<p>MEEN 612: Mechanics of Robotic Manipulators Semesters: Fall 2014, Fall 2015, Fall 2016 <em>MEEN 408/612</em> is a stack course for both undergrad and graduate students. It handles forward, inverse kinematics, differential kinematics &#40;Jacobian&#41;, dynamics, and linear/nonlinear control of robotic manipulators. Forward kinematics includes homogeneous transformation, and DH representation. Differential kinematics include Jacobian, singularity and decomposition of Jacobian and force/torque relationship. Dynamics includes Euler-Lagrange Dynamics of robotic manipulators, and DC motor dynamics. The second half of the course handles nonlinear systems theory and control. Nonlinear systems theory includes stability theories of linear and nonlinear systems, Lyapunov&#39;s thoery, LaSalle&#39;s invariance principle, and phase portrait. Nonlinear systems control includes independent joint control &#40;PD/PID control&#41;, PD with feedforward control, inverse dynamics, robust control, adaptive control, passivity-based control, passivity-based robust control, passivity-based adaptive control, sliding mode control, feedback linearization, optimal control, and force/impedance control. The uniqueness of this course is that it is a combination of project-based and lecture-based classes. A course project will be announced in the beginning of the semester and appropriate lab tutorials will be given for the project. Lectures covering materials that are needed to accomplish the project will be given throughout the semester: these will include Robot Operating System &#40;ROS&#41; and single board computers &#40;e.g., Beaglebone Black&#41;. This course is a fast-paced course especially for the second half of the course. A practical, and hands-on examples are dealt along with detailed proofs so that students understand how to use these theories to design and control robotic manipulators. Prerequites for this course include linear algebra, undergraduate level dynamics and control, some knowledge on Matlab and C&#43;&#43;. Textbook: Robot Modeling and Control by Spong, Hutchinson and Vidyasagar, Wiley 2006</p>
-<p>MEEN 431: Advanced System Dynamics and Controls Semesters: Fall 2016 <em>MEEN 431</em> is a undergraduate course for unified framework for modeling, analysis, synthesis, design and simulation of multibody mechanical systems in 3D space. Both Newtoinian and Lagrange mechanics will be covered. For Newtonian mechanics, students will study reference frames, vector differentiation, linear/angular velocity and acceleration, generalized coordinates, generalized forces, degrees of freedom, constraints, rigid body dynamics, virtual work principles, and D&#39;Alembert principle. For Lagrange mechanics, Lagrange&#39;s equation will be derived from virtual work principles, and D&#39;Alembert principle. In addition to Newtonian and Lagrange mechanics, roation, skew symmetric matrix, and Jacobian will also be studied. The last one third of the course will cover linear system theory including Nyquist stability criteria, loop shaping, pole placement of state space models. For the final project, students will design, analyze and control a 3D multibody dynamical system. Prerequisites: MEEN 364; junior or senior classification.</p>
-<p>MEEN 408: Introduction to Robotics See MEEN 612</p>
-<p>MEEN 364: Dynamic Systems and Controls Semesters: Spring 2015 <em>MEEN 364</em> is the first undergraduate control course. It handles the followings: Mathematical modeling, analysis, measurement and control of dynamic systems; extensions of modeling techniques of MEEN 363 to other types of dynamic systems; introduction to feedback control, time &#40;transient, error constant, etc&#41; and frequency &#40;Bode plot, Nyquist theory, etc&#41; domain analysis of control systems, stability, PID control, root locus, lead/lag compensators; design and implementation of computer-based controllers in the lab. Textbook: Feedback Control of Dynamic Systems by Franklin, Powell, and Naeini, Seventh Edition, Prentice Hall, 2014. University of Illinois at Urbana-Champaign ME 340: Dynamics of Mechanical Systems Semesters: Summer 2009</p>
+<p>
+<details>
+  <summary>MEEN 655: Design of Nonlinear Control Systems</summary>
+ Semesters: Spring 2016<br /><em>MEEN 655</em> is a first year graduate course in nonlinear systems and control. Nonlinear phenomena such as multiple equilibria, limit cycles, and complex behavior will be introduced. Planer dynamical systems will be considered adn theorems characterizing their behavior will be discussed. Foundational thorems for nonlinear systems such as existence and uniqueness will be proven. Stability of nonlinear systems will be considered in grat detail, introducing Lyapunov&#39;s theorem as well as the converse stability theorems. Reviews of set theory, topology, linear algebra, and linear systems theory will be given in the beginging. Several nonlinear control techniques will be covered. Furthermore, geometric controls of both linear and nonlinear systems will be covered. For geometric control of nonlinear systems, differentiable geometry will be reviewed. Prerequites for this course include linear algebra, MEEN 651 &#40;Control System Design&#41;, and some knowledges on Matlab.</p>
+<p>Textbook:<br />Nonlinear Systems, 3rd Edition by Khalil, Prentice Hall 2002<br />Nonlinear Systems, Stability and Control by Sastry, Springer, 1999<br />Robust Nonlinear Control Design by Freeman, Birkhauser, 2008 
+</details>
+</p>
+<p>
+<details>
+  <summary>MEEN 652: Multivariable Control System Design</summary>
+ Semesters: Spring 2017<br /><em>MEEN 652</em> is a first year graduate course in the analysis and design of multivariable control systems.nonlinear systems and control. The course handles analysis of multiple input multiple output &#40;MIMO&#41; systems. The course covers LQR/LQG, H2, Hinf controls and the related mathematical tools. Especially, it treats uncertainty and robustness issues in the linear MIMO systems. The course requires several mathematical tools such as in-depth knowledge of linear algebra, introductory materials of real analysis &#40;e.g., Hilbert spaces, function spaces, operator norms&#41; and complex analysis &#40;e.g., open mapping theorem, maximum modulus theorem, Cauchy&#39;s integral theorem, residue theorem&#41;. Prerequites for this course include linear algebra, MEEN 651 &#40;Control System Design&#41;, and some knowledges on Matlab.</p>
+<p>Textbook:<br />&#40;Required&#41; Essentials of Robust Control by K. Zhou and JC Doyle, Prentice Hall, 1999.<br />&#40;Recommended&#41; Multivariable Feedback Control – Analysis and Design by S. Skogestad and I. Postlethwaite, John Wiley and Sons, 1996 
+</details>
+</p>
+<p>
+<details>
+  <summary>MEEN 612: Mechanics of Robotic Manipulators</summary>
+ Semesters: Fall 2014, Fall 2015, Fall 2016<br /><em>MEEN 408/612</em> is a stack course for both undergrad and graduate students. It handles forward, inverse kinematics, differential kinematics &#40;Jacobian&#41;, dynamics, and linear/nonlinear control of robotic manipulators. Forward kinematics includes homogeneous transformation, and DH representation. Differential kinematics include Jacobian, singularity and decomposition of Jacobian and force/torque relationship. Dynamics includes Euler-Lagrange Dynamics of robotic manipulators, and DC motor dynamics. The second half of the course handles nonlinear systems theory and control. Nonlinear systems theory includes stability theories of linear and nonlinear systems, Lyapunov&#39;s thoery, LaSalle&#39;s invariance principle, and phase portrait. Nonlinear systems control includes independent joint control &#40;PD/PID control&#41;, PD with feedforward control, inverse dynamics, robust control, adaptive control, passivity-based control, passivity-based robust control, passivity-based adaptive control, sliding mode control, feedback linearization, optimal control, and force/impedance control. The uniqueness of this course is that it is a combination of project-based and lecture-based classes. A course project will be announced in the beginning of the semester and appropriate lab tutorials will be given for the project. Lectures covering materials that are needed to accomplish the project will be given throughout the semester: these will include Robot Operating System &#40;ROS&#41; and single board computers &#40;e.g., Beaglebone Black&#41;. This course is a fast-paced course especially for the second half of the course. A practical, and hands-on examples are dealt along with detailed proofs so that students understand how to use these theories to design and control robotic manipulators. Prerequites for this course include linear algebra, undergraduate level dynamics and control, some knowledge on Matlab and C&#43;&#43;.</p>
+<p>Textbook: Robot Modeling and Control by Spong, Hutchinson and Vidyasagar, Wiley 2006 
+</details>
+</p>
+<p>
+<details>
+  <summary>MEEN 431: Advanced System Dynamics and Controls</summary>
+ Semesters: Fall 2016<br /><em>MEEN 431</em> is a undergraduate course for unified framework for modeling, analysis, synthesis, design and simulation of multibody mechanical systems in 3D space. Both Newtoinian and Lagrange mechanics will be covered. For Newtonian mechanics, students will study reference frames, vector differentiation, linear/angular velocity and acceleration, generalized coordinates, generalized forces, degrees of freedom, constraints, rigid body dynamics, virtual work principles, and D&#39;Alembert principle. For Lagrange mechanics, Lagrange&#39;s equation will be derived from virtual work principles, and D&#39;Alembert principle. In addition to Newtonian and Lagrange mechanics, roation, skew symmetric matrix, and Jacobian will also be studied. The last one third of the course will cover linear system theory including Nyquist stability criteria, loop shaping, pole placement of state space models. For the final project, students will design, analyze and control a 3D multibody dynamical system. </p>
+<p>Prerequisites: MEEN 364; junior or senior classification. 
+</details>
+</p>
+<p>
+<details>
+  <summary>MEEN 408: Introduction to Robotics</summary>
+ See MEEN 612 
+</details>
+</p>
+<p>
+<details>
+  <summary>MEEN 364: Dynamic Systems and Controls</summary>
+ Semesters: Spring 2015<br /><em>MEEN 364</em> is the first undergraduate control course. It handles the followings: Mathematical modeling, analysis, measurement and control of dynamic systems; extensions of modeling techniques of MEEN 363 to other types of dynamic systems; introduction to feedback control, time &#40;transient, error constant, etc&#41; and frequency &#40;Bode plot, Nyquist theory, etc&#41; domain analysis of control systems, stability, PID control, root locus, lead/lag compensators; design and implementation of computer-based controllers in the lab.</p>
+<p>Textbook: Feedback Control of Dynamic Systems by Franklin, Powell, and Naeini, Seventh Edition, Prentice Hall, 2014. 
+</details>
+</p>
+<p>
+<details>
+  <summary>MEEN 357: Engineering Analysis for Mechanical Engineers</summary>
+ Semesters: Spring 2019, Summer 2019, Summer 2020, Fall 2020<br /><em>MEEN 357</em> provides a practical foundation for the use of numerical methods to solve engineering problems. The topics studied in this course are: solving systems of linear equations, curve fitting and root finding, numerical integration and differentiation, initial value and two-point boundary value problems, plus eigenvalues and optimization methods. We will study these techniques mathematically, develop numerical approximations for them, and apply them to solve engineering problems. Personal computers are used extensively in this course. Students are required to program these numerical analysis techniques, many will be programmed from scratch, even if there exists an implementation in the extensive Python standard library: <a href="https://docs.python.org/3/library/index.html">https://docs.python.org/3/library/index.html</a> or in the numerous third-party libraries, for example: <a href="https://wiki.python.org/moin/UsefulModules">https://wiki.python.org/moin/UsefulModules</a>.<br /><em>Python</em> the programming language that we will use in this class. It is the fastest growing programming language in the World today, and as of this year, is being taught in freshman engineering. Spyder is the IDE that will be used, and it is installed on the computers in the MEEN Computer Lab. No previous knowledge of programming, in general, or of Python, in particular, is required. Nevertheless, students are expected to become proficient in the use of this tool by the end of the semester. This typically requires a great deal of self-learning on the student&#39;s part, which is why self-help tutorials are so important.</p>
+<p>Textbook: Numerical Methods in Engineering with Python 3 by J. Kiusalaas, Third Edition, Cambridge University Press, Cambridge, 2013. 
+</details>
+</p>
 <h2 id="university_of_illinois_at_urbana-champaign"><a href="#university_of_illinois_at_urbana-champaign" class="header-anchor">University of Illinois at Urbana-Champaign</a></h2>
-<p><em>ME 340</em> &#40;a.k.a. Mechanical Vibration&#41; deals with mathematical background &#40;e.g., variables, ODE, and Laplace transform&#41;, system model representation &#40;e.g., state space representation, linearization&#41;, modeling &#40;e.g., Euler-Lagrange Dynamics, Newton-Euler Dynamics&#41;, input/output responses &#40;free/forced responses, 2nd order system, convolution, time/frequency domain analysis&#41;, and multi DOF systems &#40;e.g., equations with vectors and matrices, modal analysis, stability&#41;. This course also runs a Lab. Several labs complements what you learned in the lecture. Courses that I served as a TA</p>
-<p>TAM 212: Introduction to Dyanmics &#40;Discussion&#41;</p>
-<p>ME 360: Signal Processing &#40;Lab&#41;</p>
-<p>ME 460: Automatic Control &#40;Grading&#41;</p>
+<p>
+<details>
+  <summary>ME 340: Dynamics of Mechanical Systems</summary>
+ Semesters: Summer 2009<br /><em>ME 340</em> &#40;a.k.a. Mechanical Vibration&#41; deals with mathematical background &#40;e.g., variables, ODE, and Laplace transform&#41;, system model representation &#40;e.g., state space representation, linearization&#41;, modeling &#40;e.g., Euler-Lagrange Dynamics, Newton-Euler Dynamics&#41;, input/output responses &#40;free/forced responses, 2nd order system, convolution, time/frequency domain analysis&#41;, and multi DOF systems &#40;e.g., equations with vectors and matrices, modal analysis, stability&#41;. This course also runs a Lab. Several labs complements what you learned in the lecture. Courses that I served as a TA. 
+</details>
+</p>
+<p>
+<details>
+  <summary>TAM 212: Introduction to Dyanmics</summary>
+ Semesters: Fall 2008, Spring 2009<br />I served as a TA for a Discussion Section. 
+</details>
+</p>
+<p>
+<details>
+  <summary>ME 360: Fundamentals of Signal Processing, Instrumentation, and Control</summary>
+ Semesters: Fall 2009<br />I served as a TA for a Lab. 
+</details>
+</p>
+<p>
+<details>
+  <summary>ME 460: Automatic Control</summary>
+ Semesters: Spring 2007<br />I served as a Grader. 
+</details>
+</p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Pilwon Hur. Last modified: March 27, 2024.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Pilwon Hur. Last modified: March 30, 2024.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->
     </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
     
     
   </body>

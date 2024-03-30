@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+  
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.png">
+
+   <title>ME8102: Robust Control</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">HUR Group</a></h1>
+      <p class="lead">Dynamics and Biomechatronics Lab</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+      <a class="sidebar-nav-item " href="/members/">Members</a>
+      <a class="sidebar-nav-item " href="/research/">Research</a>
+      <a class="sidebar-nav-item " href="/publications/">Publications</a>
+      <a class="sidebar-nav-item active" href="/teaching/">Teaching</a>
+      <a class="sidebar-nav-item " href="/blog/">Blog</a>
+      <a class="sidebar-nav-item " href="/contacts/">Contacts</a>
+      <a class="sidebar-nav-item " href="/tag/">Tags</a>
+    </nav>
+    <p>&copy; Pilwon Hur.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="me8102_robust_control"><a href="#me8102_robust_control" class="header-anchor">ME8102: Robust Control</a></h1>
+<p>
+<details>
+  <summary>Topic 0: Introduction (Ch1)</summary>
+ Chapter 1 of the textbook serves as an introduction, setting the stage for the comprehensive exploration of basic robust and \(H_{\infty}\) control theory that is to follow. The key points of Chapter 1 include:</p>
+<ol>
+<li><p>Introduction to the Book&#39;s Core Topics: It provides a brief description of the problems considered throughout the book, such as dealing with uncertainties, noises, and disturbances in control systems.</p>
+</li>
+<li><p>Overview of Key Results: The chapter outlines the key results presented in each subsequent chapter, giving readers a roadmap of what to expect and how the concepts of robust and \(H_{\infty}\) control theory are developed and applied.</p>
+</li>
+<li><p>Foundation for Robust and \(H_{\infty}\) Control Theory: By discussing control systems with multiple sources of uncertainties, noises, and disturbances, the chapter lays the groundwork for understanding why robust control is necessary and how \(H_{\infty}\) control theory can address these challenges.</p>
+</li>
+<li><p>Preview of Analytical and Design Problems: The chapter highlights two types of problems—analysis and synthesis—central to robust control theory. Analysis problems involve determining if controlled signals satisfy desired properties under all admissible disturbances and uncertainties. Synthesis problems focus on designing controllers that ensure these properties are met.</p>
+</li>
+</ol>
+<p>Overall, Chapter 1 aims to acquaint readers with the fundamental issues robust control theory aims to solve, providing a foundation for the more detailed and technical discussions in the following chapters. 
+</details>
+</p>
+<p>
+<details>
+  <summary>Topic 1: Review of Linear System Theory (Ch3)</summary>
+ Chapter 3 of the textbook, titled &quot;Linear Systems,&quot; aims to review and solidify the understanding of fundamental system-theoretical concepts critical for the study of robust control. The key focus areas of this chapter are :</p>
+<ol>
+<li><p>Basic Theoretical Concepts: It starts with defining essential concepts such as controllability, observability, stabilizability, and detectability. These are foundational to control theory, as they describe the system&#39;s ability to be controlled or observed, and their stabilization and detectability properties under various conditions.</p>
+</li>
+<li><p>Algebraic and Geometric Characterizations: The chapter delves into both algebraic and geometric characterizations of the previously mentioned concepts. This dual approach provides a comprehensive understanding, enabling the reader to tackle problems from different angles and understand the deeper structural properties of linear systems.</p>
+</li>
+<li><p>Observer Theory: Observer theory, which is about estimating the internal states of a system from its outputs, is introduced. Since not all system states are directly measurable, observer design is crucial for implementing effective control strategies.</p>
+</li>
+<li><p>System Interconnections and Realizations: The chapter explores how different systems can be interconnected and the implications of such interconnections for control design. It also covers system realizations, which are representations of systems in state-space or transfer function form, emphasizing the importance of choosing appropriate representations for analysis and design purposes.</p>
+</li>
+<li><p>System Poles and Zeros: Finally, the concepts of system poles and zeros are introduced. These are key to understanding system behavior, as they influence the system&#39;s response to inputs and are critical for the design of stable and robust control systems.</p>
+</li>
+</ol>
+<p>The point of Chapter 3 is to equip readers with a solid foundation in linear systems theory, essential for advancing to more complex topics in robust and optimal control. By covering these fundamental concepts, the chapter sets the stage for understanding and applying more advanced strategies in control system analysis and design, paving the way for the study of \(H_2\) and \(H_{\infty}\) spaces discussed in subsequent chapters . 
+</details>
+</p>
+<p>
+<details>
+  <summary>Topic 2: Review of Linear Algebra (Ch2)</summary>
+ Chapter 2 of the textbook focuses on providing a review of some basic linear algebra facts that are essential for the study and application of robust control theory . The main points of this chapter likely include:</p>
+<ol>
+<li><p>Linear Subspaces: Understanding the structure and properties of linear subspaces is crucial for analyzing system dynamics and control spaces.</p>
+</li>
+<li><p>Vector Spaces: The chapter might cover the foundational concepts of vector spaces over the real or complex fields, which are fundamental in describing states, inputs, and outputs in control systems.</p>
+</li>
+<li><p>Matrix Algebra: Given the centrality of matrices in representing linear transformations and systems, a detailed discussion on matrix operations, types of matrices &#40;such as diagonal, symmetric, and orthogonal matrices&#41;, and their properties is expected.</p>
+</li>
+<li><p>Eigenvalues and Eigenvectors: These are key to analyzing system stability and controllability/observability properties, as they provide insights into the system&#39;s behavior in response to different inputs.</p>
+</li>
+<li><p>Singular Value Decomposition &#40;SVD&#41; and Principal Component Analysis &#40;PCA&#41;: These tools are powerful in simplifying complex systems, understanding their behavior, and reducing dimensionality while preserving essential characteristics.</p>
+</li>
+<li><p>Norms and Inner Product Spaces: Norms measure the size or length of vectors, while inner products provide a way to define angles and orthogonality in vector spaces. These concepts are essential for designing and analyzing algorithms in control theory, including optimization algorithms.</p>
+</li>
+<li><p>Linear Transformations and Functionals: Understanding how linear transformations operate on vector spaces and the role of linear functionals in dual spaces can be critical for advanced control design techniques.</p>
+</li>
+</ol>
+<p>By reviewing these basic linear algebra concepts, Chapter 2 sets the mathematical foundation necessary for the complex analysis and system theory discussions in later chapters. This foundational knowledge is pivotal for understanding the behavior of dynamic systems and for the development and analysis of control strategies, particularly in the contexts of robustness and optimization. 
+</details>
+</p>
+<p>
+<details>
+  <summary>Topic 3: 𝐻2/𝐻∞ Spaces (Ch4)</summary>
+ Chapter 4 of the textbook primarily focuses on introducing the \(H_2\) and \(H_{\infty}\) spaces, which are critical concepts in the study of control systems, particularly in the context of robust control and optimal control theory. The significance of Hardy spaces, named after the mathematician G. H. Hardy, is underscored by their role in understanding and analyzing signals and systems in the frequency domain .</p>
+<p>The main objectives of Chapter 4 include:</p>
+<ol>
+<li><p>Understanding Performance Specifications: The chapter begins with a discussion on the importance of achieving certain performance specifications in control systems, in addition to ensuring internal stability. It introduces the concept of measuring the performance of a system in terms of the size of certain signals of interest, such as the tracking error signal in a tracking system. This lays the groundwork for defining signal size using various norms .</p>
+</li>
+<li><p>Introduction to Hardy Spaces: The \(H_2\) and \(H_{\infty}\) spaces are introduced as Hardy spaces. These spaces are essential for defining and computing norms for signals in control systems. Hardy spaces provide a mathematical framework for analyzing signals and systems in the frequency domain, facilitating the description of system performance and stability criteria .</p>
+</li>
+<li><p>State-space Methods for Computing Norms: The chapter also presents state-space methods for computing real rational \(H_2\) and \(H_{\infty}\) transfer matrix norms. These norms are crucial for evaluating the performance and robustness of control systems. The ability to compute these norms effectively allows for the analysis and design of systems that meet desired performance and stability specifications .</p>
+</li>
+</ol>
+<p>In essence, Chapter 4 lays the foundational knowledge necessary for understanding how the performance and stability of control systems can be quantified and analyzed using the concepts of \(H_2\) and \(H_{\infty}\) spaces. These concepts are vital for the development of robust control strategies that can handle uncertainties and achieve desired levels of performance. By introducing Hardy spaces and the methods for computing norms within these spaces, the chapter sets the stage for more advanced topics in control theory that involve the design and analysis of control systems in the presence of uncertainties and performance criteria. 
+</details>
+</p>
+<p>
+<details>
+  <summary>Topic 4: Linear Matrix Inequality (LMI)</summary>
+ Topic 4: Linear Matrix Inequality &#40;LMI&#41; 
+</details>
+</p>
+<p>
+<details>
+  <summary>Topic 5: Internal Stability (Ch5)</summary>
+ Chapter 5 of the textbook delves into the intricate dynamics and critical importance of feedback structure in control systems, emphasizing its role in achieving system stability and desired performance levels. Key areas explored in this chapter include:</p>
+<ol>
+<li><p>Feedback Structure Analysis: The chapter outlines the fundamental concepts and significance of feedback in control systems, detailing how feedback loops influence system behavior and performance.</p>
+</li>
+<li><p>Stability of Feedback Systems: A primary focus is on understanding the conditions under which feedback systems remain stable. It introduces various stability criteria and methods to assess stability, ensuring that control systems can withstand internal and external perturbations.</p>
+</li>
+<li><p>Coprime Factorizations: The chapter explores the use of coprime factorizations as a tool for analyzing feedback systems. This approach provides a deeper insight into the internal stability mechanisms and offers a robust framework for stability assessment.</p>
+</li>
+<li><p>Feedback System Design: It discusses strategies for designing feedback systems that achieve specific performance goals while maintaining stability. This includes the selection of appropriate controller configurations and feedback paths.</p>
+</li>
+<li><p>Internal Stability Characterizations: Through detailed theoretical discussions, the chapter addresses alternative characterizations of internal stability, offering a comprehensive view of how stability can be ensured and analyzed in complex systems.</p>
+</li>
+</ol>
+<p>Chapter 5 equips students with a thorough understanding of the feedback structures in control systems, highlighting their importance in ensuring stability and achieving desired performance metrics. By covering the foundational theories and practical design considerations, the chapter prepares students for advanced studies in control system design and analysis, focusing on robust and optimal control strategies that cater to complex and uncertain system dynamics. 
+</details>
+</p>
+<p>
+<details>
+  <summary>Topic 6: Performance Specifications and Limitations (Ch6)</summary>
+ Chapter 6 of the textbook intricately navigates through the nuanced landscape of feedback system properties and their inherent design limitations, shedding light on the pivotal balance between desired performance and the constraints that bind real-world systems. Key focus areas of this chapter include:</p>
+<ol>
+<li><p>Feedback System Properties: It begins with an exploration of the fundamental properties of feedback systems, highlighting how feedback influences system behavior and performance.</p>
+</li>
+<li><p>Optimal Control Problems: The chapter progresses into the domain of optimal control, specifically addressing the formulations of \(H_2\) and \(H_{\infty}\) control problems. These problems are central to designing systems that can achieve optimal performance metrics under given constraints.</p>
+</li>
+<li><p>Weighting Functions: A significant portion of the chapter is devoted to the strategic selection of weighting functions. Through illustrative SISO examples, it provides guidance on how to choose these functions to shape system responses and achieve desired performance characteristics effectively.</p>
+</li>
+<li><p>Design Limitations: The chapter does not shy away from the reality of design limitations, including bandwidth constraints and the effects of open-loop right-half plane zeros and poles. Through the lens of Bode&#39;s gain-phase relationships, Bode&#39;s sensitivity integral, and the Poisson integral formula, it lays bare the trade-offs and challenges inherent in feedback system design.</p>
+</li>
+<li><p>Navigating Constraints: It offers strategies for navigating the intricate balance between achieving high performance and adhering to the physical and dynamical constraints of systems. This includes leveraging feedback to mitigate limitations while maintaining system stability and performance.</p>
+</li>
+</ol>
+<p>Chapter 6 stands out for its comprehensive dive into the complexity of feedback systems, balancing theoretical rigor with practical insights. It prepares students for the challenges of designing robust and optimal control systems that must operate within the bounds of real-world constraints, arming them with the knowledge to navigate these challenges adeptly. 
+</details>
+</p>
+<p>
+<details>
+  <summary>Topic 7: Balanced Model Reduction (Ch7)</summary>
+ Chapter 7 of the textbook embarks on the sophisticated terrain of &quot;Balanced Model Reduction,&quot; aiming to simplify the complexity of control systems while preserving their critical dynamic properties. The focus areas of this chapter include:</p>
+<ol>
+<li><p>Model Reduction Techniques: Introduction to various strategies for reducing the complexity of dynamical systems, emphasizing the need for simpler models in practical control applications.</p>
+</li>
+<li><p>Balanced Truncation Method: The chapter delves into the balanced truncation method as a premier technique for model reduction, explaining its theoretical foundations and practical implications. It discusses how this method strikes a balance between model simplicity and accuracy, ensuring essential system behaviors are retained.</p>
+</li>
+<li><p>Application and Implications: Detailed examination of how the balanced truncation method can be applied to linear multivariable dynamical systems, illustrating the process through examples and discussing the resulting system performance.</p>
+</li>
+<li><p>Error Bounds and Stability: It explores the concepts of error bounds associated with model reduction and how they can be minimized to ensure the reduced-order model accurately represents the original system. The chapter also addresses the preservation of system stability post-reduction.</p>
+</li>
+<li><p>Advantages of Model Reduction: The chapter underscores the benefits of model reduction, including enhanced computational efficiency, simplified controller design, and improved system analysis, making a compelling case for the use of balanced model reduction in control engineering.</p>
+</li>
+</ol>
+<p>Chapter 7 meticulously guides readers through the nuanced process of balanced model reduction, providing a thorough understanding of its theoretical underpinnings and practical applications. By focusing on this method, the chapter equips students and practitioners with the knowledge to effectively reduce the complexity of control systems, ensuring that the essence of the system&#39;s dynamics is maintained for accurate analysis and robust control design. 
+</details>
+</p>
+<p>
+<details>
+  <summary>Topic 8: Robustness and Uncertainty (Ch8)</summary>
+ Chapter 8 of the textbook focuses on &quot;Uncertainty and Robustness,&quot; navigating through the complexities of modeling uncertainty and designing control systems that maintain robustness in the face of such uncertainties. Key elements covered in this chapter include:</p>
+<ol>
+<li><p>Model Uncertainty: It provides an in-depth analysis of the types and sources of uncertainty in control systems, illustrating how these uncertainties can impact system performance and stability.</p>
+</li>
+<li><p>Small Gain Theorem: This section explains the Small Gain Theorem and its significance in analyzing the stability of systems with uncertainties. It serves as a fundamental tool for ensuring system robustness by setting conditions under which a system remains stable despite the presence of uncertainties.</p>
+</li>
+<li><p>Stability under Unstructured Uncertainties: The chapter delves into strategies for maintaining system stability when faced with unstructured uncertainties, employing theoretical frameworks and practical approaches to robust control design.</p>
+</li>
+</ol>
+<p>Chapter 8 equips students with the knowledge to tackle the challenges posed by uncertainties in control systems, emphasizing the importance of robustness in ensuring system stability and performance. By addressing model uncertainty, employing the Small Gain Theorem, and focusing on stability under unstructured uncertainties, this chapter lays a solid foundation for designing and analyzing control systems that can withstand the unpredictable nature of real-world applications . 
+</details>
+</p>
+<p>
+<details>
+  <summary>Topic 9: Linear Fractional Transformation (Ch9)</summary>
+ Chapter 9, titled &quot;Linear Fractional Transformation,&quot; ushers in a crucial mathematical framework for robust control theory. This chapter is pivotal for several reasons:</p>
+<ol>
+<li><p>Introduction to Linear Fractional Transformations &#40;LFT&#41;: It begins by establishing the foundation of linear fractional transformations, showcasing their importance in control theory. LFTs offer a powerful mathematical tool for modeling and analyzing systems and controllers, especially in the presence of uncertainties .</p>
+</li>
+<li><p>Formulation of Control Problems using LFTs: The chapter demonstrates how various control problems, particularly those involving uncertainties, can be elegantly formulated within the LFT framework. This standardization allows for a unified approach to tackling diverse control challenges, employing LFTs to capture and manipulate the dynamic interplay between systems and uncertainties .</p>
+</li>
+</ol>
+<p>Chapter 9 stands as a critical bridge to advanced topics in robust control, equipping readers with the knowledge to utilize LFTs in both theoretical analysis and practical control system design. By introducing LFTs and illustrating their application to control problems, the chapter lays a solid groundwork for understanding and leveraging this versatile mathematical construct in the pursuit of robustness and stability in control systems. 
+</details>
+</p>
+<p>
+<details>
+  <summary>Topic 10: Controller Parameterization (Ch11)</summary>
+ Chapter 11, titled &quot;Controller Parameterization,&quot; zeroes in on a sophisticated aspect of control theory: the parameterization of all controllers that stabilize a given dynamical system. The highlights of this chapter include:</p>
+<ol>
+<li><p>Stabilizing Controllers Existence: It starts by addressing the fundamental question of whether stabilizing controllers exist for a given dynamical system, laying the groundwork for more detailed discussions.</p>
+</li>
+<li><p>Parameterization Techniques: The core of the chapter delves into techniques for the parameterization of all stabilizing controllers, providing a systematic approach to identifying controllers that ensure system stability.</p>
+</li>
+<li><p>Coprime Factorization Approach: A significant portion of the chapter is dedicated to the coprime factorization approach, a powerful mathematical tool in control theory that facilitates the understanding and design of stabilizing controllers.</p>
+</li>
+</ol>
+<p>Chapter 11 is crucial for both theorists and practitioners in control engineering, as it offers a deep dive into the methodologies for designing controllers that guarantee the stability of dynamical systems. By focusing on controller parameterization and the coprime factorization approach, the chapter equips readers with advanced tools and concepts for tackling complex control system design challenges . 
+</details>
+</p>
+<p>
+<details>
+  <summary>Topic 11: ARE (Ch12)</summary>
+ Chapter 11, titled &quot;Controller Parameterization,&quot; zeroes in on a sophisticated aspect of control theory: the parameterization of all controllers that stabilize a given dynamical system. The highlights of this chapter include:</p>
+<ol>
+<li><p>Stabilizing Controllers Existence: It starts by addressing the fundamental question of whether stabilizing controllers exist for a given dynamical system, laying the groundwork for more detailed discussions.</p>
+</li>
+<li><p>Parameterization Techniques: The core of the chapter delves into techniques for the parameterization of all stabilizing controllers, providing a systematic approach to identifying controllers that ensure system stability.</p>
+</li>
+<li><p>Coprime Factorization Approach: A significant portion of the chapter is dedicated to the coprime factorization approach, a powerful mathematical tool in control theory that facilitates the understanding and design of stabilizing controllers.</p>
+</li>
+</ol>
+<p>Chapter 11 is crucial for both theorists and practitioners in control engineering, as it offers a deep dive into the methodologies for designing controllers that guarantee the stability of dynamical systems. By focusing on controller parameterization and the coprime factorization approach, the chapter equips readers with advanced tools and concepts for tackling complex control system design challenges . 
+</details>
+</p>
+<p>
+<details>
+  <summary>Topic 12: LQR, Optimal Linear Estimation (Kalman Filter)</summary>
+ Topic 12: LQR, Optimal Linear Estimation &#40;Kalman Filter&#41; 
+</details>
+</p>
+<p>
+<details>
+  <summary>Topic 13: LQG/LTR, 𝐻2 Controller (Ch13)</summary>
+ Chapter 13, &quot;\(H_2\) Optimal Control,&quot; steers the course into the nuanced domain of optimal control for linear time-invariant systems under a quadratic performance criterion. This chapter unfurls with a meticulous examination of:</p>
+<ol>
+<li><p>Regulator Problems: Introducing the regulator problem sets the stage for understanding the optimization of control systems to achieve desired stability and performance with minimal cost.</p>
+</li>
+<li><p>LQR and Extended Problems: It delves into the Linear Quadratic Regulator &#40;LQR&#41; problem, a cornerstone of optimal control theory, and extends this discussion to more complex scenarios, showcasing the breadth of LQR applications.</p>
+</li>
+<li><p>Stability Margins: A critical analysis of stability margins within LQR frameworks underscores the robustness aspects of optimal control designs, providing insights into how such systems can withstand perturbations.</p>
+</li>
+<li><p>Standard H2 Problem: The chapter expands into the \(H_2\) optimal control problem, presenting a pivotal approach in control theory that minimizes a quadratic cost function, reflecting a balance between system performance and control effort.</p>
+</li>
+<li><p>Stability Margins of \(H_2\) Controllers: This section evaluates the stability margins conferred by \(H_2\) controllers, emphasizing the interplay between optimal control and system robustness.</p>
+</li>
+</ol>
+<p>Chapter 13 elucidates the essence of optimal control theory through a structured progression from fundamental concepts to complex problem formulations. By threading through regulator problems, LQR applications, and the exploration of stability margins, it equips readers with a comprehensive understanding of how to devise controllers that optimally balance performance criteria against control costs, all the while maintaining system stability . 
+</details>
+</p>
+<p>
+<details>
+  <summary>Topic 14: 𝐻∞ Controller, 𝜇 synthesis (Ch14)</summary>
+ Chapter 14, dedicated to &quot;\(H_{\infty}\) Control,&quot; embarks on a comprehensive exploration of \(H_{\infty}\) control theory, focusing on both optimal and suboptimal \(H_{\infty}\) control problems. The chapter intricately covers:</p>
+<ol>
+<li><p>Formulation of \(H_{\infty}\) Problems: It begins by laying out the theoretical groundwork for formulating optimal and suboptimal \(H_{\infty}\) control problems, emphasizing their significance in control theory.</p>
+</li>
+<li><p>Suboptimal \(H_{\infty}\) Control: The chapter places a particular emphasis on suboptimal \(H_{\infty}\) control solutions, discussing their characteristics, advantages, and the rationale behind focusing on these solutions in practical scenarios.</p>
+</li>
+<li><p>Characterization of Suboptimal Controllers: An in-depth analysis is provided on how suboptimal \(H_{\infty}\) controllers are characterized, including an algebraic proof for a class of simplified problems. This section helps in understanding the design and implementation aspects of \(H_{\infty}\) controllers.</p>
+</li>
+<li><p>Performance Levels of \(H_{\infty}\) Controllers: The behavior of \(H_{\infty}\) controllers as a function of the performance level \({\gamma}\) is examined, offering insights into how these controllers operate under varying performance criteria.</p>
+</li>
+<li><p>Interpretations of \(H_{\infty}\) Controllers: Finally, the chapter delves into alternative interpretations of \(H_{\infty}\) controllers, broadening the understanding of their roles and applications in control systems.</p>
+</li>
+</ol>
+<p>Through its focused examination of \(H_{\infty}\) control theory, Chapter 14 equips readers with a deep understanding of both the theoretical underpinnings and practical applications of \(H_{\infty}\) control strategies. By detailing the formulation, characterization, and performance analysis of \(H_{\infty}\) controllers, the chapter lays a robust foundation for advanced studies in control theory, particularly in the realms of robustness and optimization under uncertainty. 
+</details>
+</p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Pilwon Hur. Last modified: March 30, 2024.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+  </body>
+</html>
