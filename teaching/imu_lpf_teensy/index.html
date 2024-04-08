@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+   <link rel="stylesheet" href="/libs/highlight/styles/github.min.css">
+   
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.png">
+
+   <title>IMU with Low Pass Filter using Teensy </title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">HUR Group</a></h1>
+      <p class="lead">Dynamics and Biomechatronics Lab</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+      <a class="sidebar-nav-item " href="/members/">Members</a>
+      <a class="sidebar-nav-item " href="/research/">Research</a>
+      <a class="sidebar-nav-item " href="/publications/">Publications</a>
+      <a class="sidebar-nav-item active" href="/teaching/">Teaching</a>
+      <a class="sidebar-nav-item " href="/blog/">Blog</a>
+      <a class="sidebar-nav-item " href="/contacts/">Contacts</a>
+      <a class="sidebar-nav-item " href="/tag/">Tags</a>
+    </nav>
+    <p>&copy; Pilwon Hur.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content">
+<h2 id="imu_with_low_pass_filter_using_teensy"><a href="#imu_with_low_pass_filter_using_teensy" class="header-anchor">IMU with Low Pass Filter using Teensy </a></h2>
+<pre><code class="language-c">#include &quot;MPU9250.h&quot;
+
+MPU9250 mpu;
+int yaw_filt_prev;
+int yaw_filt;
+
+void setup&#40;&#41; &#123;
+    Serial.begin&#40;115200&#41;;
+    Wire.begin&#40;&#41;;
+    delay&#40;2000&#41;;
+
+    yaw_filt_prev&#61;0.0;
+    yaw_filt&#61;0.0;
+
+    if &#40;&#33;mpu.setup&#40;0x68&#41;&#41; &#123;  // change to your own address
+        while &#40;1&#41; &#123;
+            Serial.println&#40;&quot;MPU connection failed. Please check your connection with &#96;connection_check&#96; example.&quot;&#41;;
+            delay&#40;5000&#41;;
+        &#125;
+    &#125;
+
+    // calibrate anytime you want to
+    Serial.println&#40;&quot;Accel Gyro calibration will start in 5sec.&quot;&#41;;
+    Serial.println&#40;&quot;Please leave the device still on the flat plane.&quot;&#41;;
+    mpu.verbose&#40;true&#41;;
+    delay&#40;5000&#41;;
+    mpu.calibrateAccelGyro&#40;&#41;;
+
+    Serial.println&#40;&quot;Mag calibration will start in 5sec.&quot;&#41;;
+    Serial.println&#40;&quot;Please Wave device in a figure eight until done.&quot;&#41;;
+    delay&#40;5000&#41;;
+    mpu.calibrateMag&#40;&#41;;
+
+    print_calibration&#40;&#41;;
+    mpu.verbose&#40;false&#41;;
+&#125;
+
+void loop&#40;&#41; &#123;
+    if &#40;mpu.update&#40;&#41;&#41; &#123;
+        static uint32_t prev_ms &#61; millis&#40;&#41;;
+        if &#40;millis&#40;&#41; &gt; prev_ms &#43; 25&#41; &#123;
+            print_roll_pitch_yaw&#40;&#41;;
+            prev_ms &#61; millis&#40;&#41;;
+        &#125;
+    &#125;
+&#125;
+
+void print_roll_pitch_yaw&#40;&#41; &#123;
+    // Serial.print&#40;&quot;Yaw: &quot;&#41;;
+    int temp_yaw&#61;mpu.getYaw&#40;&#41;;
+    Serial.print&#40;temp_yaw&#41;;
+    float lambda&#61;0.8;
+    yaw_filt&#61;lambda*yaw_filt_prev&#43;&#40;1-lambda&#41;*temp_yaw;
+    yaw_filt_prev&#61;yaw_filt;
+    Serial.print&#40;&quot;,&quot;&#41;;
+    // Serial.print&#40;&quot; Pitch: &quot;&#41;;
+    Serial.print&#40;mpu.getPitch&#40;&#41;&#41;;
+    Serial.print&#40;&quot;,&quot;&#41;;
+    // Serial.print&#40;&quot; Roll: &quot;&#41;;
+    Serial.print&#40;mpu.getRoll&#40;&#41;&#41;;
+    Serial.print&#40;&quot;,&quot;&#41;;
+    Serial.println&#40;yaw_filt&#41;;
+&#125;
+
+void print_calibration&#40;&#41; &#123;
+    Serial.println&#40;&quot;&lt; calibration parameters &gt;&quot;&#41;;
+    Serial.println&#40;&quot;accel bias &#91;g&#93;: &quot;&#41;;
+    Serial.print&#40;mpu.getAccBiasX&#40;&#41; * 1000.f / &#40;float&#41;MPU9250::CALIB_ACCEL_SENSITIVITY&#41;;
+    Serial.print&#40;&quot;, &quot;&#41;;
+    Serial.print&#40;mpu.getAccBiasY&#40;&#41; * 1000.f / &#40;float&#41;MPU9250::CALIB_ACCEL_SENSITIVITY&#41;;
+    Serial.print&#40;&quot;, &quot;&#41;;
+    Serial.print&#40;mpu.getAccBiasZ&#40;&#41; * 1000.f / &#40;float&#41;MPU9250::CALIB_ACCEL_SENSITIVITY&#41;;
+    Serial.println&#40;&#41;;
+    Serial.println&#40;&quot;gyro bias &#91;deg/s&#93;: &quot;&#41;;
+    Serial.print&#40;mpu.getGyroBiasX&#40;&#41; / &#40;float&#41;MPU9250::CALIB_GYRO_SENSITIVITY&#41;;
+    Serial.print&#40;&quot;, &quot;&#41;;
+    Serial.print&#40;mpu.getGyroBiasY&#40;&#41; / &#40;float&#41;MPU9250::CALIB_GYRO_SENSITIVITY&#41;;
+    Serial.print&#40;&quot;, &quot;&#41;;
+    Serial.print&#40;mpu.getGyroBiasZ&#40;&#41; / &#40;float&#41;MPU9250::CALIB_GYRO_SENSITIVITY&#41;;
+    Serial.println&#40;&#41;;
+    Serial.println&#40;&quot;mag bias &#91;mG&#93;: &quot;&#41;;
+    Serial.print&#40;mpu.getMagBiasX&#40;&#41;&#41;;
+    Serial.print&#40;&quot;, &quot;&#41;;
+    Serial.print&#40;mpu.getMagBiasY&#40;&#41;&#41;;
+    Serial.print&#40;&quot;, &quot;&#41;;
+    Serial.print&#40;mpu.getMagBiasZ&#40;&#41;&#41;;
+    Serial.println&#40;&#41;;
+    Serial.println&#40;&quot;mag scale &#91;&#93;: &quot;&#41;;
+    Serial.print&#40;mpu.getMagScaleX&#40;&#41;&#41;;
+    Serial.print&#40;&quot;, &quot;&#41;;
+    Serial.print&#40;mpu.getMagScaleY&#40;&#41;&#41;;
+    Serial.print&#40;&quot;, &quot;&#41;;
+    Serial.print&#40;mpu.getMagScaleZ&#40;&#41;&#41;;
+    Serial.println&#40;&#41;;
+&#125;</code></pre>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Pilwon Hur. Last modified: April 08, 2024.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+    
+        <script src="/libs/highlight/highlight.min.js"></script>
+<script>hljs.highlightAll();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>
