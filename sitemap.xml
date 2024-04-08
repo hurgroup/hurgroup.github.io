@@ -15,7 +15,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20240402/index.html</loc>
-    <lastmod>2024-03-29</lastmod>
+    <lastmod>2024-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -50,26 +50,44 @@
     <priority>0.5</priority>
 </url>
 <url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20230420/index.html</loc>
+    <lastmod>2024-04-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/index.html</loc>
-    <lastmod>2024-03-29</lastmod>
+    <lastmod>2024-04-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/publications/patent/index.html</loc>
+    <lastmod>2024-04-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/teaching/msd_sim/index.html</loc>
-    <lastmod>2024-03-27</lastmod>
+    <lastmod>2024-04-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20230331/index.html</loc>
+    <lastmod>2024-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/index.html</loc>
-    <lastmod>2024-03-29</lastmod>
+    <lastmod>2024-04-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/members/index.html</loc>
-    <lastmod>2024-03-29</lastmod>
+    <lastmod>2024-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -87,13 +105,19 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/research/ongoing_projects/index.html</loc>
-    <lastmod>2024-03-21</lastmod>
+    <lastmod>2024-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/teaching/robust_control_spring2024/index.html</loc>
+    <lastmod>2024-03-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/teaching/julia_script/index.html</loc>
-    <lastmod>2024-03-27</lastmod>
+    <lastmod>2024-04-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -105,19 +129,37 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/about/index.html</loc>
-    <lastmod>2024-03-24</lastmod>
+    <lastmod>2024-04-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/teaching/fs_square/index.html</loc>
-    <lastmod>2024-03-28</lastmod>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20230922/index.html</loc>
+    <lastmod>2024-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/publications/index.html</loc>
-    <lastmod>2024-03-20</lastmod>
+    <lastmod>2024-04-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/teaching/fs_square/index.html</loc>
+    <lastmod>2024-04-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/teaching/lmi_scs/index.html</loc>
+    <lastmod>2024-04-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20230714/index.html</loc>
+    <lastmod>2024-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
