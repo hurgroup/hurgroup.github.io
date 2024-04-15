@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+  
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.png">
+
+   <title>[2008/11/27] Underactuated Double Inverted Pendulum</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">HUR Group</a></h1>
+      <p class="lead">Dynamics and Biomechatronics Lab</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+      <a class="sidebar-nav-item " href="/members/">Members</a>
+      <a class="sidebar-nav-item " href="/research/">Research</a>
+      <a class="sidebar-nav-item " href="/publications/">Publications</a>
+      <a class="sidebar-nav-item " href="/teaching/">Teaching</a>
+      <a class="sidebar-nav-item active" href="/blog/">Blog</a>
+      <a class="sidebar-nav-item " href="/contacts/">Contacts</a>
+      <a class="sidebar-nav-item " href="/tag/">Tags</a>
+    </nav>
+    <p>&copy; Pilwon Hur.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content">
+<h1 id="20081127_underactuated_double_inverted_pendulum"><a href="#20081127_underactuated_double_inverted_pendulum" class="header-anchor">&#91;2008/11/27&#93; Underactuated Double Inverted Pendulum</a></h1>
+<p>작성자: 허필원 &#40;2008/11/27&#41;</p>
+<p>이번 학기 TAM212 &#40;Introduction to Dynamics&#41; TA 를 하면서 나름대로 재미있는 시간을 보내었다. 학생들은 학생들대로 필요한 내용들을 나에게서 부터 배웠고, 나도 학생들과 대화하면서 재미있는 시간들을 보내었다. 이제까지 수많은 과외들을 해 왔지만, 실제로 매주 3시간씩 학생들 앞에서 강의 및 토론을 한다는 것은 새로운 경험이었고, 나 또한 학생들로 부터 무언가를 배울 수 있는 시간이었다. 평상시에는 수업시간에 그렇게 큰 준비를 하지 않고 들어간다. 그만큼 수업 내용이 나에게 편하다고나 할까. 그런데, 이제 다음 주이면 기말고사 전이기 때문에 내가 가지는 거의 마지막 또는 2주 정도 되는 것 같다. 그래서 평소에는 하지 않던, 수업시간에 학생들에게 무엇을 가르칠까를 생각해 보았다. &quot;학생들이 이 수업을 듣고 나서 기억에 남는 것은 무엇일까?&quot; 아마도 지금까지라면 &quot;짜증나는 수업&quot;, &quot;시험과 숙제가 너무 어려웠던 수업&quot;, &quot;이번 학기에 듣는 다른 모든 수업들 다 합쳐도 이 과목보다는 쉬울거야…&quot;, &quot;뭔가 힘들긴 했는데, 학기가 끝나고 나니까 뭘 했는지 기억이 나지 않는 수업?&quot; 등등….</p>
+<p>뭔가를 보여줘야 겠다는 생각이 들었다. 단순히 숙제문제에서 벗어나서 여기서 배운 것들로 무엇을 할 수 있는지 보여줘야겠다는 생각이 들었다. 일상생활에서 볼 수 있는거나 쉽게 이해할 만한 시스템이 있을까 생각을 해 보았다. 순간, 떠오른 예가 double pendulum 이었다 &#40;한국말로 하면 복진자 인가? 어감이 약간 이상함..ㅋㅋ&#41;. Double pendulum 의 움직임은 단순해 보이지만, 사실은 그 움직임 자체가 Chaos 를 가지고 있다. 아래의 그림을 보자. 가운데에 pin joint 가 있고, 파란색 막대기가 수평으로 누워 있다. 이 막대기는 그림상으로는 하나의 막대기로 보이지만, 사실은 2개의 막대기가 서로 나란히 누워 있고, 그 끝이 pin joint로 연결되어서, 마치 하나인 것 처럼 보일 뿐이다. 현재 중력이 아래 방향으로 작용하고 있다면, 이 2개의 막대기의 운동은 어떻게 될까?</p>
+<div class="container-100"><img src="image01.png" alt="" /></div>
+<p>그 결과는 저 아래에서 확인하도록 하고, 글을 계속 진행해 나가도록 하자.</p>
+<p>운동방정식을 새우는 과정 자체는 아주 단순하다. Newton 법칙과 Euler 법칙을 각각의 rigid body 에 적용시켜서 운동방정식을 유도해 내면 된다. 아래는 Free body diagram 을 나타낸 것이다.</p>
+<p>6개의 운동방정식과 4개의 kinematic equation 을 얻어낼 수 있고, 모르는 변수가 총 10개 이므로 이 방정식을 analytical 하게 풀어 낼 수 있다. 그 결과는 어떨까? Mathematica 로 풀어보면, 거의 A4 용지 3페이지에 달하는 solution 을 얻어낼 수 있다. 다시한번 FullSimplify 라는 명령어로 10분 이상 단순화 작업을 하더라도 A4 용지 1페이지 분량의 Solution 을 아래와 같이 얻게 된다. 일단, 시작부터 심상치 않은 듯 하다. 단순한 막대기 2개의 움직임이 이렇게 복잡한 운동방정식을 가질지 예상을 못했을 것이며, 또한 식 자체도 아주 심하게 highly nonlinear 이다. 별로 좋은 상황은 아닌듯 하다.</p>
+<div class="container-100"><img src="image02.png" alt="" /></div>
+<div class="container-100"><img src="image03.png" alt="" /></div>
+<p>복잡하기는 하지만, 그래도 내가 힘든 것은 아니다. 계산은 컴퓨터가 해 주니까. 그럼 그 다음 단계는 무엇인가? 이제 Simulation 을 해야 한다. 적절한 시간 간격을 주고, 그 시간동안 double pendulum 의 움직임이 어떻게 될 것인가를 실제 실험을 거치지 않고 컴퓨터로 미리 알아보는 것이다 &#40;너무 쉬운 내용을 쓰나? 아무튼, 이 글의 초첨은 학부 2,3,4 학년 이니까 뭐…..패스…&#41;. 이것은 Analytical 하게 찾아내기가 거의 불가능 하다. 앞의 과정에서 얻어낸 운동방정식은 사실 미분방정식이다. 만약 이 미분방정식이 단순히 Linear 이고, 변수들이 uncouple 되어 있다면, analytical 하게 풀어볼 시도라도 한번 해 볼 수 있지만, 위에서 보듯이, 운동방정식은 highly coupled nonlinear 이다. 그러므로, analytical 하게 푸는 것은 일찌감치 포기하고, numerical 하게 푸는 것이 정신 건강상 좋다.</p>
+<p>그럼, 이제 위의 운동방정식을 \(1st\) order state equation 형태로 바꾸자. 일반적으로 다음과 같다.</p>
+\[
+\dot{x}=f(x,u)
+\]
+<p>이 예제의 경우 4개의 state 가 존재한다. 즉, \(x=[\theta_1,\omega_1,\theta_2,\omega_2]^T\) 이다. 그리고, 입력 \(u\) 는 \(T\) 로 사용되었다.</p>
+<p>위 운동방정식을 \(1st\) order state equation 형태로 바꾸면 다음과 같다.</p>
+\[
+\begin{bmatrix}
+	\dot{\theta}_1 \\
+	\dot{\omega}_1 \\
+	\dot{\theta}_2 \\
+	\dot{\omega}_2
+\end{bmatrix} =
+\begin{bmatrix}
+	\omega_1 \\
+	\alpha_1 \left( \theta_1,\theta_2,\omega_1,\omega_2,T \right) \\
+	\omega_2 \\
+	\alpha_2 \left( \theta_1,\theta_2,\omega_1,\omega_2,T \right)
+\end{bmatrix}
+\]
+<p>여기서 \(\alpha_1(\cdot)\) 과 \(\alpha_2(\cdot)\) 는 위의 운동방정식에 나와 있다 &#40;엄청 복잡해서 타이핑할 엄두가 안남&#41;. 이렇게, 시스템이 \(1st\) order state equation 으로 나타나면, 이제 Simulation 은 아주 쉽다. Matlab 의 ode45 &#40;사실, Mathematica 에서는 어떻게 하는지 잘 모름&#41; 를 사용하면 된다. 내가 원하는 time interval 에 내가 관심있는 initial condition 을 주면 된다. Double pendulum 이 수평으로 높여 있고, 초기 속도는 모두 \(0\) 이라고 가정할 경우, 즉 pendulum 을 수평 상태에서 가만히 놓았을 경우의 Simulation 결과를 아래에 나타내었다. Animation 은 Flash 를 사용하였다. </p>
+<div class="container-100"><img src="doublepen.gif" alt="" /></div>
+<p>이걸로, double pendulum 이라는 놈의 자연현상을 비슷하게 재현해 보았다. 그런데, 사실 이것에서 그치면 별로 큰 의미가 없다. 그냥 &quot;아~ 그렇구나…그래서 어쩌라고?&quot; 라는 반응이 아주 자연스럽게 나올 것이다. 한단계 더 나아가서 생각해 보자. 한단계 더 나아간다고 해도, 사실 그것들은 우리가 일상생활에서 아무런 생각없이 하는 행동 중 하나에 지나지 않을 수도 있다. 예를 들어, 아래의 동영상을 보면, 무슨 말을 하는지 이해할 것이다. 어릴 때 우산 같은 긴 물건들을 손으로 균형잡던 경험들이 대부분 있을테니까.</p>
+<p><a href="https://youtu.be/yMA-dmV43ko"><img src="https://img.youtube.com/vi/yMA-dmV43ko/hqdefault.jpg" alt="" /></a></p>
+<p>즉, 이제부터 이야기 할 것은 control 이다. Control 이란 무엇일까? 이렇게 질문해 놓고도, 한마디로 대답하기 힘들다는 것을 잘 안다. 하지만, 대략적으로, 대부분의 사람들이 고개를 끄덕일 수 있을 정도의, &quot;뭐 그것도 말은 되는군&quot; 정도의 설명을 하자면 다음과 같다. 한마디로, <em>어떤 물체를 내가 원하는 용도로 쓰기 위함이다.</em> 물론, 그렇게 하기 위해서는 그 어떤 물체에 대한 현상 &#40;Dynamics&#41; 을 잘 이해하고, 어떻게 그 물체를 조작 &#40;Control&#41; 하면 내가 원하는 행동을 하게 할 수 있는지를 알고 있어야 한다. 잠깐 다른 소리 하나 하면, 여기서 이야기 했듯이 Control 의 목적은 내가 원하는 뭔가를 하기 위함 즉, 실제적으로 그 물체를 어디엔가 써먹기 &#40;application&#41; 위함이다. 근데, Control 을 잘 하기 위해서 너무나 깊은 수학적 배경이 필요하고, Application 보다는 Theory 쪽으로 가는 것 같다. 물론, Control 을 조금 더 잘 하기 위한 노력인 것은 알겠지만, 약간은 주객이 전도된 듯 하다.</p>
+<p>그럼, 이제 본론으로 들어가서, 실제적으로 Double pendulum 을 Control 해 보자. 우리의 목적은 앞에서 본 동영상과 같이, 두개의 pendulum 을 수직으로 세우는 것이다. 물론 동영상에서 나오는 것은 single pendulum 이고, double pendulum 보다는 훨씬 더 간단하다. 그렇다면 어떻게 하면 이렇게 복잡한 double pendulum 을 수직으로 세울 수 있을까? 일단 우리에게 주어진 입력, 즉 우리가 control 할 수 있는 것은 천장에 붙어있는 pin joint에 연결된 모터 하나 이다. 두개의 pendulum 사이에 연결된 pin joint 에는 모터가 없다. </p>
+<p>어떤 controller 를 사용하는 것이 좋을까? 어떤 상황이든, Linear Control 을 사용하는 것이 가장 좋다. 왜냐하면 linear control 은 이미 거의 완벽한 수준으로 이론이 정립되어 있고, 웬만한 수준에서는 거의 대부분 이해하고 있다고 생각하기 때문이다. 하지만, 앞에서도 보았지만, double pendulum 은 너무도 심하게 nonlinear 이다. 그래서 Linear control 을 사용하기 힘들것 같다. 하지만, 그렇다 하더라도 Linear control 의 장점을 쉽게 버리지는 못한다. 그래서, 보통은 equilibrium point 주변에 대해서는 linear control 을 사용한다. 왜냐하면 equilibrium point 주변에서의 아주 미세한 움직임에 대해서는 어떠한 nonlinear system 이라 할지라도 locally linear system 으로 움직이기 때문이다 &#40;Taylor approximation 을 생각해 보면 된다&#41;. 그럼, equilibrium point 주변에서는 linear control 을 쓰기로 하자. 당연히 필요한 것은 equilibrium point 에 대해서 double pendulum 을 Linearization 하는 것이다. 이것은 조금 뒤에 이야기 하도록 하자. </p>
+<p>그럼, equilibrium point 주변이 아닌 곳에서는 어떻게 할까? 예를 들어 아래 그림과 같이 pendulum 이 초기 상태로 놓여있다면, linear control 은 사용할 수가 없다.</p>
+<div class="container-100"><img src="image04.png" alt="" /></div>
+<p>아래에 있는 pendulum 을 수직위치까지 갖다 놓는 mechanism 이 필요하다. 이것을 보통 swing-up control 이라고 한다. 간단하게 search 를 해보니까 몇몇 swing-up control 방법들이 이미 논문으로 나와 있는 것 같다. 여기서는 내가 사용하기 편하고 이미 잘 알고 있는 optimal control 을 사용할 것이다. 물론, 오랜만에 간단하게 optical control 내용을 정리하려는 의미도 있다. </p>
+<p>아무튼, 대략적인 control skim 은 다음과 같다. Optimal control 을 사용해서 아래로 처져있는 pendulum 을 equilibrium point 근처까지 올려놓는다. 그 다음, linear control 로 전환하여서 stability 를 보장받을 수 있다. 또한, 이렇게 하는 다른 이유중에 하나는, optimal control 은 open loop control 이고, linear control 은 보통 feedback control 이기 때문이다. </p>
+<p>그럼, 먼저 optimal control 부터 design 해 보자. 일반적인 setting 을 보자. 일반적으로 nonlinear 이고, 쉽게 하기 위해서 time invariant system 이라고 가정하자. 그러면, System 은 아래와 같이 주어진다. </p>
+\[
+\dot{x}=f(x,u)
+\]
+<p>내가 원하는 control 은 다음을 성립하는 것이다. </p>
+\[
+u^{*}=\arg \min_{u} \left\{ h(x(t_f),t_f) + \int_{0}^{t_f} g(x(t),u(t),t) dt \right\}
+\]
+<p>여기서 \(h(x(t_f),t_f)\) 는 final state 값에 대한 penalty 를 줘서 최종적으로 state 가 내가 원하는 state &#40;여기서는 equilibrium point&#41; 로 최대한 가까이 가도록 하는 것이다. \(\int_{0}^{t_f} g(x(t),u(t),t) dt\) 는 시작부터 끝날 때 까지 state 와 control effort &#40;또는 입력, 전기비용, 모터의 파워 등등&#41; 를 penalty 로 준 것이다. 여기서 \(g(x(t),u(t),t)\) 를 잘 정해주면 state 값과 control effort 를 적절하게 사용하면서 원하는 결과를 얻을 수 있다.</p>
+<p>여기까지, optimal control 의 일반적인 이야기를 했고, 위의 optimal control 을 어떻게 푸는가는 또 다른 이야기이다. 다르다기 보다는, 위의 조건을 만족시키기 위한 \(u\) 의 necessary condition 을 유도해 내는 것이 상당히 복잡하고, 약간의 수학적 지식이 필요하므로, 여기서는 생략하겠다는 뜻이다. 참고로, 위 식에서의 optimization 은 단순한 몇몇의 constant parameter 를 찾는 것이 아니라, 일정한 시간 \(t \in \left[0,t_f \right]\) 동안 내가 원하는 performance 를 낼 수 있는 control \(u\) 의 sequence, 즉 function 을 찾는 것이다. 다른 말로 하면 Functional space 를 다루게 된다. </p>
+<p>그럼, \(u\) 는 어떻게 찾을까? 이제부터는 조금 더 세부적인 내용이므로, 잘 모르겠으면, &quot;그렇구나&quot; 하고 넘어가는 것이 더 좋을 듯 하다. 아무튼, \(u\) 를 찾기 위해서는 먼저 Hamiltonian, \(H\) 을 먼저 정의해야 한다. \(H\) 는 다음과 같이 정의한다. </p>
+\[
+H \overset{\Delta}{=} g(x(t),u(t),t) + p^T(t) f(x(t),u(t))
+\]
+<p>여기서 \(p(t)\) 는 Lagrange multiplier 이다. 왜냐하면 system dynamics 인 \(\dot{x}=f(x,u)\) 가 하나의 equality constraint 로 취급되기 때문이다. 역시 여기서 주의하여 볼 것은 보통의 optimization 과는 다르게, Lagrange multiplier 가 constant 가 아니라 시간의 함수라는 점이다. 눈치빠른 사람은 \(h(x(t_f),t_f)\) 가 \(H\) 에 포함이 안되어 있는 것을 느꼈을 것이다. \(h(x(t_f),t_f)\) 는 boundary condition 으로 사용될 것이므로, 조금 뒤에 나온다. </p>
+<p>그렇다면, \(u\) 가 \(u^{*}\) 로 되기 위한 necessary condition 은 무엇인가? 유도과정은 앞에서 설명했듯이 생략하도록 하고 결과만 보면 다음과 같다. </p>
+\[
+\dot{x}^{*}=\frac{\partial H}{\partial p}\left(x^*(t),u^*(t),p^*(t),t  \right)
+\]
+\[
+\dot{p}^{*}=-\frac{\partial H}{\partial x}\left(x^*(t),u^*(t),p^*(t),t  \right)
+\]
+\[
+0=\frac{\partial H}{\partial u}\left(x^*(t),u^*(t),p^*(t),t  \right)
+\]
+<p>이다. 위 3가지 조건은 항상 성립되어야 하고, boundary condition 의 종류에 따라 아래의 조건을 성립해야 한다. </p>
+\[
+\left[ \frac{\partial h}{\partial x} \left(x^*(t_f),t_f \right) -p^*(t_f)    \right]^T \delta x_f + \left[ H(x^*(t_f),u^*(t_f),p^*(t_f),t_f) + \frac{\partial h}{\partial t} \left(x^*(t_f),t_f \right) \right] \delta t_f =0
+\]
+<p>이 결과를 우리 예제에 적용해 보자. 우리의 final state 는 이미 정해져 있다. \(x_f=[0,0,0,0]^T\) 이다. 하지만, final time \(t_f\) 는 정해져 있지 않다. 그러므로, Eq &#40;9&#41; 에서 \(\delta x_f=0\) 이고, \(\delta t_f\) 는 모든 임의의 숫자이므로, boundary condition 은 아래와 같아진다.</p>
+\[
+\left[ H(x^*(t_f),u^*(t_f),p^*(t_f),t_f) + \frac{\partial h}{\partial t} \left(x^*(t_f),t_f \right) \right]=0
+\]
+<p>이제, 우리의 \(h(x(t_f),t_f)\) 와 \(g(x(t),u(t),t)\) 가 무엇인지만 알면 문제는 어느정도 풀릴 것 같다. \(h(x(t_f),t_f)\) 와 \(g(x(t),u(t),t)\) 는 설계자의 고유권한이므로, 특별한 지침이 없다면 내 마음대로 정해도 된다. 물론, 그 설계자의 insight 에 따라서 성능이 달라지겠지만. 이번 예에서는 다음과 같이 정했다. </p>
+\[
+h(x(t_f),t_f)=x(t_f)^T M x(t_f)
+\]
+\[
+g(x(t),u(t),t)=x(t)^T Q x(t)+u(t)^T R u(t)
+\]
+<p>Eq &#40;11&#41; 에서 보듯이 \(h(x(t_f),t_f)\) 가 시간의 함수가 아니므로 Eq &#40;10&#41; 은 아래와 같이 간단해 진다. </p>
+\[
+H(x^*(t_f),u^*(t_f),p^*(t_f),t_f)=0
+\]
+<p>한가지 더 추가하면, Eq &#40;3&#41; 과 Eq &#40;12&#41; 에서 Hamiltonian \(H\) 가 시간의 함수가 아니고, final time 이 정해져 있지 않으므로, Pontryagin 의 증명에 의해서 </p>
+\[
+H(x^*(t),u^*(t),p^*(t)) \equiv 0, \quad t \in \left[ 0,t_f\right]
+\]
+<p>이다.</p>
+<p>수식이 너무 많이 나오니까 무슨 소리 하는지 잘 모를 수도 있을것 같다. 더 간단히 설명하려니까 내 머리가 아프고, 그래서 그냥 계속 진행하는 것이 좋을 듯 하다. 그러면, 위의 식들을 어떻게 써먹어야 하나?</p>
+<p>일단, Algebraic equation 인 Eq &#40;8&#41; 을 성립시키는 \(u\) 를 찾는다. 그리고 이것을 Differential equation 인 Eq &#40;6&#41;, Eq &#40;7&#41; 에 대입한다. 이렇게 대입한 후에 얻은 Differential equation 을 Reduced Differential Equation &#40;RDE, 주의…Riccati DE 아님…&#41; 라고 하자. 그러면 unknown 의 갯수는 \(x(t)\) 가 n 개 이고, \(p(t)\) 가 n개, 그리고 final time \(t_f\) 1 개를 합쳐서 총 2n&#43;1 개가 된다. 그리고, RDE 가 모두 2n 개이고, boundary condition 1 개가 있으므로 RDE 를 풀 수 있을 것 같아 보인다. \(x(t)\) 의 initial condition 은 \(x(0)=[\pi,0,\pi,0]^T\) 라고 하자. 하지만, \(p(t)\) 의 initial condition 을 알지 못하므로, 사실상 풀 수가 없다. 그렇다고 가만히 있을 수는 없지. RDE 와 Eq &#40;13&#41; 을 성립시키고, \(x(t_f)=[0,0,0,0]^T\) 를 만족시키는 \(p(t)\) 의 initial condition 과 \(t_f\) 를 찾아주는 optimization 을 한번 더 해주면 된다.</p>
+<p>그렇게 해서 나온 \(p(t)\) 의 initial condition 과 \(t_f\) 를 Matlab 의 ode45에 대입하고, 다시 RDE 를 풀면 \(x(t)\) 와 \(p(t)\) 를 시간의 함수 &#40;sequence&#41; 로 얻어낼 수 있다. 이렇게 얻은 \(x(t)\) 와 \(p(t)\) 를 Eq &#40;8&#41; 에서 얻은 \(u^*(t)=u(x^*(t),p^*(t))\) 에 대입하면 \(u^*(t)\) 를 얻을 수 있다. 이제 \(u^*(t)\) 를 얻었으므로 이것과 \(x(0)\) 을 Matlab 의 ode45 에 대입하여 Eq &#40;3&#41; 을 풀면 \(x(t_f)\) 가 equilibrium point 에 근접하게 된다. 이제 남은 것은 control 을 linear control 로 바꾼 뒤에 stabilize 시키면 된다. </p>
+<p>이제 Linear controller 를 설계해 보자. 먼저, 저 위에 있는 nonlinear 운동방정식을 equilibrium point 근처에서 linearization 해야 한다. Linearization 결과로 Eq &#40;3&#41; 은 아래와 같은 식으로 변형된다. </p>
+\[
+\dot{x}(t)=Ax(t)+Bu(t) \\
+A= \left. \frac{\partial f}{\partial x} \right|_{x=x_{equil}} \\
+B= \left. \frac{\partial f}{\partial u} \right|_{x=x_{equil}}
+\]
+<p>Linear controller 에서 사용할 \(u(t)\) 는 LQR 을 사용하여 구하도록 하자. </p>
+\[
+u^*=\arg \min_u \left\{ \int_0^\infty x(t)^T Q x(t) + u(t)^T Q u(t) dt  \right\}
+\]
+<p>Riccati equation 을 풀어주는 K 를 찾아주면 되며, Matlab 의 lqr 이라는 함수를 쓰면 자동으로 찾아준다. 그 결과 \(u(t)\) 는 다음과 같은 형태를 갖는다. </p>
+\[
+u^*=-Kx(t)
+\]
+<p>결과적으로, state feedback 이 된다.</p>
+<p>이제, 다 된것 같다. Linear controller 로 변환되는 시점을 조금 넉넉하게 잡아서 \(\theta_1,\theta_2 \in \left[-\frac{\pi}{3},\frac{\pi}{3}\right]\) 로 두었다.</p>
+<p>아래는 그 결과를 Animation 으로 보여준 것이다. 첫번째 두개는 Optimal control 과 linear control 을 함께 사용한 결과이고, 마지막 것은 단순히 Linear control 만 사용한 것이다.</p>
+<div class="container-100"><img src="doublepen_cont.gif" alt="" /></div>
+<p>얼핏 보기에는 마지막 번째의 control 이 좋아보인다. 마지막 것은 linear control 만 사용한 것이므로, 사실상 말이 안되는 control 이다. 왜냐하면 swing-up phase 에서는 Linearized system 이 double pendulum 을 제대로 나타낼 수 없으며, 그 결과는 사실상 틀린 것이기 때문이다. 또한, Linear control 은 오차가 크면 큰 만큼 더 큰 command input 을 주기 때문에 엄청나게 큰 입력을 모터에 주게 된다. 그 결과 pendulum 이 갑자기 위로 올라가게 되고, 우연히 equilibrium point 에 가까이 가게 되어서 control 이 되는 것이다. 그리고, linear control 이 만들어내는 출력은 현실적으로 불가능한, 즉 모터가 감당할 수 없는 출력이기 때문에, linear control 만 사용하는 것은 적절치 않다. 첫번째나 두번째와 같이 swing-up phase 에서 optimal control 이나 다른 nonlinear control 사용해야만 모터가 감당할 수 있는 출력을 만들 수 있으며, 첫번째와 같이 한번 정도 흔들어 주는 control 입력이 가능하게 된다.</p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Pilwon Hur. Last modified: April 15, 2024.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+  </body>
+</html>
