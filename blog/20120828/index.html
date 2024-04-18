@@ -52,7 +52,7 @@
 <h1 id="2012828_brachistochrone_problem"><a href="#2012828_brachistochrone_problem" class="header-anchor">&#91;2012/8/28&#93; Brachistochrone Problem</a></h1>
 <p>작성자: 허필원&#40;2012/8/28&#41;</p>
 <p>1년도 더 된것 같다. 뜻하기 않게 Brachistochrone 문제를 풀 기회가 &#40;부탁을 받아서&#41; 생겨서 여기에 정리해 본다.</p>
-<p>문제 정의: 한 점에서 massless particle 이 어떤 path 를 따라 중력의 작용에 의해서 움직인다. 이때, 특정 수평방향 위치까지 가장 빨리 가는 path 를 구하여라. </p>
+<p>문제 정의: 한 점에서 volume이 없는 particle 이 어떤 path 를 따라 중력의 작용에 의해서 움직인다. 이때, 특정 수평방향 위치까지 가장 빨리 가는 path 를 구하여라. </p>
 <p>&#40;아래 그림 참조&#41;</p>
 <div class="container-100"><img src="image01.jpg" alt="" /></div>
 <p>문제설정: 시간을 최소화 하는 문제임. 먼저, 아래와 같이 간단히 좌표설정을 해야 한다.</p>
@@ -116,7 +116,7 @@ y&=\frac{b}{\pi}(1-\cos \theta) \\
 <p>결과 그래프는 아래와 같다. 약갂의 오차가 발생하지만, 비슷한 결과를 얻을 수 있다. 이때 \(C\) 는 \(0.01\) 부터 \(0.001\) 의 간격으로 \(2\) 까지 변화시켰다. \(y(b)-C\) 의 오차값도 함께 plot 하였다.</p>
 <div class="container-100"><img src="image08.jpg" alt="" /></div>
 <div class="container-100"><img src="image09.jpg" alt="" /></div>
-<p>수치적으로 찾은 \(C\) 는 \(1.301\) 이지만, 해석적으로 찾은 \(C\) 는 \(4/\pi=1.2732\) 이다. \(C=4/\pi\) 를 대입하여 다시 수치적으로 계산한 결과를 보니 그 결과가 거의 정확히 일치하는 것을 알 수 있다. \(0.001\) 의 갂격이 정확한 값을 찾아내기에는 충분히 미세하지 않는 것이었나 보다.</p>
+<p>수치적으로 찾은 \(C\) 는 \(1.301\) 이지만, 해석적으로 찾은 \(C\) 는 \(4/\pi=1.2732\) 이다. \(C=4/\pi\) 를 대입하여 다시 수치적으로 계산한 결과를 보니 그 결과가 거의 정확히 일치하는 것을 알 수 있다. \(0.001\) 의 간격이 정확한 값을 찾아내기에는 충분히 미세하지 않는 것이었나 보다.</p>
 <div class="container-100"><img src="image10.jpg" alt="" /></div>
 <div class="container-100"><img src="image11.jpg" alt="" /></div>
 <pre><code class="language-julia">function Brachistochrone&#40;&#41;
