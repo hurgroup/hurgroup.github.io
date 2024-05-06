@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+   <link rel="stylesheet" href="/libs/highlight/styles/github.min.css">
+   
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.png">
+
+   <title>[2011/12/20] 내가 원하는 Distribution 을 가지는 Data 생성하기 [Ex) Uniform -> Normal]</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">HUR Group</a></h1>
+      <p class="lead">Dynamics and Biomechatronics Lab</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+      <a class="sidebar-nav-item " href="/members/">Members</a>
+      <a class="sidebar-nav-item " href="/research/">Research</a>
+      <a class="sidebar-nav-item " href="/publications/">Publications</a>
+      <a class="sidebar-nav-item " href="/teaching/">Teaching</a>
+      <a class="sidebar-nav-item active" href="/blog/">Blog</a>
+      <a class="sidebar-nav-item " href="/contacts/">Contacts</a>
+      <a class="sidebar-nav-item " href="/tag/">Tags</a>
+    </nav>
+    <p>&copy; Pilwon Hur.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content">
+<h1 id="20111220_내가_원하는_distribution_을_가지는_data_생성하기_ex_uniform_-_normal"><a href="#20111220_내가_원하는_distribution_을_가지는_data_생성하기_ex_uniform_-_normal" class="header-anchor">&#91;2011/12/20&#93; 내가 원하는 Distribution 을 가지는 Data 생성하기 &#91;Ex&#41; Uniform -&gt; Normal&#93;</a></h1>
+<p>Written by Pilwon Hur &#40;2011/12/20&#41;</p>
+<p>연구를 하다 보면 가끔식 존재하지 않는 실험데이터를 만들어야 할 때가 있다. 예를 들어 손의 Index finger 에 DIP, PIP, MCP Joint Moment 를 예측하는 2개의 모델이 있다고 가정하자. 이 2개의 모델이 적합한지를 알기 위해서, 그리고 어떤 모델이 더 정확한지를 알기위해서 실험을 하기 전에 먼저 Simulation 을 통해서 결과를 미리 예측할 수 있다.</p>
+<p>그런데, 시뮬레이션을 하기 위해서는 어떠한 distribution 을 가지는 Hand Length data 가 필요하다. &#40;마치 subject 를 recruitment 하는 것 처럼&#41;. 그럼 이 어떤 distribution 을 가지는 Hand Length data 는 어떻게 구할까? Literature 에 보면 이미 Hand Length 의 mean 과 standard deviation 은 알려져 있다. 그렇다면 mean 과 standard deviation 을 가지고 아래와 같이 normal distribution 의 curve 를 만들 수 있을 것이다.</p>
+<div class="container-100"><img src="image01.png" alt="" /></div>
+<p>그런데, 이 normal distribution curve 를 가지고 실제의 Hand Length data 의 sample 은 어떻게 만들어 낼까? 의외로 간단하다. CDF &#40;Cumulative Distribution Function&#41; 를 사용하는 것이다. CDF 를 사용하는 이유는 CDF 가 one-to-one 이기 때문에 Inverse function 이 존재하기 때문이다.</p>
+<div class="container-100"><img src="image02.png" alt="" /></div>
+<p>CDF 의 inverse function 을 구했다면, 원하는 distribution 을 가지는 data sample 을 얻어내는 것은 아주 쉽다. Uniform distribution 을 갖는 random sample 을 사용하면 된다.</p>
+<div class="container-100"><img src="image03.png" alt="" /></div>
+<p>Normal distribution 뿐 아니라 어떠한 distribution 도 사용할 수 있다.</p>
+<p>아래는 실제로 Matlab 을 사용한 결과이다. Matlab 의 &quot;norminv&quot; 함수는 Normal distribution 의 CDF 의 Inverse function 의 값을 return 하는 함수이다.</p>
+<pre><code class="language-julia">x&#61;rand&#40;1000,1&#41;; &#37; 1000 개의 Uniform distribution sample
+y&#61;norminv&#40;x,7.41,0.36&#41;; &#37; Inverse CDF 를 사용한 Normal distribution 을 갖는 sample data
+figure&#40;1&#41;;
+hist&#40;x,50&#41; &#37; Uniform distribution 의 Histogram &#40;확인용&#41;
+figure&#40;2&#41;;
+hist&#40;y,50&#41; &#37; 위의 방법으로 얻어낸 Normal distribution 의 Histogram &#40;확인용&#41;</code></pre>
+<div class="container-100"><img src="image04.png" alt="" /></div>
+<div class="container-100"><img src="image05.png" alt="" /></div>
+<p>참 쉽죠잉? ㅋㅋ</p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Pilwon Hur. Last modified: May 06, 2024.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+    
+        <script src="/libs/highlight/highlight.min.js"></script>
+<script>hljs.highlightAll();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>
