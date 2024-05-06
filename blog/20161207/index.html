@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.png">
+
+   <title>[2016/12/7] Robotics Challenge</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">HUR Group</a></h1>
+      <p class="lead">Dynamics and Biomechatronics Lab</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+      <a class="sidebar-nav-item " href="/members/">Members</a>
+      <a class="sidebar-nav-item " href="/research/">Research</a>
+      <a class="sidebar-nav-item " href="/publications/">Publications</a>
+      <a class="sidebar-nav-item " href="/teaching/">Teaching</a>
+      <a class="sidebar-nav-item active" href="/blog/">Blog</a>
+      <a class="sidebar-nav-item " href="/contacts/">Contacts</a>
+      <a class="sidebar-nav-item " href="/tag/">Tags</a>
+    </nav>
+    <p>&copy; Pilwon Hur.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content">
+<h1 id="2016127_robotics_challenge"><a href="#2016127_robotics_challenge" class="header-anchor">&#91;2016/12/7&#93; Robotics Challenge</a></h1>
+<p>Written by Pilwon Hur &#40;2016/12/14&#41;</p>
+<div class="container-100"><img src="image01.jpg" alt="" /></div>
+<p>Fall semester 2016, it was my third time in a row teaching the stacked course of MEEN 408 &#40;Introduction to Robotics&#41; and MEEN 612 &#40;Mechanics of Robotic Manipulator&#41; in the Department of Mechanical Engineering at Texas A&amp;M. MEEN408/612 usually covered kinematics and dynamics of robotic manipulators in the first half of the semester and nonlinear control of the robot in the second half of the semester. Also, students presented class projects at the end of the semester. Based on the observation and experiences of the two past years, I had two issues.</p>
+<p>Nonlinear control part was too challenging for the most of the undergraduate students and fairly large amount of the graduate students. Obviously, some graduate students were very keen on learning nonlinear control theory, though. The quality of the class project was not satisfactory since students had hard times in implementing what they have learned from the class into hardware control problem and they didn&#39;t have much time left once they barely understand how to play with the hardware. FYI, there are tendencies that undergraduate students wanted to play with hardware control with Arduino and graduate students wanted to do simulations.</p>
+<p>At the beginning of the Fall semester 2016, I decided to change the course a little bit as follows: Some of nonlinear controller design part were dropped. I covered these in MEEN655 &#40;Design of Nonlinear Control System&#41; in Spring 2016 and, maybe, these will be covered somehow in a new &#40;so-called&#41; &quot;advanced robotics&quot; next year. The class project was more systematically managed. First of all, I termed the class project as &quot;Robotics Challenge.&quot; Students were notified the details of robotics challenge and what they are supposed to do at the challenge on the first day of the class. The following was the description that students were given on the Robotics Challenge.</p>
+<div class="container-100"><img src="image02.png" alt="" /></div>
+<p>To better understand the details of the tasks, the following pictorial explanation was given. In one word, it &#39;s about everything of manipulator control. It includes kinematics, dynamics and control of the robotic manipulators. What is more challenging was that students had to do motion planning so that the optimal position/velocity profiles and release timing had to be administered in real time to maximize the chances to get scores. The distance, height and angle of the target were randomly selected and given to the students to make the Challenge more challenging.</p>
+<div class="container-100"><img src="image03.png" alt="" /></div>
+<p>I decided to introduce students something that can be used in any robotics fields &#40;e.g., industry or academia&#41;. It is true that Robot Operating System &#40;ROS&#41; is becoming the stardard in both academia and industry. ROS is a robotics framework that can facilitate the integration of many heterogeneous robots over the networks. And Beaglebone Black &#40;BBB&#41; is a very small single board computer that is very powerful for hardware control. BBB has 69 GPIO, 8 PWM, 3 Enhanced Quadrature Encoder Pulse &#40;eQEP&#41; Modules, 2 I2C, 7 Analog Inputs, and any other usual peripheries. The problems I had with ROS and BBB were that almost all students had no experiences on these. BBB also has 512MiB RAM, 1GHz AM335x ARM with an FP accelerator, 4GB on-board flash AND and external SDcard slot, Ethernet, USB-Host, HDMI, 2 on-board fast programmable microprocessors &#40;the PRUs, 200-MHz, 32-bit&#41;.</p>
+<p>However, I had more challenging problems. How can students learn ROS and BBB to accomplish the &quot;Robotics Challenge&quot; at the end of the semester? Since I needed to cover robotics theory in the classroom, I couldn&#39;t set aside any classroom hours for the Lab. So, I, by myself, made Video Lectures for the Lab materials on ROS and BBB as follows:</p>
+<p>ROS: Installation of ROS in BBB with Ubuntu ROS: Hello World w/ ROS ROS: Topic Example BBB: Control of Built-in LEDs BBB: GPIO and using C&#43;&#43; BBB: ADC and C&#43;&#43; BBB: PWM and C&#43;&#43; BBB: eQEP &#40;Quadrature Encoder&#41; BBB: Combining all C&#43;&#43;, making your own library ROS: Network setting BBB: Servomotor and C&#43;&#43; BBB: DC Motor and C&#43;&#43;, Integration of BBB and ROS</p>
+<p>Students were asked to watch and follow the video lectures. They had to screen-capture and send the Lab demo to TA so that they can get credits. However, this wasn&#39;t any burden to students since the Lab was based on each team of 8 students, meaning that each team &#40;not individual student&#41; had to submit the Lab demo results to TA. There were some other advanced topics including &quot;Making Device Tree Overlay&quot; to reconfigure hardware setting. Even though I didn&#39;t cover these in the video lectures, I taught these for those teams that needed complicated hardware settings. In class, I covered the following materials.</p>
+<p>Linear Algebra Forward and Inverse Kinematics Velocity Kinematics and Jacobian Path and Trajectory Planning Joint Control including &#40;Normal, Robust, Adaptive&#41; Inverse Dynamics and Passivity-based Control.</p>
+<p>Whenever possible, I tried to give examples related to the Challenge. Oh, yes, I dropped sliding mode control, optimal control, several optimization-based controls, and feedback linearization which I covered in the past two years.</p>
+<p>Let me talk about the recommended settings for the Challenge. First of all, students had to use at least two BBB&#39;s: one for actuation and one for sensing. They were allowed to use for complicated computation or visual display. Some students used MATLAB-ROS package to make use of computing power of MATLAB. All of these including BBB&#39;s and PC&#39;s were integrated with ROS over each team&#39;s local network.</p>
+<div class="container-100"><img src="image04.png" alt="" /></div>
+<p>Gripper control was another challenging. Releasing with perfect timing is a hard problem. Even with the perfect timing, slight perturbations due to various factors including friction may change the initial projectile angle and velocity. Recommended solution was to use electromagnetic mechanism. Two teams chose electromagnetic mechanism and the other two teams used the generic gripper mechanism. The following is the score sheet.</p>
+<div class="container-100"><img src="image05.png" alt="" /></div>
+<p>And, there&#39;s what each team did. Even though not every team could accomplish the tasks, I can say that the Challenge was successful. Beginning from this, I can expect a lot more exciting and challenging &quot;Robotics Challenge&quot; in the following years.</p>
+<p>Please appreciate each team&#39;s preparation.</p>
+<p>Team 1</p>
+<div class="container-100"><img src="image06.jpg" alt="" /></div>
+<div class="container-100"><img src="image07.jpg" alt="" /></div>
+<div class="container-100"><img src="image08.jpg" alt="" /></div>
+<div class="container-100"><img src="image09.jpg" alt="" /></div>
+<p>Team 2</p>
+<div class="container-100"><img src="image10.png" alt="" /></div>
+<div class="container-100"><img src="image11.png" alt="" /></div>
+<p>Team 3</p>
+<div class="container-100"><img src="image12.png" alt="" /></div>
+<div class="container-100"><img src="image13.jpg" alt="" /></div>
+<div class="container-100"><img src="image14.jpg" alt="" /></div>
+<div class="container-100"><img src="image15.jpg" alt="" /></div>
+<p><a href="https://www.youtube.com/watch?v&#61;kM-GySpjsss"><img src="https://img.youtube.com/vi/kM-GySpjsss/hqdefault.jpg" alt="" /></a></p>
+<p><a href="https://www.youtube.com/watch?v&#61;Kl9PhvKmv44"><img src="https://img.youtube.com/vi/Kl9PhvKmv44/hqdefault.jpg" alt="" /></a></p>
+<p><a href="https://www.youtube.com/watch?v&#61;akU8ZeOLJN0"><img src="https://img.youtube.com/vi/akU8ZeOLJN0/hqdefault.jpg" alt="" /></a></p>
+<p><a href="https://www.youtube.com/watch?v&#61;ALr5LR1vdkQ"><img src="https://img.youtube.com/vi/ALr5LR1vdkQ/hqdefault.jpg" alt="" /></a></p>
+<p><a href="https://www.youtube.com/watch?v&#61;AudTtvgTv9Y"><img src="https://img.youtube.com/vi/AudTtvgTv9Y/hqdefault.jpg" alt="" /></a></p>
+<p>Team 4</p>
+<div class="container-100"><img src="image16.jpg" alt="" /></div>
+<p><a href="https://www.youtube.com/watch?v&#61;N6dA3G5qObA"><img src="https://img.youtube.com/vi/N6dA3G5qObA/hqdefault.jpg" alt="" /></a></p>
+<p>Here are the pictures and videos from the &quot;Robotics Challenge&quot; on 12/7/2016 at ENPH 301</p>
+<p>The video is at the end of this page.</p>
+<div class="container-100"><img src="image17.jpg" alt="" /></div>
+<div class="container-100"><img src="image18.jpg" alt="" /></div>
+<div class="container-100"><img src="image19.jpg" alt="" /></div>
+<div class="container-100"><img src="image20.jpg" alt="" /></div>
+<div class="container-100"><img src="image21.jpg" alt="" /></div>
+<div class="container-100"><img src="image22.jpg" alt="" /></div>
+<div class="container-100"><img src="image23.jpg" alt="" /></div>
+<div class="container-100"><img src="image24.jpg" alt="" /></div>
+<div class="container-100"><img src="image25.jpg" alt="" /></div>
+<div class="container-100"><img src="image26.jpg" alt="" /></div>
+<div class="container-100"><img src="image27.jpg" alt="" /></div>
+<div class="container-100"><img src="image28.jpg" alt="" /></div>
+<div class="container-100"><img src="image29.jpg" alt="" /></div>
+<div class="container-100"><img src="image30.jpg" alt="" /></div>
+<div class="container-100"><img src="image31.jpg" alt="" /></div>
+<div class="container-100"><img src="image32.jpg" alt="" /></div>
+<div class="container-100"><img src="image33.jpg" alt="" /></div>
+<div class="container-100"><img src="image34.jpg" alt="" /></div>
+<div class="container-100"><img src="image35.jpg" alt="" /></div>
+<div class="container-100"><img src="image36.jpg" alt="" /></div>
+<div class="container-100"><img src="image37.jpg" alt="" /></div>
+<p>Team4: at 1:10 Team2: at 2:45 Team1: at  4:00 Team3: at 7:40</p>
+<p>If you don&#39;t have time to watch all, I recommend to 7:40.</p>
+<p><a href="https://www.youtube.com/watch?v&#61;NkF0jPm0Ax0"><img src="https://img.youtube.com/vi/NkF0jPm0Ax0/hqdefault.jpg" alt="" /></a></p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Pilwon Hur. Last modified: May 06, 2024.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+    
+  </body>
+</html>
