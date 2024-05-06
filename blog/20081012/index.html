@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+  
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.png">
+
+   <title>[2008/10/12] 카오스를 이용해서 간단하게 난수(random number) 생성하기</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">HUR Group</a></h1>
+      <p class="lead">Dynamics and Biomechatronics Lab</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+      <a class="sidebar-nav-item " href="/members/">Members</a>
+      <a class="sidebar-nav-item " href="/research/">Research</a>
+      <a class="sidebar-nav-item " href="/publications/">Publications</a>
+      <a class="sidebar-nav-item " href="/teaching/">Teaching</a>
+      <a class="sidebar-nav-item active" href="/blog/">Blog</a>
+      <a class="sidebar-nav-item " href="/contacts/">Contacts</a>
+      <a class="sidebar-nav-item " href="/tag/">Tags</a>
+    </nav>
+    <p>&copy; Pilwon Hur.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content">
+<h1 id="20081012_카오스를_이용해서_간단하게_난수random_number_생성하기"><a href="#20081012_카오스를_이용해서_간단하게_난수random_number_생성하기" class="header-anchor">&#91;2008/10/12&#93; 카오스를 이용해서 간단하게 난수&#40;random number&#41; 생성하기</a></h1>
+<p>Written by Pilwon Hur &#40;2008/10/12&#41;</p>
+<p>난수&#40;random number&#41; 는 일상의 보이지 않는 곳에서 의외로 많이 쓰이고 있다. 예를 들어 플래시 게임에서 배경으로 자주 등장하는 흩날리는 눈&#40;snow&#41;이나 윌리를 찾아라 에서 처럼 군중들의 움직임을 나타내기 위해서 난수를 사용하기도 한다. 어떤 컨트롤 모델에서 외부에서 작용하는 외란을 시뮬레이션 상으로 구현하기 위해서 난수를 사용하기도 하며, 은행에서 보안카드에 입력하기 위한 카드의 순번을 난수로 생성기도 한다. 아무튼 난수는 여기 저기서 많이 사용하며, 난수를 생성하는 방법도 여러가지이다. </p>
+<p>여기서는 정말 간단하게 난수를 생성하는 방법을 말하고자 한다. 결론부터 이야기 하면 카오스&#40;Chaos&#41; 를 이용하는 것이다. 카오스는 보통 다음과 같이 2가지로 특징 지어진다. </p>
+<ol>
+<li><p>Sensitive dependence on initial condition</p>
+</li>
+<li><p>Trajectory is dense</p>
+</li>
+</ol>
+<p>먼저 Sensitive dependence on initial condition 란, 모든 카오스 시스템은 초기값&#40;initial condition&#41; 에 아주 민감하게 반응한다는 의미이다. 초기값이 아주 조금만 바뀌어도 그 결과에 따른 time series 값은 아주 달라진다. 예전에 한창 유행했던 나비효과라는 것도 이런 이유와 관련이 있다. 두번째로, Trajectory is dense 란 궤적&#40;Trajectory&#41; 이 모든 state 를 다 방문한다는 의미이다. 물론, 여기서 중복은 하나도 되지 않는다. 중복이 일어나게 되면 그 시스템은 카오스가 아니라 주기 운동&#40;periodic motion&#41; 을 하게 된다. 중복이 하나도 일어나지 않는다는 말 자체가 이상하게 느껴질 뿐 아니라 컴퓨터를 통해서 시뮬레이션 &#40;10만번 이상 iteration&#41;을 하면 중복이 일어나는 것 처럼 보이는 이유는 해상도&#40;resolution&#41; 가 낮고, 정밀도&#40;precision&#41; 의 제한이 있기 때문이다. </p>
+<p>결국 이 두가지 성질을 이용하면 난수를 생성할 수 있을 거라는 것은 어려운 생각이 아니다. 그렇다면 어떠한 카오스 시스템을 이용할까? 가장 쉬운 경우는 Logistic map 이다. </p>
+<div class="container"><img src="image04.png" alt="" /></div>
+<p>아래의 Bifurcation diagram 을 살펴보면 \(r\) 이 4가 될때 \(X_n\) 은 \([0 1]\) 의 범위에서 완벽한 카오스가 된다. </p>
+<div class="container-100"><img src="image01.jpg" alt="" /></div>
+<p>그러므로 적당한 초기값 \(X_0\) 를 주고 Eq. &#40;1&#41; 에 recursive 하게 대입을 하면 거기서 나오는 \(X_n\) 값이 난수가 된다. 초기값으로는 보통 현재의 시간값을 seed로 주게 된다. </p>
+<p>물론 이렇게 구한 난수는 약간 문제가 있다. Perron-Frobenius operator 에 의해서 distribution 의 변화를 보면 invariant distribution 을 구할 수 있다. 초기 distribution 을 uniform distribution 이라고 가정하면 Logistic map 에 의해서 매 iteration 마다 변화되는 distribution 은 궁극적으로 다음의 invariant distribution 으로 바뀐다.</p>
+<div class="container"><img src="image02.png" alt="" /></div>
+<p>이고, 여기서</p>
+<div class="container"><img src="image03.png" alt="" /></div>
+<p>는 invariant distribution 이고, \(P\) 는 Perron-Frobenius operator 이다. 이제, 앞에서 말한 문제점이란 바로 \(f_* (x)\) 가 uniform distribution 이 아니라 \(U\) 자 모양의 distribution 이라는 점이다. 그러므로, \([0 1]\) 사이의 숫자들이 모두 골고루 나오는 것이 아니라 양 극단으로 갈수록 더 많은 확률로 숫자들이 나온다는 것이다. 이것은 그렇게 좋은 난수 발생기는 되지 못한다. 하지만, 이러한 방법으로 난수를 발생할 수 있다는 것을 설명한 것에 의의를 둔다. </p>
+<p>지금 Espresso Royale 에 앉아 있다.ㅋㅋ</p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Pilwon Hur. Last modified: May 06, 2024.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+  </body>
+</html>
