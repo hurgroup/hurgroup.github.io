@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+  
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.png">
+
+   <title>[2010/5/12] Game Theory</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">HUR Group</a></h1>
+      <p class="lead">Dynamics and Biomechatronics Lab</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+      <a class="sidebar-nav-item " href="/members/">Members</a>
+      <a class="sidebar-nav-item " href="/research/">Research</a>
+      <a class="sidebar-nav-item " href="/publications/">Publications</a>
+      <a class="sidebar-nav-item " href="/teaching/">Teaching</a>
+      <a class="sidebar-nav-item active" href="/blog/">Blog</a>
+      <a class="sidebar-nav-item " href="/contacts/">Contacts</a>
+      <a class="sidebar-nav-item " href="/tag/">Tags</a>
+    </nav>
+    <p>&copy; Pilwon Hur.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content">
+<h1 id="2010512_game_theory"><a href="#2010512_game_theory" class="header-anchor">&#91;2010/5/12&#93; Game Theory</a></h1>
+<p>Written by Pilwon Hur &#40;2010/5/12&#41;</p>
+<p>Game Theory 의 아주 간단한 예를 하나 만들어보았다. A와 B가 서로 간단한 게임을 한다. \(A\) 는 \(\$5\) 혹은 \(\$20\) 를 선택할 수 있고, \(B\) 는 \(A\) 가 선택하는 것을 맞추는 게임이다. 만약 B 가 A 가 선택한 것을 맞추면 그 돈을 갖게 되고, 틀리게 되면 \(B\) 는 \(A\) 에게 \(\$12\) 를 줘야 한다. 이것을 Table 로 만들면 다음과 같아진다.</p>
+<div class="container-100"><img src="image01.png" alt="" /></div>
+<p>이 Table 을 \(A\) 의 Payoff Table 이라고 한다. 즉, 이 규칙에 의해서 \(A\) 는 돈을 지급받게 되는 것이다. 그런데, 어떻게 하면 \(A\) 혹은 \(B\) 가 가장 이득을 보는 게임을 할 수 있을까? 머리속에 떠오르는 몇가지 생각들이 있을 것이다. 예를 들어, \(A\) 는 \(50:50\) 의 비율로 \(\$5\) 와 \(\$20\) 를 선택할 수도 있고, 그에 대해서 \(B\) 는 \(50:50\) 의 비율로 \(\$5\) 와 \(\$20\) 를 예측할 수 있다. 혹은 \(A\) 가 약간의 변칙을 줘서 \(30:70\) 의 비율로 \(\$5\) 와 \(\$20\) 를 선택할 수도 있다. 이러한 것을 전략 &#40;Strategy&#41; 라고 한다. 어떠한 전략을 세울 지라도 \(A\) 와 \(B\) 의 목표는 단 하나 존재한다. \(A\) 의 목표는 최대한 돈을 많이 따는 것이고, \(B\) 의 목표는 손실을 최소화 하는 것이다.</p>
+<p>전략을 세울 때에는 공격적으로 세울 수도 있고, 방어적으로 세울 수도 있다. 보통 Robust Control 에서 사용하는 전략은 Worst Case 에 대해서도 어느정도의 이득을 얻을 수 있도록 전략을 세운다. 그러므로, 여기서도 Worst Case Scenario 에 대해서 생각을 하고 그것을 최적화하는 방법으로 가는 것이 타당하다.</p>
+<p>\(A\) 의 Worst Case Scenario: \(A\) 가 벌 수 있는 최소한의 돈 \(B\) 의 Worst Case Scenario: \(B\) 가 잃어버릴 수 있는 최대한의 손실</p>
+<p>그렇다면, \(A\) 는 자신이 벌 수 있는 최소한의 돈을 극대화 &#40;그 극대화 된 값을 \(w\) 라고 하자&#41; 시키려고 노력할 것이고, 그에 해당하는 전략을 세우려고 할 것이다. 왜냐하면, 그러한 전략 &#40;만약 존재한다면&#41; 을 사용하기만 하면, \(A\) 는 자신이 벌 수 있는 돈은 아무리 못 벌어도 \(w\) 이상은 항상 벌 수 있기 때문이다.</p>
+<p>마찬가지로, \(B\) 는 자신이 최악의 경우에 볼수 있는 손실을 최소화 &#40;이 최소화 된 값을 w 라고 하자. 여기서 마찬가지로 \(w\) 를 사용하는 이유는 최적회된 결과에서는 두 값이 같아지기 때문이다&#41; 하려고 할 것이고, 그에 해당하는 전략을 세우려고 할 것이다. 왜냐하면, 그러한 전략 &#40;만약 존재한다면&#41; 을 사용하기만 하면, \(B\) 는 자신이 아무리 돈을 많이 잃는다고 할 지라도 w 보다 더 많이 잃지는 않을 것이 보장되기 때문이다.</p>
+<p>그럼, 이제 전략을 어떻게 세워야 하는지에 대해서 살펴보자. \(A\) 가 항상 \(\$5\) 을 선택할 수도 있다. 만약 \(B\) 가 이 전략을 알아차리고 \(\$5\) 을 예측하게 된다면 \(B\) 는 \(\$5\) 을 얻게 되는 것이다. 이렇게 \(A\) 처럼 정해져 있는 전략을 사용하는 것을 Pure Strategy 라고 한다. \(B\) 처럼 상황에 맞게 바꾸는 전략을 Mixed Strategy 라고 한다. 일반적으로 Mixed Strategy 가 더 좋은 결과를 준다. Mixed Strategy 는 특정한 Event 에 따라 반응하는 것이기도 하지만, 여기서는 조금 더 쉽게 생각해서 Probability Distribution 에 따라서 행동하는 것으로 생각해 보자. 즉, 주어진 Probability Distribution 에 따라서 Random 하게 돈을 선택하는 방법을 고려해 보자.</p>
+<p>\(A\) 가 돈을 선택하는 Probability Distribution 을 \(p=[p1 p2]'\) 라고 하자. 그리고, \(B\) 가 돈을 예측하는 Probability Distribution 을 \(q=[q1 q2]'\) 라고 하자. 그렇다면 A 와 B 는 각각 자신들의 목표에 의해서 다음과 같은 조건식을 가지게 된다.</p>
+<div class="container-100"><img src="image02.png" alt="" /></div>
+<div class="container-100"><img src="image03.png" alt="" /></div>
+<p>여기서 \(A={aij}\) 는 위의 Payoff Table 의 값을 말한다. 위의 첫번째 constraint 가 말하는 의미는 다음과 같다. 즉, \(A\) 의 minimum gain 은 \(w\) 보다는 항상 크다. 두번째 constraint 의 의미는, \(A\) 의 maximum loss 는 \(w\) 보다 항상 작다.</p>
+<p>\(A\) 는 \(w\) 를 최대화 시키려고 할 것이다. 그래야만 더 많은 돈을 벌 수 있는 것이 보장이 된다. \(B\) 는 \(w\) 를 최소화 하려고 할 것이다. 그래야만 손실이 더 적어지는 것이 보장이 된다.</p>
+<p>이에 따라 다음과 같이 문제를 set up 할 수 있다. \(A\) 에 대해서는</p>
+<div class="container-100"><img src="image04.png" alt="" /></div>
+<p>그리고, \(B\) 에 대해서는</p>
+<div class="container-100"><img src="image05.png" alt="" /></div>
+<p>와 같다.</p>
+<p>그런데, Linear Programming 의 관점에서 봤을 때는 위의 problem setting 이 바람직한 setting 은 아니다. 왜냐하면 \(w\) 라는 변수가 objective function 에도 들어가 있고, constraint 의 우변에도 들어가 있기 때문이다. LP의 standard form 으로 나타내기 위해서는 constraint 의 우변은 항상 nonnegative constant 이어야 한다. 그러므로, 약간의 trick 을 사용해 보자. 즉, constraint 을 \(w\) 로 나눠주면 constraint 의 우변은 \(1\) 이 되므로 문제가 해결된다. 즉, \(A\) 에 대해서는</p>
+<div class="container-100"><img src="image06.png" alt="" /></div>
+<p>그리고, \(B\) 에 대해서는</p>
+<div class="container-100"><img src="image07.png" alt="" /></div>
+<p>그리고, \(w, u, v\) 가 다음과 같은 관계가 있는 것을 확인할 수 있다.</p>
+<div class="container-100"><img src="image08.png" alt="" /></div>
+<div class="container-100"><img src="image09.png" alt="" /></div>
+<p>그러므로, Objective function 을 다음과 같이 바꾸어도 문제가 없다.</p>
+<div class="container-100"><img src="image10.png" alt="" /></div>
+<div class="container-100"><img src="image11.png" alt="" /></div>
+<p>이제 어느정도 완성이 되었다. 실제로 위의 문제는 아래와 같은 LP 문제가 된다. \(A\) 에 대해서는</p>
+<div class="container-100"><img src="image12.png" alt="" /></div>
+<p>그리고, \(B\) 에 대해서는</p>
+<div class="container-100"><img src="image13.png" alt="" /></div>
+<p>그런데, 문제를 조금만 잘 살펴보면 이 2가지 최적화 문제는 서로 Dual 관계에 있는 것을 확인할 수 있다. 즉, 둘 중에 하나만 풀어도 같은 답을 얻을 수 있다. 의미상으로 보면, Optimal 인 경우, \(A\) 가 최소한으로 받을 수 있는 수익을 최대화 하는 것은 \(B\) 가 최악의 경우에 발생하는 손실을 최소화 하는 것과 같다. 이것은 Nash Equilibrium 과도 같은 의미이다. 이 상태에서는 \(A\) 나 \(B\) 가 자신의 전략을 변경하더라도 결코 이득을 얻을 수 없다.</p>
+<p>그럼 실제로 이 문제를 풀어보자. 위에서 \(A\) matrix 가 음수값을 가지는데, 문제를 쉽게 풀기 위해서 \(21\) 을 더해서 모두 양수가 되게 만들자. &#40;von Neuman 이 이 문제를 증명할 때 nonnegativity 를 가정했다.&#41;</p>
+\[
+w=21+w1
+\]
+<p>그럼, \(A\) matrix 는 다음과 같아진다.</p>
+<div class="container-100"><img src="image14.png" alt="" /></div>
+<p>LP 문제를 setup 하면 다음과 같아진다.</p>
+<div class="container-100"><img src="image15.png" alt="" /></div>
+<p>이 문제를 풀기위해서는 Simplex 방법을 사용하든지 아니면 변수가 2개뿐이므로 그래프를 그려서 풀수도 있다. 이렇게 해서 찾은 \(u1\) 과 \(u2\) 는 다음과 같다.</p>
+\[
+\begin{aligned}
+u1 &= 0.0298229 \\
+u2 &= 0.0158434 \\
+u1 + u2 &= 1/w = 0.0456664 \\
+w &= 21.8979381
+\end{aligned}
+\]
+\[
+\begin{aligned}
+p1 &= u1 * w = 0.653060018 \\
+p2 &= u2 * w = 0.346937792 \\
+w1 &= w - 21 = 0.8979381
+\end{aligned}
+\]
+<p>마찬가지 방법으로 \(v1\) 과 \(v2\) 도 풀어보면 \(u1\) 과 \(u2\) 와 같은 결과가 나온다. &#40;물론 이것은 \(A\) matrix 가 symmetric 이기 때문에 발생한 결과이고, 두 경우 모두 \(w\) 는 같아야 한다.&#41; 여기서 보면 \(w1\) 값이 \(0\) 보다 크므로 \(A\) 가 유리한 게임이다. 즉 \(A\) 가 \(65:35\) 의 비율로 \(\$5\) 과 \(\$20\) 을 선택을 하면 \(A\) 는 매 게임마다 최소한 \(\$0.898\) 을 따는 것이다. 여기서 최소한 이라는 말을 사용했다. 즉, 이것보다 더 많이 딸수도 있다는 뜻이다. 그것은 \(B\) 의 전략에 달려있다. \(B\) 도 마찬가지로 \(65:35\) 의 비율 &#40;이 비율은 \(v1, v2\) 에서 가져온 것이다&#41; 로 예측을 한다면 \(B\) 는 매 게임마다 \(\$0.898\) 만 잃을 것이다. 만약 다른 전략 &#40;예를 들어 \(50:50\) 나 \(90:10\) 등&#41; 을 사용하면 \(B\) 는 더 많은 돈을 평균적으로 잃게 될 것이고, 그만큼 \(A\) 는 더 많은 돈을 따게 되는 것이다.</p>
+<p>다음은 이것을 실제로 Simulation 해 볼 것이다. Monte Carlo 방법을 사용할 것인데, 그것은 다음 글에서 하도록 한다.</p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Pilwon Hur. Last modified: May 06, 2024.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+  </body>
+</html>
