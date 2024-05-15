@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+  
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.png">
+
+   <title>[2007/10/29] Least square method의 활용 : 통계에서의 correlation 과 covariance matrices</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">HUR Group</a></h1>
+      <p class="lead">Dynamics and Biomechatronics Lab</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+      <a class="sidebar-nav-item " href="/members/">Members</a>
+      <a class="sidebar-nav-item " href="/research/">Research</a>
+      <a class="sidebar-nav-item " href="/publications/">Publications</a>
+      <a class="sidebar-nav-item " href="/teaching/">Teaching</a>
+      <a class="sidebar-nav-item active" href="/blog/">Blog</a>
+      <a class="sidebar-nav-item " href="/contacts/">Contacts</a>
+      <a class="sidebar-nav-item " href="/tag/">Tags</a>
+    </nav>
+    <p>&copy; Pilwon Hur.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content">
+<h1 id="20071029_least_square_method의_활용_통계에서의_correlation_과_covariance_matrices"><a href="#20071029_least_square_method의_활용_통계에서의_correlation_과_covariance_matrices" class="header-anchor">&#91;2007/10/29&#93; Least square method의 활용 : 통계에서의 correlation 과 covariance matrices</a></h1>
+<p>Written by Pilwon Hur &#40;2007/10/29&#41;</p>
+<p>예를 들어서 이야기하는 것이 쉬울 것 같다. 숙제성적과 시험성적이 어떻게 서로 연관이 되어 있는지를 원한다고 가정해보자. 다음의 표와 같이 시험성적, 중간고사, 기말고사의 성적이 나열되어 있다. 모두 200점 만점이다. </p>
+
+<table style="BORDER-COLLAPSE: collapse" border="0">
+<colgroup>
+<col style="WIDTH: 41px">
+<col style="WIDTH: 41px">
+<col style="WIDTH: 68px">
+<col style="WIDTH: 68px"></colgroup>
+<tbody valign="top">
+<tr style="BACKGROUND: #4f81bd">
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; BORDER-TOP: white 1pt solid; PADDING-LEFT: 7px; BORDER-LEFT: white 1pt solid; BORDER-BOTTOM: white 3pt solid">&nbsp;</td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; BORDER-TOP: white 1pt solid; PADDING-LEFT: 7px; BORDER-BOTTOM: white 3pt solid; BORDER-LEFT-STYLE: none" colspan="3">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt; COLOR: white"><strong>Scores</strong></span></p></td></tr>
+<tr>
+<td style="BORDER-RIGHT: white 3pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #4f81bd; BORDER-LEFT: white 1pt solid; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 0.75pt solid">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt; COLOR: white"><strong>학생</strong></span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #a7bfde; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">숙제</span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #a7bfde; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">중간고사</span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #a7bfde; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">기말고사</span></p></td></tr>
+<tr>
+<td style="BORDER-RIGHT: white 3pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #4f81bd; BORDER-LEFT: white 1pt solid; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt; COLOR: white"><strong>S1</strong></span></p></td>
+<td style="BORDER-RIGHT: white 0.75pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #d3dfee; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 0.75pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">198</span></p></td>
+<td style="BORDER-RIGHT: white 0.75pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #d3dfee; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 0.75pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">200</span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #d3dfee; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 0.75pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">196</span></p></td></tr>
+<tr>
+<td style="BORDER-RIGHT: white 3pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #4f81bd; BORDER-LEFT: white 1pt solid; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 0.75pt solid">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt; COLOR: white"><strong>S2</strong></span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #a7bfde; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">160</span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #a7bfde; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">165</span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #a7bfde; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">165</span></p></td></tr>
+<tr>
+<td style="BORDER-RIGHT: white 3pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #4f81bd; BORDER-LEFT: white 1pt solid; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt; COLOR: white"><strong>S3</strong></span></p></td>
+<td style="BORDER-RIGHT: white 0.75pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #d3dfee; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 0.75pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">158</span></p></td>
+<td style="BORDER-RIGHT: white 0.75pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #d3dfee; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 0.75pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">158</span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #d3dfee; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 0.75pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">133</span></p></td></tr>
+<tr>
+<td style="BORDER-RIGHT: white 3pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #4f81bd; BORDER-LEFT: white 1pt solid; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 0.75pt solid">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt; COLOR: white"><strong>S4</strong></span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #a7bfde; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">150</span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #a7bfde; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">165</span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #a7bfde; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">91</span></p></td></tr>
+<tr>
+<td style="BORDER-RIGHT: white 3pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #4f81bd; BORDER-LEFT: white 1pt solid; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt; COLOR: white"><strong>S5</strong></span></p></td>
+<td style="BORDER-RIGHT: white 0.75pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #d3dfee; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 0.75pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">175</span></p></td>
+<td style="BORDER-RIGHT: white 0.75pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #d3dfee; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 0.75pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">182</span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #d3dfee; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 0.75pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">151</span></p></td></tr>
+<tr>
+<td style="BORDER-RIGHT: white 3pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #4f81bd; BORDER-LEFT: white 1pt solid; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 0.75pt solid">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt; COLOR: white"><strong>S6</strong></span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #a7bfde; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">134</span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #a7bfde; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">135</span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #a7bfde; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">101</span></p></td></tr>
+<tr>
+<td style="BORDER-RIGHT: white 3pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #4f81bd; BORDER-LEFT: white 1pt solid; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt; COLOR: white"><strong>S7</strong></span></p></td>
+<td style="BORDER-RIGHT: white 0.75pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #d3dfee; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 0.75pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">152</span></p></td>
+<td style="BORDER-RIGHT: white 0.75pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #d3dfee; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 0.75pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">136</span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #d3dfee; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 0.75pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">80</span></p></td></tr>
+<tr>
+<td style="BORDER-RIGHT: white 3pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #4f81bd; BORDER-LEFT: white 1pt solid; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt; COLOR: white"><strong>평균</strong></span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #a7bfde; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">161</span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #a7bfde; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">163</span></p></td>
+<td style="BORDER-RIGHT: white 1pt solid; PADDING-RIGHT: 7px; PADDING-LEFT: 7px; BACKGROUND: #a7bfde; BORDER-TOP-STYLE: none; BORDER-BOTTOM: white 1pt solid; BORDER-LEFT-STYLE: none">
+<p style="TEXT-ALIGN: center"><span style="FONT-SIZE: 10pt">131</span></p></td></tr></tbody></table>
+
+<p>각 학생이 시험정적과 숙제성적에 어떤 상관관계를 가지는지를 비교해 보고 싶다. 먼저 두가지 경우에 대한 점수가 어떻게 연관이 있는지를 알고, 난이도의 차이등을 고려하기 위해서 zero mean 을 취하자. 즉, 각 column들에 대해서 각각의 평균을 빼 준다. 즉, 다음과 같은 행렬을 만들 수 있다.</p>
+\[
+X=
+\begin{bmatrix}
+37 & 37 & 65 \\
+-1 & 2  & 34 \\
+-3 & -5 & 2  \\
+-11& 2  & -40 \\
+14 & 19 & 20 \\
+-27& -28& -30 \\
+-9 & -27& -51
+\end{bmatrix}
+\]
+<p>\(X\) 의 각 column은 실제 점수의 평균값으로 부터의 편차를 나타낸다. 첫번째로부터 각각의 column을 \(x_1,x_2,x_3\) 이라고 하자. </p>
+<p>\(x_1,x_2\) 이 서로 어떻게 연관을 가지고 있는지를 나타내기 위해서는 두 벡터 \(x_1,x_2\) 의 \(\cos \theta\) 를 살펴보면 된다. 무슨 말이냐 하면, 다음과 같다. </p>
+<ol>
+<li><p>서로 완전히 관계없는 독립적인 두 벡터는 서로 orthogonal 이다. 즉, \(x_1 \perp x_2\) 이다. 이 경우 correlation 은 \(0\) 이 된다.</p>
+</li>
+<li><p>서로 완전히 종속적인 두 벡터는 서로 비례한다. 즉, \(x_2=\alpha x_1\) 이다. 이 경우 correlation 은 \(1\) 이 된다.</p>
+</li>
+</ol>
+<p>Correlation이 \(1\) 인 경우, 두 벡터는 linear의 관계를 가지게 된다. 즉 linearity가 성립할 경우 correlation 은 \(1\) 이다. 다른 말로 하면, nonlinear한 경우 correlation 이 \(0\) 과 \(1\) 사이의 값을 가지게 된다. </p>
+<p>다시 위의 예로 돌아가면, \(x_1, x_2\) 의 correlation 을 살펴보자.</p>
+\[
+\cos \theta = \frac{x_1^T x_2}{\lVert x_1 \rVert \lVert x_2 \rVert} \approx 0.92
+\]
+<p>비록 correlation 이 완벽히 \(1\) 을 가지지는 않지만, 이정도면 아주 높게 서로 correlate 되었다고 말할 수 있다. 다음 그림을 보면 각각의 점의 쌍이 \(x_2 = \alpha x_1\) 에 상당히 가까움을 알 수 있다.</p>
+<div class="container"><img src="image09.png" alt="" /></div>
+<p>그러면 \(\alpha\) 는 어떻게 구할까?</p>
+<p>\(x_2 = \alpha x_1\) 을 만족시켜야 하지만, 정확히 모든 점들이 위의 그래프 위에 있지는 않다. 그렇다면, 이 문제는</p>
+\[
+\inf \lVert x_2 - \alpha x_1 \rVert
+\]
+<p>의 문제와 같아진다. 이것은 classical projection theorem 에 의해 쉽게 해결할 수 있는 문제이다. 위의 식을 만족시키는 \(\alpha\) 를 \(\hat{\alpha}\) 라고 하자. 이 경우, \(\alpha x_1 \perp x_2-\hat{\alpha} x_1\) 이므로, inner product를 다음과 같이 정의할 경우,</p>
+\[
+\left< \alpha x_1 , x_2 - \hat{\alpha} x_1 \right> = \alpha x_1^T (x_2 - \hat{\alpha} x_1) = \alpha (x_1^T x_2 - \hat{\alpha} x_1^T x_1) =0
+\]
+\[
+\therefore \hat{\alpha}=\frac{x_1^T x_2}{x_1^T x_1} \approx 1.05
+\]
+<p>두 벡터 \(x_1, x_2\) 의 \(\cos \theta\) 가 correlation 을 나타낸다면, \(\cos \theta\) 의 계산을 편하게 하기 위해서 normalize를 하면 다음과 같다. </p>
+\[
+\begin{align*}
+u_1=\frac{x_1}{\lVert x_1 \rVert} \\
+u_2=\frac{x_2}{\lVert x_2 \rVert}
+\end{align*}
+\]
+<p>이렇게 놔두면 는 다음과 같이 아주 쉽게 구할 수가 있기 때문이다.</p>
+\[
+\cos \theta = u_1^T u_2
+\]
+<p>그렇다면 행렬 \(X\) 에 대해서 각 column을 각 column의 norm으로 normalize 하면 다음과 같다.</p>
+\[
+U=
+\begin{bmatrix}
+0.74 & 0.65 & 0.62 \\
+-0.02 & 0.03  & 0.33 \\
+-0.06 & -0.09 & 0.02  \\
+-0.22 & 0.03  & -0.38 \\
+0.28 & 0.33 & 0.19 \\
+-0.54& -0.49& -0.29 \\
+-0.18 & -0.47& -0.49
+\end{bmatrix}
+\]
+<p>만약 \(C=U^T U\) 라고 한다면</p>
+\[
+C=
+\begin{bmatrix}
+1 & 0.92 & 0.83 \\
+0.92 & 1 & 0.83 \\
+0.83 & 0.83 & 1
+\end{bmatrix}
+\]
+<p>이 된다. 이 행렬 \(C\) 가 바로 correlation 행렬이다. 여기서 알 수 있듯이, \(3\) 가지 시험 점수들은 모두 positively correlated 이다. 만약 negatively correlated 일 경우, 음의 계수를 가질 것이다. 계수가 \(0\) 이면 uncorrelated 이다. 평균값으로 부터의 편차를 나타내는 벡터들이 서로 orthogonal 이면 uncorrelated 이고, \(0\) 의 계수를 가지게 된다. </p>
+<p>통계에서 correlation 행렬과 관련되어 있는 또 다른 중요한 수치로서 covariance 행렬이 있다. Variance는 어떻게 계산하는지 알고 있을 것이다. 평균에서의 편차들을 각각 제곱한 값들의 평균이다. 즉, variance는 다음과 같이 정의된다.</p>
+\[
+s^2=\frac{1}{n-1} \sum_i^n x_i^2 = \frac{x^T x}{n-1}
+\]
+<p>이것은 표준편차 \(s\) 의 제곱값이다. 만약 각각 \(n\) 개의 값들을 가지는 두개의 데이터 집합 </p>
+<div class="container"><img src="image30.png" alt="" /></div>
+<p>를 가지고 있다면, 각각 평균값을 빼버린, 편차만을 나타내는 새로운 변수 </p>
+<div class="container"><img src="image31.png" alt="" /></div>
+<p>을 정의할 수 있다. 이럴 경우 covariance 는 다음과 같이 정의된다.</p>
+<div class="container"><img src="image32.png" alt="" /></div>
+<p>만약 행렬 가 2개 이상의 데이터 집합을 가질 경우에는 covariance &#40;scalar&#41;값을 가지는 것이 아니라, covariance 행렬, S, 을 가지게 된다. </p>
+<div class="container"><img src="image33.png" alt="" /></div>
+<p>이 예에서 covariance 행렬은 다음과 같은 값을 가지게 된다.</p>
+<div class="container"><img src="image34.png" alt="" /></div>
+<div class="container"><img src="image35.png" alt="" /></div>
+<p>여기서 주대각선 값은 </p>
+<div class="container"><img src="image36.png" alt="" /></div>
+<p>의 각각 variance &#40;분산&#41; 값이다. Off-diagonal 값들은 covariance 이다.</p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Pilwon Hur. Last modified: May 09, 2024.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+  </body>
+</html>
