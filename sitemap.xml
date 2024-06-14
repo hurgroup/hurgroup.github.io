@@ -170,6 +170,12 @@
     <priority>0.5</priority>
 </url>
 <url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20240425/index.html</loc>
+    <lastmod>2024-06-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20171016/index.html</loc>
     <lastmod>2024-05-06</lastmod>
     <changefreq>monthly</changefreq>
@@ -207,7 +213,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/publications/conference/index.html</loc>
-    <lastmod>2024-04-11</lastmod>
+    <lastmod>2024-06-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -219,7 +225,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/index.html</loc>
-    <lastmod>2024-05-15</lastmod>
+    <lastmod>2024-06-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -405,13 +411,13 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/index.html</loc>
-    <lastmod>2024-04-28</lastmod>
+    <lastmod>2024-06-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/members/index.html</loc>
-    <lastmod>2024-05-15</lastmod>
+    <lastmod>2024-06-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
