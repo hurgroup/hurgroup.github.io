@@ -105,7 +105,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/publications/journal/index.html</loc>
-    <lastmod>2024-04-11</lastmod>
+    <lastmod>2024-07-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -176,6 +176,12 @@
     <priority>0.5</priority>
 </url>
 <url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20240524/index.html</loc>
+    <lastmod>2024-07-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20160208/index.html</loc>
     <lastmod>2024-05-06</lastmod>
     <changefreq>monthly</changefreq>
@@ -225,7 +231,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/publications/conference/index.html</loc>
-    <lastmod>2024-06-14</lastmod>
+    <lastmod>2024-07-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -237,7 +243,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/index.html</loc>
-    <lastmod>2024-07-10</lastmod>
+    <lastmod>2024-07-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -429,7 +435,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/index.html</loc>
-    <lastmod>2024-07-10</lastmod>
+    <lastmod>2024-07-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -488,8 +494,20 @@
     <priority>0.5</priority>
 </url>
 <url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20240619/index.html</loc>
+    <lastmod>2024-07-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20170310/index.html</loc>
     <lastmod>2024-05-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20240618/index.html</loc>
+    <lastmod>2024-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
