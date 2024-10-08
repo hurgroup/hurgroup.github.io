@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.png">
+
+   <title>[2024/8/19] Crash Course on Decision Process (II): Reinforcement Learning</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">HUR Group</a></h1>
+      <p class="lead">Dynamics and Biomechatronics Lab</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+      <a class="sidebar-nav-item " href="/members/">Members</a>
+      <a class="sidebar-nav-item " href="/research/">Research</a>
+      <a class="sidebar-nav-item " href="/publications/">Publications</a>
+      <a class="sidebar-nav-item " href="/teaching/">Teaching</a>
+      <a class="sidebar-nav-item active" href="/blog/">Blog</a>
+      <a class="sidebar-nav-item " href="/contacts/">Contacts</a>
+      <a class="sidebar-nav-item " href="/tag/">Tags</a>
+    </nav>
+    <p>&copy; Pilwon Hur.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content">
+<h1 id="2024819_crash_course_on_decision_process_ii_reinforcement_learning"><a href="#2024819_crash_course_on_decision_process_ii_reinforcement_learning" class="header-anchor">&#91;2024/8/19&#93; Crash Course on Decision Process &#40;II&#41;: Reinforcement Learning</a></h1>
+<p>작성자: 허필원 with chatGPT</p>
+<div class="container-100"><img src="image01.png" alt="" /></div>
+<p>지난 2024년 8월 19일, 연구실 학생들과 함께 Reinforcement Learning &#40;강화학습&#41;에 대한 Crash Course를 진행했습니다. 강화학습은 MDP&#40;Markov Decision Process&#41;를 확장한 개념으로, 로봇 제어, Human-Robot Interaction, 그리고 웨어러블 로봇 등 다양한 분야에서 응용될 수 있습니다. 이번 강의에는 약 15명의 학생들이 참석하였으며, 강의는 영어로 진행되었습니다. 이번 블로그 글에서는 강화학습의 주요 개념과 강의 내용을 간략히 정리하겠습니다.</p>
+<p>참고로, 강의자료와 스크립트는 아래의 github 에서 확인할 수 있습니다. <a href="https://github.com/pilwonhur/hurgroup_cc_mdp">https://github.com/pilwonhur/hurgroup<em>cc</em>mdp</a></p>
+<ol>
+<li><p>Reinforcement Learning의 개요</p>
+</li>
+</ol>
+<p>강화학습은 에이전트&#40;agent&#41;가 환경&#40;environment&#41;과 상호작용하면서 최적의 행동을 학습하는 과정입니다. 에이전트는 주어진 상태&#40;state&#41;에서 행동&#40;action&#41;을 선택하고, 그 결과로 보상&#40;reward&#41;을 받으며 학습합니다. MDP와 마찬가지로 강화학습에서도 상태, 행동, 상태 전이 확률, 그리고 보상의 개념이 중요하지만, 강화학습에서는 특히 에이전트가 경험을 통해 스스로 학습해 나간다는 점에서 차이가 있습니다.</p>
+<ol start="2">
+<li><p>MDP에서 RL로의 확장</p>
+</li>
+</ol>
+<p>MDP는 강화학습의 기본적인 틀을 제공합니다. 하지만 MDP와 달리 강화학습에서는 에이전트가 환경의 동적인 특성을 학습하고 적응해야 합니다. 강의에서는 MDP와 RL의 차이점을 설명하며, 특히 상태 전이 확률을 정확히 알지 못하는 상황에서 에이전트가 어떻게 최적의 정책&#40;policy&#41;을 찾아나가는지에 대해 다루었습니다. 이러한 점에서 강화학습은 탐색&#40;exploration&#41;과 활용&#40;exploitation&#41; 사이의 균형을 맞추는 것이 중요한 과제가 됩니다.</p>
+<ol start="3">
+<li><p>탐색과 활용의 균형</p>
+</li>
+</ol>
+<p>강화학습에서 에이전트는 새로운 상태와 행동을 탐색하면서도, 현재까지 학습한 정책을 활용하여 보상을 최대화해야 합니다. 이러한 균형을 맞추기 위한 대표적인 방법으로 “epsilon-greedy” 정책이 소개되었습니다. 이 방법은 일정 확률로 새로운 행동을 탐색하고, 나머지 확률로는 현재의 최적 정책을 따르는 방식입니다. 강의에서는 이러한 탐색과 활용의 균형을 맞추는 여러 전략들을 다루었습니다.</p>
+<ol start="4">
+<li><p>가치 함수와 정책</p>
+</li>
+</ol>
+<p>강의에서는 강화학습에서 중요한 가치 함수&#40;value function&#41;와 행동 가치 함수&#40;action value function&#41;에 대해 설명했습니다. 이 함수들은 에이전트가 특정 상태에서 얻을 수 있는 보상의 기대값을 나타내며, 최적의 행동을 선택하는 데 중요한 역할을 합니다. 특히 Bellman 방정식을 통해 가치 함수를 갱신하고, 이를 바탕으로 최적 정책을 학습하는 방법을 다루었습니다.</p>
+<ol start="5">
+<li><p>주요 알고리즘</p>
+</li>
+</ol>
+<p>강의 후반부에서는 강화학습에서 사용되는 주요 알고리즘에 대해 다루었습니다. 대표적인 방법으로는 SARSA와 Q-Learning이 있으며, 이 두 알고리즘의 차이점을 이해하는 것이 강화학습을 깊이 있게 이해하는 데 중요합니다. SARSA는 현재 정책을 따르는 “On-Policy” 방법이고, Q-Learning은 최적의 정책을 찾는 “Off-Policy” 방법입니다. 이 두 가지 방법을 통해 에이전트가 어떻게 학습할 수 있는지에 대해 예시와 함께 설명했습니다.</p>
+<ol start="6">
+<li><p>심층 강화학습&#40;Deep Reinforcement Learning&#41;</p>
+</li>
+</ol>
+<p>최근 강화학습에서 가장 주목받고 있는 분야 중 하나는 심층 강화학습입니다. 심층 강화학습은 신경망&#40;neural network&#41;을 사용하여 복잡한 환경에서도 에이전트가 학습할 수 있도록 돕는 방법입니다. 강의에서는 Deep Q-Network&#40;DQN&#41;을 포함한 여러 심층 강화학습 기법들을 소개하며, 이러한 기법들이 기존 강화학습의 한계를 어떻게 극복하는지에 대해 설명했습니다. 특히, 경험 재생&#40;experience replay&#41;과 타깃 네트워크&#40;target network&#41;와 같은 기법들을 사용하여 학습의 안정성을 높이는 방법에 대해 다루었습니다.</p>
+<ol start="7">
+<li><p>정책 경사법과 액터-크리틱</p>
+</li>
+</ol>
+<p>마지막으로, 정책 경사법&#40;policy gradient&#41;과 액터-크리틱&#40;actor-critic&#41; 알고리즘에 대해 다루었습니다. 정책 경사법은 에이전트가 직접 최적의 정책을 학습하는 방법으로, 복잡한 환경에서 유용하게 사용됩니다. 액터-크리틱 알고리즘은 정책&#40;actor&#41;과 가치 함수&#40;critic&#41;를 함께 학습하는 방법으로, 강화학습의 효율성을 높이는 데 도움을 줍니다. 이러한 방법들은 복잡한 로봇 제어 문제를 해결하는 데 강력한 도구가 될 수 있습니다.</p>
+<p>이번 강의를 통해 학생들이 강화학습의 기본 개념부터 심화된 알고리즘까지 이해할 수 있는 기회를 가졌기를 바랍니다. 다음 Crash Course에서는 POMDP&#40;Partially Observable Markov Decision Process&#41;에 대해 다룰 예정입니다. 학생들이 더욱 깊이 있는 학습을 할 수 있도록 지속적인 교육을 제공할 계획입니다.</p>
+<p>아래는 실제 강의 영상의 내용 요약입니다. <a href="https://youtu.be/UD_jb2W8jCA"><img src="https://img.youtube.com/vi/UD_jb2W8jCA/hqdefault.jpg" alt="" /></a></p>
+<p>00:00:00 📚 Lecture Preparation and Challenges</p>
+<p>00:04:52 📚 Overview of Reinforcement Learning and Examples</p>
+<p>00:08:35 📘 Overview of Markov Decision Processes &#40;MDP&#41;</p>
+<p>00:10:08 🧠 Understanding Transition Probability in MDP vs. RL</p>
+<p>00:11:40 🤖 Understanding Agents and Environments in RL</p>
+<p>00:13:39 🤖 Understanding Markov Decision Processes and Reinforcement Learning</p>
+<p>00:16:33 ♻️ Understanding the Bellman Equation in MDP</p>
+<p>00:18:10 ⚙️ Dynamic Programming in MDP</p>
+<p>00:19:37 ⚙️ Transition from MDP to RL</p>
+<p>00:20:56 🤖 Challenges in Modeling and Using MDP</p>
+<p>00:22:40 🔍 Challenges in Solving High Degree of Freedom Problems</p>
+<p>00:24:25 🌍 Balancing Exploration and Exploitation in Reinforcement Learning</p>
+<p>00:26:01 🌀 Reinforcement Learning vs. Markov Decision Processes</p>
+<p>00:29:05 🤸‍♂️ Understanding Energy Gain in Motion and MDP Application</p>
+<p>00:31:21 🌀 Understanding Phase Portraits and Energy in Motion</p>
+<p>00:35:13 🌀 Understanding Angular Dynamics in Programming</p>
+<p>00:37:10 🎯 Pendulum Control with RL and MDP</p>
+<p>00:41:50 🔍 Understanding Deterministic Models in MDP</p>
+<p>00:45:29 🔍 Understanding Uncertainty in Systems</p>
+<p>00:47:55 ⚙️ Understanding State Changes in Discretization</p>
+<p>00:49:48 🔍 Understanding State Transitions and Transition Probability Functions</p>
+<p>00:53:45 🔍 Understanding State Transition Probability in RL</p>
+<p>00:56:21 🔍 Key Concepts in Grid and Delta T Adjustments</p>
+<p>00:59:43 🤔 Challenges and Considerations in MDP</p>
+<p>01:02:57 ⚙️ Strategies in Reinforcement Learning for Optimal Control</p>
+<p>01:07:21 🍽️ Cooking with Repeated Ingredients</p>
+<p>01:10:56 🤖 Challenges and Solutions in Reinforcement Learning for Robotics</p>
+<p>01:16:04 🌟 Reinforcement Learning in Healthcare and Basic Concepts</p>
+<p>01:17:54 🤖 Key Concepts of Reinforcement Learning</p>
+<p>01:19:08 📘 Importance of Value and Action Value Functions in RL</p>
+<p>01:21:55 🔍 Understanding MDP and Reinforcement Learning</p>
+<p>01:23:44 🌟 Key Concepts in Exploration and Exploitation</p>
+<p>01:25:05 🎯 Balancing Exploration and Exploitation in Reinforcement Learning</p>
+<p>01:28:05 🔍 Key Algorithms in Reinforcement Learning</p>
+<p>01:30:29 🎯 Key Methods in Reinforcement Learning</p>
+<p>01:32:18 📘 Temporal Difference Learning in Reinforcement Learning</p>
+<p>01:33:37 🔍 Understanding Temporal Difference Learning in RL</p>
+<p>01:35:09 🔍 Key Differences Between On-Policy and Off-Policy in Reinforcement Learning</p>
+<p>01:36:51 🔍 Understanding SARSA and Q-Learning</p>
+<p>01:38:28 🚀 Key Concepts in Reinforcement Learning Algorithms</p>
+<p>01:42:18 🔍 Estimating Areas and Value Functions</p>
+<p>01:45:27 🎯 Understanding Episode Returns in Reinforcement Learning</p>
+<p>01:47:50 🔍 Understanding the Update Equation in RL</p>
+<p>01:49:07 🔍 Understanding the Update Equation in Reinforcement Learning</p>
+<p>01:50:47 🧠 Understanding the Update Rule and Convergence in RL</p>
+<p>01:52:55 🚀 Importance of Exploration in RL</p>
+<p>01:54:31 🔄 Temporal Difference in Reinforcement Learning</p>
+<p>01:56:21 🥾 Understanding Bootstrapping in Computer Science</p>
+<p>02:00:46 🔍 Bootstrapping and Temporal Difference in Reinforcement Learning</p>
+<p>02:04:14 📚 Understanding Deep Reinforcement Learning and Temporal Difference</p>
+<p>02:08:46 📌 Project Timeline and Testing Strategy</p>
+<p>02:11:10 📝 Discussion on X and V in Matrix Operations</p>
+<p>02:16:49 📚 Introduction to Algorithms in Reinforcement Learning</p>
+<p>02:19:14 🔄 Generalized Policy Iteration in Reinforcement Learning</p>
+<p>02:20:37 🎯 Understanding Temporal Difference Update in RL</p>
+<p>02:22:50 🤖 Understanding Greedy and Epsilon-Greedy Policies</p>
+<p>02:25:17 🎯 Action Value vs. State Value in Reinforcement Learning</p>
+<p>02:26:54 🎯 Epsilon Greedy Policy in Reinforcement Learning</p>
+<p>02:29:29 🎯 Understanding Sarsa in Reinforcement Learning</p>
+<p>02:32:12 🎯 Understanding the Action and Reward Process in Reinforcement Learning</p>
+<p>02:34:42 ⚙️ Understanding Q-Learning and Convergence</p>
+<p>02:36:31 🚀 Q-Learning vs. Exploration Challenges</p>
+<p>02:39:38 💡 Differences Between Salsa and Q-Learning</p>
+<p>02:43:55 🔍 Key Concepts in Q-learning</p>
+<p>02:46:32 🚀 Scalability and Combining Deep Learning with Reinforcement Learning</p>
+<p>02:47:50 🚀 Using Deep Learning in Q-Learning</p>
+<p>02:50:20 🚀 Importance of Deep Learning in Reinforcement Learning</p>
+<p>02:51:50 📊 End-to-End Learning and Deep Learning Basics</p>
+<p>02:52:58 🤖 Neural Network Layers and Activation Functions</p>
+<p>02:54:41 ⚙️ Understanding Backpropagation and Gradient Descent</p>
+<p>02:56:20 🔍 Effects of Small Slopes in Activation Functions</p>
+<p>02:57:38 🔍 Understanding Loss Functions and Optimization in RL</p>
+<p>03:02:14 📊 Understanding Predicted and True Values in Networks</p>
+<p>03:04:40 🚀 Implementing Reinforcement Learning with Python Libraries</p>
+<p>03:07:49 🍱 Lunch Break and Preferences</p>
+<p>03:13:39 🔍 Understanding Q Function and Training in Reinforcement Learning</p>
+<p>03:16:57 ⚙️ Q-Learning Update and Epsilon-Greedy Strategy</p>
+<p>03:19:23 🚀 Key Concepts in Q-function and Temporal Difference</p>
+<p>03:22:02 ⚙️ Understanding Deep Q-Networks &#40;DQN&#41;</p>
+<p>03:26:31 📚 Understanding Experience Replay and Target Networks</p>
+<p>03:30:43 🎯 Stability in Reinforcement Learning</p>
+<p>03:33:36 📚 Reinforcement Learning Models and Methods</p>
+<p>03:37:36 🚀 Function Approximators and Network Updates in RL</p>
+<p>03:42:15 📊 Reinforcement Learning Concepts: Policy Gradient and Value Functions</p>
+<p>03:44:16 📊 Understanding the Gradient Function in Reinforcement Learning</p>
+<p>03:46:23 🔍 Understanding Policy Gradient Method and Reinforce Algorithm</p>
+<p>03:48:32 🎯 Actor-Critic Algorithms in Reinforcement Learning</p>
+<p>03:50:30 🎯 Understanding Policy Gradient and Reinforce Algorithm</p>
+<p>03:51:51 🎯 Actor-Critic Method in Reinforcement Learning</p>
+<p>03:55:15 🎯 Understanding Policy Networks and Cross-Entropy</p>
+<p>03:57:15 🎭 Actor-Critic and Advantage Functions</p>
+<p>03:59:14 🔍 Overview of Reinforcement Learning Algorithms</p>
+<p>04:01:06 🎓 Hybrid Methods in Reinforcement Learning</p>
+<p>04:02:22 🔍 Understanding Safe Reinforcement Learning and Its Methods</p>
+<p>04:06:56 🚀 Overview of Dynamic Grid World and Algorithms</p>
+<p>04:09:52 🤔 Planning for Friday</p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Pilwon Hur. Last modified: October 08, 2024.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+    
+  </body>
+</html>

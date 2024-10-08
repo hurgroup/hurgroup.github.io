@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.png">
+
+   <title>[2024/8/5] Crash Course on Decision Process (I): MDP</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">HUR Group</a></h1>
+      <p class="lead">Dynamics and Biomechatronics Lab</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+      <a class="sidebar-nav-item " href="/members/">Members</a>
+      <a class="sidebar-nav-item " href="/research/">Research</a>
+      <a class="sidebar-nav-item " href="/publications/">Publications</a>
+      <a class="sidebar-nav-item " href="/teaching/">Teaching</a>
+      <a class="sidebar-nav-item active" href="/blog/">Blog</a>
+      <a class="sidebar-nav-item " href="/contacts/">Contacts</a>
+      <a class="sidebar-nav-item " href="/tag/">Tags</a>
+    </nav>
+    <p>&copy; Pilwon Hur.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content">
+<h1 id="202485_crash_course_on_decision_process_i_mdp"><a href="#202485_crash_course_on_decision_process_i_mdp" class="header-anchor">&#91;2024/8/5&#93; Crash Course on Decision Process &#40;I&#41;: MDP</a></h1>
+<p>작성자: 허필원 with chatGPT</p>
+<div class="container-100"><img src="image01.png" alt="" /></div>
+<p>지난 2024년 8월 5일, 연구실 학생들과 함께 Markov Decision Process &#40;MDP&#41;에 대한 Crash Course를 진행했습니다. 이 강의는 주로 로봇 제어, Human-Robot Interaction, 그리고 웨어러블 로봇 분야에서 중요한 MDP 개념을 소개하는 데 중점을 두었습니다. 연구실의 많은 학생들이 아직 MDP에 대한 개념이 익숙하지 않은 것을 보아 이러한 교육이 필요하다고 느꼈습니다. 학생들은 대략 15명이 참석하였으며, 강의는 영어로 진행되었습니다. 이번 블로그 글에서는 강의의 주요 내용을 간략히 정리해보겠습니다.</p>
+<p>참고로, 강의자료와 스크립트는 아래의 github 에서 확인할 수 있습니다. <a href="https://github.com/pilwonhur/hurgroup_cc_mdp">https://github.com/pilwonhur/hurgroup<em>cc</em>mdp</a></p>
+<ol>
+<li><p>MDP란 무엇인가?</p>
+</li>
+</ol>
+<p>Markov Decision Process는 의사결정 문제를 수학적으로 모델링하는 도구입니다. 주로 로봇 제어와 같은 연속적인 의사결정이 필요한 분야에서 많이 사용됩니다. MDP는 상태&#40;state&#41;, 행동&#40;action&#41;, 상태 전이 확률&#40;transition probability&#41;, 그리고 보상&#40;reward&#41;으로 이루어져 있습니다. 이러한 구성 요소를 이해하는 것이 MDP를 이해하는 첫 걸음입니다.</p>
+<ol start="2">
+<li><p>Markov 연쇄와 MDP의 관계</p>
+</li>
+</ol>
+<p>MDP를 이해하기 위해서는 먼저 Markov 연쇄&#40;Markov Chain&#41;를 알아야 합니다. Markov 연쇄는 특정 상태에서 다른 상태로 전이될 확률을 정의하는 모델로, 주어진 현재 상태만을 기반으로 다음 상태를 예측할 수 있는 특징을 가집니다. 이는 MDP에서도 동일하게 적용되며, 특히 상태 전이 확률을 다룰 때 중요한 개념입니다.</p>
+<ol start="3">
+<li><p>상태 전이와 확률</p>
+</li>
+</ol>
+<p>강의에서는 상태 전이 확률을 이해하기 위해 간단한 날씨 예측 모델을 예시로 들었습니다. 예를 들어, 오늘 날씨가 맑으면 내일도 맑을 확률, 혹은 비가 올 확률을 계산하는 방식입니다. 이를 통해 학생들이 확률 기반의 상태 전이 개념을 더 쉽게 이해할 수 있었습니다.</p>
+<ol start="4">
+<li><p>보상과 가치 함수</p>
+</li>
+</ol>
+<p>MDP에서 보상&#40;reward&#41;은 특정 행동을 취했을 때 얻을 수 있는 이익을 의미합니다. 이 보상을 통해 최적의 행동을 선택하는 것이 MDP의 목표입니다. 또한, 할인율&#40;discount factor&#41;을 적용하여 미래의 보상을 현재 가치로 환산하는 방법도 다루었습니다. 이는 로봇이 현재의 행동이 미래에 어떤 영향을 미칠지 고려하게 하는 중요한 요소입니다.</p>
+<ol start="5">
+<li><p>Bellman 방정식</p>
+</li>
+</ol>
+<p>Bellman 방정식은 MDP의 핵심 개념 중 하나로, 상태 가치 함수&#40;state value function&#41;를 계산하는 방법을 제공합니다. 이를 통해 현재 상태에서 최적의 행동을 선택할 수 있는 정책&#40;policy&#41;을 찾는 과정이 설명되었습니다. 학생들이 Bellman 방정식을 이해하는 데 어려움을 겪을 수 있기 때문에, 여러 예제를 통해 점진적으로 개념을 소개했습니다.</p>
+<ol start="6">
+<li><p>정책 반복과 가치 반복</p>
+</li>
+</ol>
+<p>MDP 문제를 해결하기 위해 정책 반복&#40;policy iteration&#41;과 가치 반복&#40;value iteration&#41;이라는 두 가지 주요 방법이 소개되었습니다. 정책 반복은 현재의 정책을 평가하고 개선하는 과정을 반복하는 방법이며, 가치 반복은 가치 함수를 통해 최적의 정책을 찾아가는 방법입니다. 이 두 가지 방법을 통해 MDP 문제를 어떻게 해결할 수 있는지에 대해 학생들과 함께 논의했습니다.</p>
+<ol start="7">
+<li><p>로봇 제어에의 응용</p>
+</li>
+</ol>
+<p>마지막으로, MDP를 로봇 제어에 적용하는 예시로 펜듈럼 운동을 다루었습니다. 로봇이 펜듈럼을 특정 위치에 유지하거나 원하는 방향으로 움직이게 하기 위해 어떻게 MDP를 사용할 수 있는지에 대해 설명했습니다. 이를 통해 학생들은 이론적인 개념이 실제 로봇 제어 문제에 어떻게 적용되는지 이해할 수 있었습니다.</p>
+<p>이번 강의를 통해 학생들이 MDP의 기본 개념을 이해하고, 이를 로봇 제어와 같은 실제 문제에 적용할 수 있는 기반을 마련할 수 있기를 기대합니다. 다음 Crash Course에서는 강화학습&#40;Reinforcement Learning&#41;에 대해 다루었으며, 추후 POMDP&#40;Partially Observable Markov Decision Process&#41;도 다룰 예정입니다. 학생들이 더 깊이 있는 이해를 할 수 있도록 지속적인 교육을 제공할 계획입니다.</p>
+<p>아래는 실제 강의 영상의 내용 요약입니다. <a href="https://youtu.be/UD_jb2W8jCA"><img src="https://img.youtube.com/vi/UD_jb2W8jCA/hqdefault.jpg" alt="" /></a></p>
+<p>00:00:00 👋 Introduction and Participant Details</p>
+<p>00:03:27 🎓 Introduction to Markov Decision Processes &#40;MDP&#41;</p>
+<p>00:08:23 🧠 Introduction to Markov Decision Processes and Related Concepts</p>
+<p>00:12:22 🚂 Understanding Markov Chains and Processes</p>
+<p>00:15:52 📊 Understanding Markov Chains</p>
+<p>00:20:45 📊 Understanding State Transitions in Markov Decision Processes &#40;MDPs&#41;</p>
+<p>00:25:30 🌟 Understanding State Transitions in Markov Chains</p>
+<p>00:28:41 🌦️ Markov Chains and Weather Prediction</p>
+<p>00:31:05 🎲 Understanding Random Inputs and Probabilities in Systems</p>
+<p>00:34:53 🎯 Understanding State Transitions and Distributions</p>
+<p>00:39:25 🎯 Understanding Transition Probabilities in MDP</p>
+<p>00:42:40 🔍 Understanding Recurrent Property and Transition to MDP</p>
+<p>00:47:23 🔍 Discussion on State Estimation and MDP</p>
+<p>00:50:00 ⚙️ Transition Matrix and Noise Management in MDP</p>
+<p>00:52:38 🔍 Detailing Markov Decision Processes &#40;MDP&#41;</p>
+<p>00:56:29 🎮 Components and Goals of Markov Decision Processes &#40;MDP&#41;</p>
+<p>01:00:57 🌟 Understanding States and Actions in MDP</p>
+<p>01:04:41 📌 Components of Markov Decision Processes &#40;MDP&#41;</p>
+<p>01:08:32 📝 Understanding States and Actions in MDP</p>
+<p>01:12:56 🎲 Adding Stochasticity and Policy in MDP</p>
+<p>01:15:34 🔍 Understanding State Transition Probabilities in MDP</p>
+<p>01:18:40 🌟 Understanding State Transition and Reward in MDP</p>
+<p>01:22:35 ⚡ Understanding Rewards in Markov Decision Processes</p>
+<p>01:26:48 📊 Understanding Rewards and Discount Factors in MDP</p>
+<p>01:29:20 💡 Understanding Value Functions and Discount Factors</p>
+<p>01:32:51 🔍 Understanding Discount Factors in MDP</p>
+<p>01:35:17 📘 Understanding the Discount Rate in MDP</p>
+<p>01:38:15 📊 Understanding Expected Return in MDP</p>
+<p>01:40:27 🚀 Understanding the Value Function in MDP</p>
+<p>01:44:40 🎯 Understanding Policies in MDP</p>
+<p>01:48:51 🚀 Insights on MDP Policies and Implementation</p>
+<p>01:51:43 💡 Understanding the Value Function in MDP</p>
+<p>01:59:06 📘 Understanding the Bellman Equation</p>
+<p>02:02:15 🔄 Exploring the Value Function in MDPs</p>
+<p>02:05:13 🔍 Key Aspects of the Bellman Equation and MDP</p>
+<p>02:10:06 🧠 Understanding the Bellman Expectation Equation</p>
+<p>02:13:35 ✅ Understanding the Bellman Optimality Equation</p>
+<p>02:16:18 🔍 Understanding the Bellman Equation and Optimal Policies</p>
+<p>02:19:15 🚀 Key Methods to Solve MDP Problems</p>
+<p>02:23:54 🎯 Key Points on Policy Gradient Methods and Breaks</p>
+<p>02:27:25 📘 Understanding the Bellman Equation and Dynamic Programming</p>
+<p>02:31:49 🔍 Understanding Iterative Approximation and Convergence in MDP</p>
+<p>02:36:14 🚀 Introduction to Advanced Mathematical Concepts</p>
+<p>02:39:14 📉 Convergence and Divergence in Processes</p>
+<p>02:41:33 🔍 Convergence of Value Functions and the Bellman Equation</p>
+<p>02:45:36 🚀 Understanding Policy Iteration and Bellman Equations</p>
+<p>02:48:37 🚀 Understanding Policy Iteration in MDP</p>
+<p>02:51:57 🔄 Policy Improvement and Value Function in MDP</p>
+<p>02:56:10 📊 Approximate Policy Evaluation and Improvement</p>
+<p>02:58:48 🎯 Understanding Q Function and Value Iteration</p>
+<p>03:03:46 🔍 Policy Iteration in Markov Decision Processes</p>
+<p>03:08:39 🧠 Understanding Policy Evaluation and Improvement</p>
+<p>03:12:39 📊 Evaluating and Improving Policies in MDP</p>
+<p>03:14:53 🧠 Optimal Value Function and Action Selection</p>
+<p>03:17:41 🚀 Analyzing State Transitions and Values in MDP</p>
+<p>03:20:56 📈 Key Concepts in Markov Decision Processes &#40;MDP&#41;</p>
+<p>03:25:55 💡 Understanding Markov Decision Processes</p>
+<p>03:30:00 🚀 Value Iteration and Policy Iteration Challenges</p>
+<p>03:32:23 🚀 Applying MDP to Pendulum Motion</p>
+<p>03:36:18 🎯 Key Concepts in MDP and Reinforcement Learning</p>
+<p>03:40:20 ✨ Understanding State Transitions and Costs</p>
+<p>03:41:50 🚀 Understanding Challenges in Applying MDP to Robotics</p>
+<p>03:47:22 ✨ Discussion on Initial State and Dynamic Programming</p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Pilwon Hur. Last modified: October 08, 2024.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+    
+  </body>
+</html>
