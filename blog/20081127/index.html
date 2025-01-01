@@ -162,7 +162,7 @@ u^*=-Kx(t)
 <div class="container-100"><img src="doublepen_cont.gif" alt="" /></div>
 <p>얼핏 보기에는 마지막 번째의 control 이 좋아보인다. 마지막 것은 linear control 만 사용한 것이므로, 사실상 말이 안되는 control 이다. 왜냐하면 swing-up phase 에서는 Linearized system 이 double pendulum 을 제대로 나타낼 수 없으며, 그 결과는 사실상 틀린 것이기 때문이다. 또한, Linear control 은 오차가 크면 큰 만큼 더 큰 command input 을 주기 때문에 엄청나게 큰 입력을 모터에 주게 된다. 그 결과 pendulum 이 갑자기 위로 올라가게 되고, 우연히 equilibrium point 에 가까이 가게 되어서 control 이 되는 것이다. 그리고, linear control 이 만들어내는 출력은 현실적으로 불가능한, 즉 모터가 감당할 수 없는 출력이기 때문에, linear control 만 사용하는 것은 적절치 않다. 첫번째나 두번째와 같이 swing-up phase 에서 optimal control 이나 다른 nonlinear control 사용해야만 모터가 감당할 수 있는 출력을 만들 수 있으며, 첫번째와 같이 한번 정도 흔들어 주는 control 입력이 가능하게 된다.</p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Pilwon Hur. Last modified: April 15, 2024.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Pilwon Hur. Last modified: January 01, 2025.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->
