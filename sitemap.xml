@@ -75,7 +75,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20240625/index.html</loc>
-    <lastmod>2024-07-18</lastmod>
+    <lastmod>2024-10-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -249,7 +249,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/index.html</loc>
-    <lastmod>2024-10-08</lastmod>
+    <lastmod>2024-10-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -357,13 +357,19 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20240131/index.html</loc>
-    <lastmod>2024-04-08</lastmod>
+    <lastmod>2024-10-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20181116/index.html</loc>
     <lastmod>2024-05-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20240821/index.html</loc>
+    <lastmod>2024-10-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -447,7 +453,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/index.html</loc>
-    <lastmod>2024-09-26</lastmod>
+    <lastmod>2024-10-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -542,6 +548,12 @@
     <priority>0.5</priority>
 </url>
 <url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20241011/index.html</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20190502/index.html</loc>
     <lastmod>2024-05-06</lastmod>
     <changefreq>monthly</changefreq>
@@ -573,7 +585,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/publications/book/index.html</loc>
-    <lastmod>2024-03-19</lastmod>
+    <lastmod>2024-10-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
