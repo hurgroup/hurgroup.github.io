@@ -261,7 +261,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/index.html</loc>
-    <lastmod>2025-03-02</lastmod>
+    <lastmod>2025-04-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -477,7 +477,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/index.html</loc>
-    <lastmod>2025-03-02</lastmod>
+    <lastmod>2025-04-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -742,6 +742,12 @@
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20170619/index.html</loc>
     <lastmod>2024-05-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20250402/index.html</loc>
+    <lastmod>2025-04-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
