@@ -111,7 +111,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/publications/journal/index.html</loc>
-    <lastmod>2025-04-15</lastmod>
+    <lastmod>2025-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -268,6 +268,12 @@
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20151217/index.html</loc>
     <lastmod>2024-04-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20250424/index.html</loc>
+    <lastmod>2025-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
