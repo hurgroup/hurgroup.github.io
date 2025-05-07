@@ -1,1 +1,42 @@
 The AI Frontier Exploration Research Center (InnoCORE) is a proposed initiative that will unite Korea’s four Institutes of Science & Technology to develop AI-powered robotic systems for space, deep-sea, and disaster missions while nurturing an elite cohort of postdoctoral Fellows.  If funded, each center will bring together about 50 faculty members and receive ≈ USD 6.6 million annually for five years, ensuring ample resources and cutting-edge facilities.  We plan to recruit 50 world-class postdoctoral Fellows from around the globe, each paired with an international scholar for virtual mentoring, joint publications, and pilot projects, and brought together at an annual, fully funded workshop in Korea. As an InnoCORE Fellow you will join cross-disciplinary teams drawn from Korea’s four Institutes of Science & Technology, receive dual mentorship from a leading Korean PI and an internationally renowned scholar, and manage your own research budget with a competitive salary (≈ 65,000 USD) and full travel support.  Fellows co-author high-impact papers, lead pilot projects that feed directly into field trials, and present their results at an annual, fully funded workshop in Korea attended by global experts and industry partners.  The programme is designed to accelerate your transition to an independent faculty or R&D leadership position while giving you a front-row seat in shaping next-generation exploration technologies.
+
+
+
+
+
+
+email template
+
+
+
+Subject | Invitation to Apply for an InnoCORE Postdoctoral Fellowship (AI Frontier Exploration Research Center)
+
+Dear Dr. [Name],
+
+I hope this message finds you well. We are preparing a proposal for the AI Frontier Exploration Research Center (InnoCORE)—a new, large-scale programme now under rapid review by Korea’s Ministry of Science & ICT—and I would like to invite you to be considered as one of its inaugural Postdoctoral Fellows.
+
+What InnoCORE aims to do
+	•	Unite the four Korean Institutes of Science & Technology (KAIST · GIST · UNIST · DGIST) to develop AI-powered robotic systems for space, deep-sea, and disaster missions.
+	•	Bring together ≈ 50 faculty members per center and—if funded—receive ≈ USD 5.5 million annually for five years, ensuring first-rate facilities and research budgets.
+	•	Recruit 50 world-class postdoctoral Fellows from around the globe, each receiving:
+	•	Competitive salary ≈ USD 65,000 / year
+	•	Dual mentorship—one Korean PI and one distinguished international scholar
+	•	Personal research budget for pilot projects, publications, and conference travel
+	•	Full travel support to an annual workshop in Korea with global experts and industry partners
+
+Why this may interest you
+
+As a Fellow you will lead cross-disciplinary projects that move directly from lab to field trials—giving you rare, end-to-end experience in system-level AI & robotics R&D—while building an international network of mentors, collaborators, and future employers. The programme is specifically designed to fast-track Fellows toward independent faculty or R&D-leadership careers.
+
+Next steps
+
+The Ministry announced the call only a few days ago, and the proposal deadline is Friday, 9 May, 18:00 KST (Friday, 9 May, 05:00 EST). I sincerely apologize for asking on such short notice, but even a brief signed PDF on your letterhead would greatly strengthen our application. Inclusion in the proposal does not bind you in any way; it simply strengthens our case and reserves you a priority interview slot should the centre be funded.
+
+Thank you for considering this opportunity. I would be delighted to answer any questions and to discuss how your expertise might fit within InnoCORE’s mission.
+
+Best regards,
+
+Pilwon Hur, Ph.D.
+Professor, Gwangju Institute of Science and Technology
+Prospective Director, AI Frontier Exploration Research Center (InnoCORE)
+pilwonhur@gist.ac.kr  |  +82-xx-xxxx-xxxx
