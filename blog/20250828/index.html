@@ -20,7 +20,7 @@
 </style>
 <link rel="icon" href="/assets/favicon.png">
 
-   <title>[2053/8/28] PID 제어를 적용한 Mass-spring damper system 분석을 주제로 진행한 G-SURF</title>  
+   <title>[2025/8/28] PID 제어를 적용한 Mass-spring damper system 분석을 주제로 진행한 G-SURF</title>  
 </head>
 <body>
 <div class="sidebar">
@@ -47,7 +47,7 @@
 
 <!-- Content appended here -->
 <div class="franklin-content">
-<h1 id="2053828_pid_제어를_적용한_mass-spring_damper_system_분석을_주제로_진행한_g-surf"><a href="#2053828_pid_제어를_적용한_mass-spring_damper_system_분석을_주제로_진행한_g-surf" class="header-anchor">&#91;2053/8/28&#93; PID 제어를 적용한 Mass-spring damper system 분석을 주제로 진행한 G-SURF</a></h1>
+<h1 id="2025828_pid_제어를_적용한_mass-spring_damper_system_분석을_주제로_진행한_g-surf"><a href="#2025828_pid_제어를_적용한_mass-spring_damper_system_분석을_주제로_진행한_g-surf" class="header-anchor">&#91;2025/8/28&#93; PID 제어를 적용한 Mass-spring damper system 분석을 주제로 진행한 G-SURF</a></h1>
 <p>작성자: 권순일 &#40;학부생 2학년&#41;</p>
 <p>학부생 2학년인 나는 2025년 여름, 기계로봇공학과 허필원 교수님 연구실에서 GIST Summer Undergraduate Research Fellowship &#40;G-SURF&#41; 프로그램에 참여하였다. G-SURF 포스터 세션에서 “Mass–Spring–Damper System PID Control — Simulation Analysis”를 발표했다. 장소는 오룡아트홀 로비. 지나가던 분들도 많이 멈춰 서서 봐 주셔서, 생각보다 오래 설명하게 된 하루였다. 질량–스프링–댐퍼 단자유도 모델에 P/PI/PD/PID를 차례로 얹어 보고, 연속계와 이산계 구현을 함께 비교한 뒤, 샘플링 주기&#40;Ts&#41;, 포화, anti-windup, 고주파 노이즈/저역통과필터, 그리고 임펄스 외란까지 현실 요소를 한 항목씩 따져 본 내용이다.</p>
 <p>모델부터 점검했다. 초기 변위 1 m 자유응답에서 오버슈트 약 62.7&#37;, 피크 타임 약 1.06 s가 이론과 시뮬레이션이 잘 맞았다. 이 정도면 뒤에 나오는 제어기 비교를 얹어도 큰 오해는 없겠다 싶었다. 제어기는 “직관적인 결론이지만 늘 확인하면 좋은” 결과가 나왔다. P는 빠르지만 진동이 커지고, I 단독은 바이어스는 없애도 과도응답이 부담스럽다. D는 과도 억제에 도움은 되지만 최종 오차를 없애지는 못한다. 결국 PID가 속도·안정성·정확도의 균형을 가장 잘 잡았다. 현장에서 “튜닝 순서가 뭐가 좋았냐”는 질문을 많이 받았는데, Kp로 뼈대를 세우고 필요한 만큼만 Ki를 얹고, 과도가 과하면 Kd를 살짝 더하는 방식이 가장 무난했다.</p>
