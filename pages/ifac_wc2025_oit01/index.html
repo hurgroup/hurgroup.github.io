@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Powered Transfemoral/Transtibial Prostheses — IFAC WC 2026 Open Invited Track</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="description" content="IFAC WC 2026 Open Invited Track on powered transfemoral/transtibial prostheses — control, estimation, personalization, hardware, and clinical translation"/>
+    <style>
+      .glow { box-shadow: 0 0 60px rgba(79,70,229,.25), inset 0 0 40px rgba(6,182,212,.15);}
+      .grad-text { background: linear-gradient(90deg,#6366f1,#06b6d4,#22c55e); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    </style>
+    <script>
+      // Dark mode toggle
+      function toggleDark() {
+        document.documentElement.classList.toggle('dark');
+        localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+      }
+      (function() {
+        const t = localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        if (t === 'dark') document.documentElement.classList.add('dark');
+      })();
+    </script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50">
+    <!-- Nav -->
+    <header class="sticky top-0 z-50 bg-white/70 dark:bg-slate-900/60 backdrop-blur border-b border-white/30">
+      <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        <a href="#top" class="font-semibold tracking-tight">IFAC WC 2026 — OIT</a>
+        <nav class="hidden md:flex gap-6 text-sm">
+          <a href="#overview" class="hover:text-indigo-600">Overview</a>
+          <a href="#topics" class="hover:text-indigo-600">Topics</a>
+          <a href="#organizers" class="hover:text-indigo-600">Organizers</a>
+          <a href="#submission" class="hover:text-indigo-600">Submission</a>
+          <a href="#contact" class="hover:text-indigo-600">Contact</a>
+        </nav>
+        <div class="flex items-center gap-2">
+          <button onclick="toggleDark()" class="rounded-xl px-3 py-1.5 text-sm bg-slate-900 text-white dark:bg-white dark:text-slate-900">Theme</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section id="top" class="relative overflow-hidden">
+      <img src="assets/hero.svg" alt="" class="absolute inset-0 w-full h-full object-cover opacity-60 dark:opacity-50" />
+      <div class="relative max-w-7xl mx-auto px-4 py-20 md:py-32">
+        <div class="max-w-3xl">
+          <h1 class="text-3xl md:text-5xl font-black leading-tight grad-text">
+            Powered Transfemoral/Transtibial Prostheses
+          </h1>
+          <p class="mt-4 text-lg md:text-xl text-slate-800 dark:text-slate-200">
+            IFAC World Congress 2026 — Open Invited Track
+          </p>
+          <p class="mt-6 text-slate-700 dark:text-slate-300 max-w-2xl">Powered lower-limb prostheses are transitioning from laboratory prototypes to clinically viable devices. This OIT convenes the control, robotics, rehabilitation, and AI communities to accelerate robust powered knee/ankle solutions for transfemoral and transtibial amputees, spanning control & estimation, intent-awareness, personalization, hardware, and clinical translation.</p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="#submission" class="px-5 py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-500">Call for Papers</a>
+            <a href="#topics" class="px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-white/40 dark:hover:bg-white/10">Explore Topics</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Overview -->
+    <section id="overview" class="py-16 md:py-24">
+      <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-5 gap-10">
+        <div class="md:col-span-3">
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">Why this OIT now?</h2>
+          <div class="prose prose-slate dark:prose-invert">
+            <ul>
+              <li><strong>Clinical need & quality of life.</strong> Individuals with transfemoral and transtibial amputations face elevated metabolic cost, fall risk, and limited mobility. Powered devices can inject positive work, reduce compensations, and improve stability on stairs, ramps, and uneven terrain.</li>
+              <li><strong>Convergence of technologies.</strong> High torque–density actuators, compact batteries, high-rate sensing, and on-device compute enable real-time, adaptive policies that are safer and more versatile.</li>
+              <li><strong>Translation gap.</strong> Real-world robustness, personalization, and standardized evaluation remain open challenges; adoption requires clinically explainable control and validated outcomes.</li>
+            </ul>
+            <p class="mt-6"><strong>Keywords:</strong> Powered prosthesis; transfemoral; transtibial; powered knee–ankle; phase-variable control; variable impedance; intent recognition (EMG, inertial, vision); personalization & human-in-the-loop optimization; RL; digital twins; safety & certification; open datasets; clinical trials; benchmarking.</p>
+            <p class="mt-6 text-sm opacity-80">Primary IFAC TC: <strong>8.2 Biological and Medical Systems</strong> &middot; Co-review requested: <strong>4.3 Robotics</strong></p>
+          </div>
+        </div>
+        <div class="md:col-span-2">
+          <div class="rounded-2xl glow p-6 bg-white/70 dark:bg-slate-900/60 border border-white/40">
+            <h3 class="text-xl font-semibold mb-3">Focus Areas</h3>
+            <ul class="space-y-2">
+              <li>Model- & data-driven control</li>
+              <li>Phase-variable & intent-aware estimation</li>
+              <li>User-specific personalization & co-adaptation</li>
+              <li>Actuation, sensing, & energy management</li>
+              <li>Clinical translation & benchmarking</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Topics -->
+    <section id="topics" class="py-16 md:py-24 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950">
+      <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-2xl md:text-3xl font-bold mb-8">Topics of Interest</h2>
+        <ul class="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+          
+<li class="group">
+  <div class="h-full p-1 rounded-2xl bg-gradient-to-br from-indigo-500/20 via-cyan-500/20 to-emerald-500/20">
+    <article class="h-full rounded-2xl bg-white/90 dark:bg-slate-900/70 border border-white/40 p-6 flex flex-col">
+      <div class="flex items-center gap-4 mb-4">
+        <img src="images/icons/control.svg" alt="Control & Estimation icon" class="w-20 h-12 rounded-md"/>
+        <h3 class="text-xl font-semibold">Control & Estimation</h3>
+      </div>
+      <ul class="space-y-2 list-disc pl-5 grow">
+        <li class="text-slate-700 dark:text-slate-200">Autonomous phase-variable control for knees/ankles; variable impedance & hybrid strategies</li><li class="text-slate-700 dark:text-slate-200">MPC, CLF–CBF safety filters; socket/ground interaction observers</li><li class="text-slate-700 dark:text-slate-200">Learning-in-the-loop: preference learning, policy adaptation, meta-/few-shot tuning</li>
+      </ul>
+    </article>
+  </div>
+</li>
+
+
+<li class="group">
+  <div class="h-full p-1 rounded-2xl bg-gradient-to-br from-indigo-500/20 via-cyan-500/20 to-emerald-500/20">
+    <article class="h-full rounded-2xl bg-white/90 dark:bg-slate-900/70 border border-white/40 p-6 flex flex-col">
+      <div class="flex items-center gap-4 mb-4">
+        <img src="images/icons/intent.svg" alt="Intent & Environment Awareness icon" class="w-20 h-12 rounded-md"/>
+        <h3 class="text-xl font-semibold">Intent & Environment Awareness</h3>
+      </div>
+      <ul class="space-y-2 list-disc pl-5 grow">
+        <li class="text-slate-700 dark:text-slate-200">EMG-driven intent, IMU/load-cell fusion, adaptive state machines</li><li class="text-slate-700 dark:text-slate-200">Exteroceptive perception (vision/lidar) for stairs, ramps, uneven terrain</li><li class="text-slate-700 dark:text-slate-200">Uncertainty-aware estimation and safety constraints</li>
+      </ul>
+    </article>
+  </div>
+</li>
+
+
+<li class="group">
+  <div class="h-full p-1 rounded-2xl bg-gradient-to-br from-indigo-500/20 via-cyan-500/20 to-emerald-500/20">
+    <article class="h-full rounded-2xl bg-white/90 dark:bg-slate-900/70 border border-white/40 p-6 flex flex-col">
+      <div class="flex items-center gap-4 mb-4">
+        <img src="images/icons/personalization.svg" alt="Personalization icon" class="w-20 h-12 rounded-md"/>
+        <h3 class="text-xl font-semibold">Personalization</h3>
+      </div>
+      <ul class="space-y-2 list-disc pl-5 grow">
+        <li class="text-slate-700 dark:text-slate-200">Clinically explainable tuning protocols and guardrails</li><li class="text-slate-700 dark:text-slate-200">Onboard learning and preference-aware optimization</li><li class="text-slate-700 dark:text-slate-200">Generalization across subjects, tasks, and daily-living scenarios</li>
+      </ul>
+    </article>
+  </div>
+</li>
+
+
+<li class="group">
+  <div class="h-full p-1 rounded-2xl bg-gradient-to-br from-indigo-500/20 via-cyan-500/20 to-emerald-500/20">
+    <article class="h-full rounded-2xl bg-white/90 dark:bg-slate-900/70 border border-white/40 p-6 flex flex-col">
+      <div class="flex items-center gap-4 mb-4">
+        <img src="images/icons/hardware.svg" alt="Hardware & Sensing icon" class="w-20 h-12 rounded-md"/>
+        <h3 class="text-xl font-semibold">Hardware & Sensing</h3>
+      </div>
+      <ul class="space-y-2 list-disc pl-5 grow">
+        <li class="text-slate-700 dark:text-slate-200">High torque-density actuation (QDD, SEA/VSA); energy regeneration</li><li class="text-slate-700 dark:text-slate-200">Compact, reliable socket & limb sensing; battery/thermal management</li><li class="text-slate-700 dark:text-slate-200">Co-design to reduce mass without sacrificing torque bandwidth</li>
+      </ul>
+    </article>
+  </div>
+</li>
+
+
+<li class="group">
+  <div class="h-full p-1 rounded-2xl bg-gradient-to-br from-indigo-500/20 via-cyan-500/20 to-emerald-500/20">
+    <article class="h-full rounded-2xl bg-white/90 dark:bg-slate-900/70 border border-white/40 p-6 flex flex-col">
+      <div class="flex items-center gap-4 mb-4">
+        <img src="images/icons/clinical.svg" alt="Clinical Translation icon" class="w-20 h-12 rounded-md"/>
+        <h3 class="text-xl font-semibold">Clinical Translation</h3>
+      </div>
+      <ul class="space-y-2 list-disc pl-5 grow">
+        <li class="text-slate-700 dark:text-slate-200">Outcome metrics and multi-center trials; failures and field data</li><li class="text-slate-700 dark:text-slate-200">Verification & certification aligned with medical-device standards</li><li class="text-slate-700 dark:text-slate-200">Rehabilitation integration and real-world deployment reports</li>
+      </ul>
+    </article>
+  </div>
+</li>
+
+
+<li class="group">
+  <div class="h-full p-1 rounded-2xl bg-gradient-to-br from-indigo-500/20 via-cyan-500/20 to-emerald-500/20">
+    <article class="h-full rounded-2xl bg-white/90 dark:bg-slate-900/70 border border-white/40 p-6 flex flex-col">
+      <div class="flex items-center gap-4 mb-4">
+        <img src="images/icons/datasets.svg" alt="Open Data & Benchmarks icon" class="w-20 h-12 rounded-md"/>
+        <h3 class="text-xl font-semibold">Open Data & Benchmarks</h3>
+      </div>
+      <ul class="space-y-2 list-disc pl-5 grow">
+        <li class="text-slate-700 dark:text-slate-200">Open designs and datasets for reproducibility</li><li class="text-slate-700 dark:text-slate-200">Standardized evaluation protocols and prosthesis emulators</li><li class="text-slate-700 dark:text-slate-200">Comparative studies: powered vs. passive/microprocessor devices</li>
+      </ul>
+    </article>
+  </div>
+</li>
+
+        </ul>
+      </div>
+    </section>
+
+    <!-- Organizers -->
+    <section id="organizers" class="py-16 md:py-24">
+      <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-2xl md:text-3xl font-bold mb-8">Organizers</h2>
+        <ul class="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
+          
+<li class="group">
+  <div class="p-2 rounded-2xl bg-gradient-to-br from-indigo-500/10 via-cyan-500/10 to-emerald-500/10">
+    <div class="rounded-2xl overflow-hidden bg-white/80 dark:bg-slate-900/60 backdrop-blur border border-white/30">
+      <img src="images/organizers/pilwon_hur.jpg" alt="Pilwon Hur headshot placeholder" class="w-full object-cover" style="height: 300px;" />
+      <div class="p-5">
+        <h3 class="text-lg font-semibold">Pilwon Hur</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-300">Gwangju Institute of Science and Technology (GIST), Korea</p>
+        <a href="mailto:pilwonur@gist.ac.kr" class="block mt-3 text-indigo-600 hover:underline">pilwonur@gist.ac.kr</a>
+        <a href="https://hurgroup.net" class="block mt-1 text-indigo-600 hover:underline" target="_blank">Website</a>
+      </div>
+    </div>
+  </div>
+</li>
+
+
+<li class="group">
+  <div class="p-2 rounded-2xl bg-gradient-to-br from-indigo-500/10 via-cyan-500/10 to-emerald-500/10">
+    <div class="rounded-2xl overflow-hidden bg-white/80 dark:bg-slate-900/60 backdrop-blur border border-white/30">
+      <img src="images/organizers/hellen_he_huang.jpg" alt="Hellen (He) Huang headshot placeholder" class="w-full object-cover" style="height: 300px;" />
+      <div class="p-5">
+        <h3 class="text-lg font-semibold">Hellen (He) Huang</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-300">North Carolina State University, USA</p>
+        <a href="mailto:hhuang11@ncsu.edu" class="block mt-3 text-indigo-600 hover:underline">hhuang11@ncsu.edu</a>
+        <a href="mailto:helen-huang@unc.edu" class="block mt-1 text-indigo-600 hover:underline">helen-huang@unc.edu</a>
+        <a href="https://bme.unc.edu/bme-person/he-helen-huang/" class="block mt-1 text-indigo-600 hover:underline" target="_blank">Website</a>
+      </div>
+    </div>
+  </div>
+</li>
+
+
+<li class="group">
+  <div class="p-2 rounded-2xl bg-gradient-to-br from-indigo-500/10 via-cyan-500/10 to-emerald-500/10">
+    <div class="rounded-2xl overflow-hidden bg-white/80 dark:bg-slate-900/60 backdrop-blur border border-white/30">
+      <img src="images/organizers/jung-yup_kim.jpg" alt="Jung‑Yup Kim headshot placeholder" class="w-full object-cover" style="height: 300px;" />
+      <div class="p-5">
+        <h3 class="text-lg font-semibold">Jung‑Yup Kim</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-300">Seoul National University of Science and Technology, Korea</p>
+        <a href="mailto:jyk76@seoultech.ac.kr" class="block mt-3 text-indigo-600 hover:underline">jyk76@seoultech.ac.kr</a>
+        <a href="http://www.hrrlab.com/" class="block mt-1 text-indigo-600 hover:underline" target="_blank">Website</a>
+      </div>
+    </div>
+  </div>
+</li>
+
+
+<li class="group">
+  <div class="p-2 rounded-2xl bg-gradient-to-br from-indigo-500/10 via-cyan-500/10 to-emerald-500/10">
+    <div class="rounded-2xl overflow-hidden bg-white/80 dark:bg-slate-900/60 backdrop-blur border border-white/30">
+      <img src="images/organizers/woolim_hong.jpg" alt="Woolim Hong headshot placeholder" class="w-full object-cover" style="height: 300px;" />
+      <div class="p-5">
+        <h3 class="text-lg font-semibold">Woolim Hong</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-300">North Carolina State University, USA</p>
+        <a href="mailto:whong3@ncsu.edu" class="block mt-3 text-indigo-600 hover:underline">whong3@ncsu.edu</a>
+        <a href="https://nrel.bme.unc.edu/lab-members/" class="block mt-3 text-indigo-600 hover:underline" target="_blank">Website</a>
+      </div>
+    </div>
+  </div>
+</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Advisers -->
+    <!--
+    <section id="advisers" class="py-16 md:py-24 bg-gradient-to-b from-white to-slate-50 dark:from-slate-950 dark:to-slate-900">
+      <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-2xl md:text-3xl font-bold mb-6">Suggested Scientific Advisers</h2>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">Non-binding; subject to availability.</p>
+        <ul class="grid md:grid-cols-2 gap-2 list-disc pl-5">
+          <li>Robert D. Gregg — University of Michigan, USA</li>
+<li>Aaron D. Ames — California Institute of Technology, USA</li>
+<li>Michael Goldfarb — Vanderbilt University, USA</li>
+<li>Elliott J. Rouse — University of Michigan, USA</li>
+<li>Aaron M. Young — Georgia Institute of Technology, USA</li>
+<li>Tommaso Lenzi — University of Utah, USA</li>
+<li>Heike Vallery — TU Delft / ETH Zürich, NL/CH</li>
+<li>Herman van der Kooij — University of Twente / TU Delft, NL</li>
+<li>Qining Wang — Peking University, China</li>
+<li>Chenglong Fu — Southern University of Science and Technology, China</li>
+        </ul>
+      </div>
+    </section>
+    -->
+
+    <!-- Resources / References -->
+    <!--
+    <section id="resources" class="py-16 md:py-24">
+      <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-2xl md:text-3xl font-bold mb-6">Resources & Representative References</h2>
+        <ul class="space-y-2 list-disc pl-5">
+          <li>Best et al., IEEE TNSRE, 2021 — Phase-Variable Control of a Powered Knee–Ankle Prosthesis.</li>
+<li>Best et al., IEEE TRO, 2023 — Data-Driven Variable Impedance Control of a Powered Knee–Ankle Prosthesis.</li>
+<li>Sullivan et al., IEEE TNSRE, 2023 — Adaptive Speed/Incline/Uneven Terrains.</li>
+<li>Tran et al., Science Robotics, 2022 — Lightweight Robotic Leg Prosthesis (knee, ankle, toe).</li>
+<li>Azocar et al., Nature Biomedical Engineering, 2020 — Open-source Bionic Leg.</li>
+<li>Hunt et al., JNER, 2023 — Weight-Bearing Symmetry During Sit-Down.</li>
+<li>Product context: Ottobock Empower (ankle–foot), Össur Power Knee (knee).</li>
+        </ul>
+      </div>
+    </section>
+    -->
+
+    <!-- Submission -->
+    <section id="submission" class="py-16 md:py-24 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950">
+      <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-2xl md:text-3xl font-bold mb-4">Submission</h2>
+        <div class="prose prose-slate dark:prose-invert">
+          <p><strong>Venue:</strong> IFAC World Congress 2026, Busan, Korea (Aug 23–28, 2026).</p>
+          <p><strong>Track Type:</strong> Open Invited Track (OIT). Submissions are welcome from all contributors after OITs are posted.</p>
+          <p><strong>Formatting & length:</strong> Please follow IFAC WC guidelines. (Details & templates will be updated here when available.)</p>
+          <p><strong>Key dates:</strong> Paper submission deadline: November 26th, 2025</p>
+          <p><strong>Submission portal:</strong> <a href="https://ifac.papercept.net" class="text-indigo-600 hover:underline" target="_blank">https://ifac.papercept.net</a></p>
+          <p><strong>Registration code:</strong> 1xxx5</p>
+        </div>
+        <div class="mt-6">
+          <a href="#contact" class="inline-block px-5 py-3 rounded-xl bg-cyan-600 text-white hover:bg-cyan-500">Contact the organizers</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="py-16 md:py-24">
+      <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-10">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">Get in touch</h2>
+          <p class="text-slate-700 dark:text-slate-300">For questions about fit, scope, or logistics of the OIT, please email the lead organizer.</p>
+          <div class="mt-6 p-6 rounded-2xl glow bg-white/70 dark:bg-slate-900/60 border border-white/40">
+            <p class="font-semibold">Pilwon Hur (Lead Organizer)</p>
+            <p>Gwangju Institute of Science and Technology (GIST), Korea</p>
+            <a class="text-indigo-600 hover:underline" href="mailto:pilwonhur@gist.ac.kr">pilwonhur@gist.ac.kr</a>
+          </div>
+        </div>
+        <div class="prose prose-slate dark:prose-invert">
+          <h3>What’s missing & open challenges</h3>
+          <ul>
+            <li>Generalization and robustness across users, tasks, and perturbations</li>
+            <li>Fast, safe, and interpretable personalization at scale</li>
+            <li>Shared autonomy and intent fusion under uncertainty</li>
+            <li>Energy, weight, comfort: actuator–socket co‑design</li>
+            <li>Open benchmarks, datasets, and certification‑ready validation</li>
+          </ul>
+          <p class="mt-6 text-xs opacity-70">Content adapted from the OIT proposal.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="py-10 border-t border-white/20">
+      <div class="max-w-7xl mx-auto px-4 text-sm text-slate-600 dark:text-slate-300">
+        <p>© 2025 OIT: Powered Transfemoral/Transtibial Prostheses — IFAC WC 2026.</p>
+      </div>
+    </footer>
+  </body>
+</html>

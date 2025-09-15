@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400" viewBox="0 0 640 400">
+    
+    <defs>
+      <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#6366f1" />
+        <stop offset="100%" stop-color="#06b6d4" />
+      </linearGradient>
+      <linearGradient id="g2" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#22c55e" />
+        <stop offset="100%" stop-color="#ef4444" />
+      </linearGradient>
+    </defs>
+    
+    <rect width="640" height="400" rx="16" fill="url(#g1)"/>
+    <g transform="translate(40,60)">
+      <path d="M0,120 C80,20 160,220 240,120 C320,20 400,220 480,120" fill="none" stroke="white" stroke-width="8" opacity="0.8"/>
+      <circle cx="80" cy="120" r="10" fill="white" />
+      <circle cx="240" cy="120" r="10" fill="white" />
+      <circle cx="400" cy="120" r="10" fill="white" />
+    </g>
+    <text x="50%" y="92%" dominant-baseline="middle" text-anchor="middle"
+          font-family="Inter, ui-sans-serif, system-ui" font-size="28" font-weight="700" fill="#ffffff">Personalization</text>
+    </svg>
