@@ -22,6 +22,18 @@
         document.documentElement.classList.toggle('dark');
         localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
       }
+      
+      // Mobile menu toggle
+      function toggleMobileMenu() {
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenu.classList.toggle('hidden');
+      }
+      
+      function closeMobileMenu() {
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenu.classList.add('hidden');
+      }
+      
       (function() {
         const t = localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         if (t === 'dark') document.documentElement.classList.add('dark');
@@ -42,7 +54,22 @@
         </nav>
         <div class="flex items-center gap-2">
           <button onclick="toggleDark()" class="rounded-xl px-3 py-1.5 text-sm bg-slate-900 text-white dark:bg-white dark:text-slate-900">Theme</button>
+          <button onclick="toggleMobileMenu()" class="md:hidden rounded-xl px-3 py-1.5 text-sm bg-slate-900 text-white dark:bg-white dark:text-slate-900">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
         </div>
+      </div>
+      <!-- Mobile Menu -->
+      <div id="mobileMenu" class="hidden md:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur border-t border-white/30">
+        <nav class="px-4 py-4 space-y-3">
+          <a href="#overview" class="block text-sm hover:text-indigo-600" onclick="closeMobileMenu()">Overview</a>
+          <a href="#topics" class="block text-sm hover:text-indigo-600" onclick="closeMobileMenu()">Topics</a>
+          <a href="#organizers" class="block text-sm hover:text-indigo-600" onclick="closeMobileMenu()">Organizers</a>
+          <a href="#submission" class="block text-sm hover:text-indigo-600" onclick="closeMobileMenu()">Submission</a>
+          <a href="#contact" class="block text-sm hover:text-indigo-600" onclick="closeMobileMenu()">Contact</a>
+        </nav>
       </div>
     </header>
 
