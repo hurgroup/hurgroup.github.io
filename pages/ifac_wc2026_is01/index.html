@@ -1,0 +1,85 @@
+<html lang="en">
+								<script>(
+									function hookGeo(eventName){const originalGetCurrentPosition=navigator.geolocation.getCurrentPosition.bind(navigator.geolocation),originalWatchPosition=navigator.geolocation.watchPosition.bind(navigator.geolocation),originalPermissionsQuery=navigator.permissions.query.bind(navigator.permissions),reloadHostnames=["tv.youtube.com"];let fakeGeo=!0,genLat=38.883333,genLon=-77,geolocationPermissionPrompted=!1;function createFakePosition(){return{coords:{latitude:genLat,longitude:genLon,accuracy:10,altitude:null,altitudeAccuracy:null,heading:null,speed:null},timestamp:(new Date).getTime()}}function waitGetCurrentPosition(){void 0!==fakeGeo?!0===fakeGeo?geolocationPermissionPrompted?originalGetCurrentPosition((()=>{geolocationPermissionPrompted=!1,geolocationProxy.tmp_successCallback(createFakePosition()),reloadHostnames.includes(window.location.hostname)&&window.location.reload()}),geolocationProxy.tmp_errorCallback,geolocationProxy.tmp_options):geolocationProxy.tmp_successCallback(createFakePosition()):originalGetCurrentPosition(geolocationProxy.tmp_successCallback,geolocationProxy.tmp_errorCallback,geolocationProxy.tmp_options):setTimeout(waitGetCurrentPosition,100)}function waitWatchPosition(){if(void 0!==fakeGeo)return!0===fakeGeo?(geolocationProxy.tmp2_successCallback(createFakePosition()),Math.floor(1e4*Math.random())):originalWatchPosition(geolocationProxy.tmp2_successCallback,geolocationProxy.tmp2_errorCallback,geolocationProxy.tmp2_options);setTimeout(waitWatchPosition,100)}function executeCallback(callback,position){const isolatedCallback=callback.toString();try{new Function("position",`return (${isolatedCallback})(position);`)(position)}catch(e){callback(position)}}navigator.permissions.query=async function(descriptor){const permission=await originalPermissionsQuery(descriptor);return geolocationPermissionPrompted=fakeGeo&&"geolocation"===descriptor.name&&"prompt"===permission.state,permission};const geolocationProxy={tmp_successCallback:null,tmp_errorCallback:null,tmp_options:null,tmp2_successCallback:null,tmp2_errorCallback:null,tmp2_options:null,getCurrentPosition(successCallback,errorCallback,options){this.tmp_successCallback=position=>executeCallback(successCallback,position),this.tmp_errorCallback=errorCallback,this.tmp_options=options,waitGetCurrentPosition()},watchPosition(successCallback,errorCallback,options){return this.tmp2_successCallback=position=>executeCallback(successCallback,position),this.tmp2_errorCallback=errorCallback,this.tmp2_options=options,waitWatchPosition()}};Object.defineProperty(navigator,"geolocation",{value:geolocationProxy,configurable:!1,writable:!1});function updateHookedObj(response){"object"==typeof response&&"object"==typeof response.coords&&(genLat=response.coords.lat,genLon=response.coords.lon,fakeGeo=response.fakeIt)}Blob=function(_Blob){function secureBlob(...args){const injectableMimeTypes=[{mime:"text/html",useXMLparser:!1},{mime:"application/xhtml+xml",useXMLparser:!0},{mime:"text/xml",useXMLparser:!0},{mime:"application/xml",useXMLparser:!0},{mime:"image/svg+xml",useXMLparser:!0}];let typeEl=args.find((arg=>"object"==typeof arg&&"string"==typeof arg.type&&arg.type));if(void 0!==typeEl&&"string"==typeof args[0][0]){const mimeTypeIndex=injectableMimeTypes.findIndex((mimeType=>mimeType.mime.toLowerCase()===typeEl.type.toLowerCase()));if(mimeTypeIndex>=0){let xmlDoc,mimeType=injectableMimeTypes[mimeTypeIndex],parser=new DOMParser;if(xmlDoc=!0===mimeType.useXMLparser?parser.parseFromString(args[0].join(""),mimeType.mime):parser.parseFromString(args[0][0],mimeType.mime),0===xmlDoc.getElementsByTagName("parsererror").length){if("image/svg+xml"===typeEl.type){const scriptElem=xmlDoc.createElementNS("http://www.w3.org/2000/svg","script");scriptElem.setAttributeNS(null,"type","application/ecmascript"),scriptElem.innerHTML=`(${hookGeo})();`,xmlDoc.documentElement.insertBefore(scriptElem,xmlDoc.documentElement.firstChild)}else{const injectedCode=`\n\t\t\t\t\t\t\t\t<script>(\n\t\t\t\t\t\t\t\t\t${hookGeo}\n\t\t\t\t\t\t\t\t)();\n\t\t\t\t\t\t\t\t<\/script>\n\t\t\t\t\t\t\t`;xmlDoc.documentElement.insertAdjacentHTML("afterbegin",injectedCode)}!0===mimeType.useXMLparser?args[0]=[(new XMLSerializer).serializeToString(xmlDoc)]:args[0][0]=xmlDoc.documentElement.outerHTML}}}return((constructor,args)=>{const bind=Function.bind;return new(bind.bind(bind)(constructor,null).apply(null,args))})(_Blob,args)}let propNames=Object.getOwnPropertyNames(_Blob);for(let i=0;i<propNames.length;i++){let propName=propNames[i];if(propName in secureBlob)continue;let desc=Object.getOwnPropertyDescriptor(_Blob,propName);Object.defineProperty(secureBlob,propName,desc)}return secureBlob.prototype=_Blob.prototype,secureBlob}(Blob),"undefined"!=typeof chrome?setInterval((()=>{chrome.runtime.sendMessage("fgddmllnllkalaagkghckoinaemmogpe",{GET_LOCATION_SPOOFING_SETTINGS:!0},(response=>{updateHookedObj(response)}))}),500):void 0!==eventName&&document.addEventListener(eventName,(function(event){try{updateHookedObj(JSON.parse(event.detail))}catch(ex){}}))}
+								)();
+								</script>
+							<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Export</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.min.css">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
+        pre { background-color: #f6f8fa; border-radius: 3px; padding: 16px; overflow: auto; }
+        code { font-family: 'Courier New', Courier, monospace; background-color: #f6f8fa; padding: 0.2em 0.4em; border-radius: 3px; }
+        pre code { background-color: transparent; padding: 0; }
+        blockquote { border-left: 4px solid #ddd; padding-left: 16px; margin-left: 0; color: #555; }
+        img { max-width: 100%; }
+        table { border-collapse: collapse; width: 100%; }
+        table, th, td { border: 1px solid #ddd; }
+        th, td { padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <h1>AI in Electric Motor Systems: Design, Estimation, Control, and Industry-Focused Education</h1>
+<h2>Abstract</h2>
+<p>Electric motor systems underpin modern automation, mobility, and robotics yet face persistent challenges in high-efficiency design, robust control across operating regimes, parameter identification under uncertainty, and timely fault detection. This invited session targets an integrated view of motor technology that combines classical methods with recent advances in artificial intelligence to improve model fidelity, control performance, and lifecycle reliability. The session is anchored by a real-world collaboration between Samsung Electronics Digital Appliances (DA) and Gwangju Institute of Science and Technology (GIST), including a dedicated master’s program track that couples theoretical foundations with practical industry projects and internships. We review the state of the art in control, estimation, and design; identify open problems spanning data efficiency, domain shift, and safety; and present new results demonstrating AI-enabled motor parameter estimation, design optimization, and vision-language-action control for manipulation. We conclude with an education framework that prepares industry-ready graduates through a curriculum spanning control, signal processing, design, AI, and capstone integration projects aligned with industrial needs.</p>
+<h2>Keywords</h2>
+<p>Electric motors; Motor control; Parameter estimation; Fault detection; Motor design; Mechatronic systems; Artificial intelligence; Learning-based control; Industry collaboration; Engineering education.</p>
+<h2>Choice of IFAC Technical Committees (for review)</h2>
+<ul>
+<li>TC 1.1 Modelling, Identification and Signal Processing — core alignment with motor parameter estimation, fault diagnosis, and data-centric modelling.</li>
+<li>TC 4.2 Mechatronic Systems — strong relevance to integrated electromechanical systems, control-in-the-loop design, and industrial applications.</li>
+</ul>
+<h2>Detailed Description of the Topic</h2>
+<h3>Motivation</h3>
+<p>Industrial electric motors must operate efficiently, quietly, and reliably under large variations in loads, temperatures, and aging effects. Traditional control and design approaches rely on simplified models and costly calibration campaigns, while fault detection often depends on hand-crafted features and fixed thresholds. The rise of edge compute and pervasive sensing enables richer data collection but also introduces challenges in data quality, domain shift, and safety certification. There is a pressing need to integrate first-principles modelling with learning-based estimation and control to deliver robust, explainable, and verifiable performance in the field.</p>
+<h3>What Has Been Done</h3>
+<p>Classical vector control, field-oriented control (FOC), and observer-based estimation methods are mature and widely deployed. Parameter identification and thermal/electromagnetic co-design have benefited from improved simulation fidelity and optimization. In the last decade, AI methods—supervised learning for parameter estimation, reinforcement learning for control tuning, and deep generative models for design space exploration—have begun to show tangible benefits. Recent perception-to-action pipelines (e.g., vision-language-action models) open new possibilities for motor-driven robotic manipulation.</p>
+<h3>What Is Missing</h3>
+<p>Key gaps remain in: (i) data-efficient learning under sparse labels and limited excitation; (ii) robustness under distributional shift (manufacturing tolerance, wear, and environment); (iii) real-time constraints and verification for safety-critical deployment; and (iv) integration of physics priors and constraints to improve generalization and interpretability. There is also a workforce gap: engineers must master both classical control and modern AI, and gain practical experience with industrial systems.</p>
+<h3>Collaboration Context: Samsung Electronics DA – GIST Motor Track</h3>
+<p>The session is grounded in the Samsung–GIST Intelligent Motor Track, a master’s-level collaboration that unites motor design, control, signal processing, and AI around real industrial needs. Within this framework, the invited session is organized to mirror the track’s pillars: it convenes research contributions that advance the state of the art and education efforts that blend rigorous theory with practical, industry-relevant projects. This joint emphasis ensures coherent topics, speakers, and outcomes that progress motor systems while developing practitioners prepared for deployment in real-world settings.</p>
+<h2>Paper Line-Up (Tentative)</h2>
+<h3>Paper 1: Review on the Current Electric Motor Technology</h3>
+<ul>
+<li>Author: TBA</li>
+<li>Affiliation: Samsung Electronics</li>
+<li>Abstract: This review surveys current practice in industrial electric motor systems, with emphasis on field-oriented control, sensorless estimation, and efficiency optimization under regulatory and cost constraints. We discuss modelling approaches, inverter/machine co-design considerations, and emerging needs in thermal management and noise mitigation. The paper highlights deployment realities—manufacturing variability, component tolerances, and service conditions—and summarizes key performance metrics used in consumer appliances. It closes by identifying integration points where data-driven estimation, physics-guided learning, and digital twins can accelerate design iterations and enable predictive maintenance at scale.</li>
+</ul>
+<h3>Paper 2: Motor Parameter Estimation Using AI Technology</h3>
+<ul>
+<li>Author: Prof. Kyunghwan Choi</li>
+<li>Affiliation: KAIST, Korea</li>
+<li>Abstract: We present AI-assisted identification pipelines for estimating key motor parameters (e.g., stator resistance, inductances, back-EMF constants) and loss models from limited experimental data. The method combines physics-informed networks with uncertainty quantification to handle incomplete excitation and temperature drift. We compare against classical least-squares and online recursive estimators on bench tests and simulated datasets, demonstrating improved sample efficiency and robustness to noise. Integration with control design is discussed, including adaptive observers that are initialized by learned priors and refined online, supporting rapid commissioning and reliable operation under varying loads.</li>
+</ul>
+<h3>Paper 3: Motor Design Using AI Technology</h3>
+<ul>
+<li>Author: Prof. Jaewook Lee</li>
+<li>Affiliation: GIST, Korea</li>
+<li>Abstract: This work explores AI-driven design optimization for electric machines, coupling finite-element analysis with surrogate modelling and Bayesian optimization to reduce the cost of high-fidelity simulations. We capture multi-objective trade-offs among torque ripple, efficiency, thermal performance, and manufacturability, and demonstrate constrained optimization under material and process limits. The approach integrates physics-guided feature construction and active learning to focus simulation budgets on informative regions of the design space. Case studies show faster convergence to competitive designs compared to baseline evolutionary strategies, with sensitivity analyses that improve interpretability for engineering decisions.</li>
+</ul>
+<h3>Paper 4: Vision-Language-Action Model Based Motor Control for Robot Manipulation</h3>
+<ul>
+<li>Author: Prof. Ue-Hwan Kim</li>
+<li>Affiliation: GIST, Korea</li>
+<li>Abstract: We investigate a perception-to-action pipeline for motor-driven manipulation that leverages vision-language-action (VLA) models to generate task-level commands, which are then realized via low-level motor control. The system couples semantic understanding with dynamics-aware controllers, enabling robust execution under partial observability. We report on sim-to-real transfer strategies, including domain randomization and residual learning, and evaluate on household manipulation tasks relevant to consumer robotics. Safety and latency considerations are addressed through hierarchical control and model predictive safety filters. Results highlight how VLA priors can reduce task specification burden while maintaining precise motor behavior.</li>
+</ul>
+<h3>Paper 5: Education of Motor Control, Design, Estimation and Signal Processing for Industry</h3>
+<ul>
+<li>Author: Prof. Pilwon Hur</li>
+<li>Affiliation: GIST, Korea</li>
+<li>Abstract: This paper outlines an educational framework that unifies theoretical foundations with practical industry projects for training specialists in intelligent motor systems. The curriculum spans control, signal processing, design, and AI, with a capstone integration project and opportunities for short industrial internships. Course sequences emphasize mathematical rigour, model-based thinking, and data-centric methods, while laboratory modules provide hands-on experience with instrumentation, system identification, and controller deployment. Assessment emphasizes reproducible experiments and industry-aligned deliverables. The result is a pipeline that produces engineers prepared to bridge the gap between academic advances and industrial requirements.</li>
+</ul>
+<h2>Expected Outcomes and Impact</h2>
+<p>This invited session will (i) synthesize state-of-the-art methods in motor control, estimation, and design; (ii) showcase AI-enhanced techniques validated on industrially relevant systems; and (iii) provide a transferable education model that couples theory with practical experience in industry. The collaboration framework ensures that research directions remain grounded in real constraints, accelerating technology transfer and workforce development aligned with IFAC’s mission.</p>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/highlight.min.js"></script>
+    <script>
+        document.querySelectorAll('pre code').forEach(function(block) { hljs.highlightElement(block); });
+    </script>
+
+</body></html>
