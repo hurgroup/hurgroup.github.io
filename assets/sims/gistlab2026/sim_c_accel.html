@@ -1,0 +1,1429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>0 to 60 mph — GIST Lab Simulation</title>
+<style>
+/* kit.css - shared look for the GIST Lab Roadster simulations (projector-friendly dark theme). */
+:root {
+  --bg: #05070a;
+  --panel: #0d1116;
+  --panel-2: #141a21;
+  --line: #222a33;
+  --line-2: #2e3742;
+  --ink: #eef2f6;
+  --ink-2: #a3aeba;
+  --ink-3: #66717d;
+  --accent: #e8473b;
+  --gold: #ffd84d;
+  --ok: #3ddc84;
+  --warn: #ffb020;
+  --bad: #ff5a5a;
+  /* force colors: use the same color for the same force in every simulation */
+  --f-gravity: #b48cff;
+  --f-normal: #3ddc84;
+  --f-friction: #ffb020;
+  --f-suction: #ff6bd6;
+  --f-thrust: #62c6ff;
+  --f-drag: #a3aeba;
+  --f-velocity: #ffffff;
+  --side-w: clamp(300px, 23vw, 400px);
+  --plots-h: clamp(150px, 25vh, 270px);
+  --top-h: 58px;
+  font-size: 16px;
+}
+@media (min-width: 1700px) { :root { font-size: 18px; } }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  display: grid;
+  grid-template-rows: var(--top-h) minmax(0, 1fr) var(--plots-h);
+  grid-template-columns: 1fr var(--side-w);
+  grid-template-areas: "top top" "stage side" "plots side";
+  overflow: hidden;
+}
+
+/* top bar */
+.kit-top {
+  grid-area: top; display: flex; align-items: center; gap: 18px;
+  padding: 0 18px; border-bottom: 1px solid var(--line); background: var(--panel);
+  min-width: 0;
+}
+.kit-top a.kit-back { color: var(--ink-2); text-decoration: none; font-size: 0.9rem; white-space: nowrap; }
+.kit-top a.kit-back:hover { color: var(--ink); }
+.kit-top h1 { font-size: 1.25rem; margin: 0; font-weight: 700; letter-spacing: 0.01em; white-space: nowrap; }
+.kit-top .kit-sub { color: var(--ink-2); font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.kit-top .kit-spacer { flex: 1; }
+
+/* stage */
+.kit-stage { grid-area: stage; position: relative; overflow: hidden; background: #000; min-height: 0; }
+.kit-stage > canvas.kit-main-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.kit-hud {
+  position: absolute; left: 0; right: 0; bottom: 10px; display: flex; justify-content: space-between;
+  align-items: flex-end; padding: 0 16px; pointer-events: none; gap: 10px;
+}
+.kit-hud .kit-hud-group { display: flex; gap: 10px; align-items: flex-end; }
+.kit-gauge { width: 118px; height: 118px; }
+.kit-gauge canvas { width: 100%; height: 100%; display: block; }
+.kit-timer {
+  position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%);
+  font: italic 700 2.2rem/1 "Avenir Next Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  letter-spacing: 0.02em; color: #fff; text-shadow: 0 2px 8px #000; pointer-events: none;
+}
+.kit-badge {
+  position: absolute; top: 12px; left: 14px; padding: 6px 10px; border-radius: 6px;
+  background: rgba(13,17,22,0.8); border: 1px solid var(--line-2); color: var(--ink-2); font-size: 0.85rem;
+}
+.kit-badge b { color: var(--ink); }
+.kit-badge:empty { display: none; }
+.kit-status {
+  position: absolute; top: 12px; right: 14px; padding: 8px 14px; border-radius: 8px;
+  font-weight: 700; font-size: 1.05rem; background: rgba(13,17,22,0.85); border: 1px solid var(--line-2);
+}
+.kit-status.ok { color: var(--ok); border-color: var(--ok); }
+.kit-status.warn { color: var(--warn); border-color: var(--warn); }
+.kit-status.bad { color: var(--bad); border-color: var(--bad); }
+
+/* plots */
+.kit-plots {
+  grid-area: plots; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 1px;
+  background: var(--line); border-top: 1px solid var(--line); min-height: 0;
+  grid-template-rows: minmax(0, 1fr); overflow: hidden;
+}
+.kit-plots canvas { width: 100%; height: 100%; display: block; background: var(--panel); min-width: 0; min-height: 0; }
+
+/* side panel */
+.kit-side {
+  grid-area: side; background: var(--panel); border-left: 1px solid var(--line);
+  overflow-y: auto; padding: 14px 16px 24px; display: flex; flex-direction: column; gap: 14px; min-height: 0;
+}
+.kit-section h2 {
+  font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-3);
+  margin: 0 0 8px; font-weight: 700;
+}
+.kit-transport { display: flex; flex-wrap: wrap; gap: 6px; }
+.kit-btn {
+  appearance: none; border: 1px solid var(--line-2); background: var(--panel-2); color: var(--ink);
+  border-radius: 8px; padding: 8px 12px; font: inherit; font-size: 0.92rem; cursor: pointer; line-height: 1.1;
+}
+.kit-btn:hover { border-color: var(--ink-3); }
+.kit-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; min-width: 92px; }
+.kit-btn.on { border-color: var(--gold); color: var(--gold); }
+.kit-seg { display: inline-flex; border: 1px solid var(--line-2); border-radius: 8px; overflow: hidden; }
+.kit-seg button {
+  appearance: none; border: 0; background: var(--panel-2); color: var(--ink-2); font: inherit; font-size: 0.85rem;
+  padding: 7px 9px; cursor: pointer; border-right: 1px solid var(--line-2);
+}
+.kit-seg button:last-child { border-right: 0; }
+.kit-seg button.on { background: var(--ink); color: #000; font-weight: 700; }
+.kit-presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.kit-presets .kit-btn.on { background: var(--ink); color: #000; border-color: var(--ink); font-weight: 700; }
+
+.kit-slider { margin: 2px 0 10px; }
+.kit-slider-head { display: flex; justify-content: space-between; gap: 8px; font-size: 0.9rem; color: var(--ink-2); margin-bottom: 3px; }
+.kit-slider-head b { color: var(--ink); font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+.kit-slider input[type=range] { width: 100%; accent-color: var(--accent); }
+.kit-check { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--ink-2); margin: 4px 0; cursor: pointer; }
+.kit-check input { accent-color: var(--accent); width: 16px; height: 16px; }
+
+.kit-readouts { display: grid; grid-template-columns: 1fr auto; gap: 5px 10px; font-size: 0.92rem; }
+.kit-readouts .k { color: var(--ink-2); }
+.kit-readouts .v { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+.kit-readouts .v.ok { color: var(--ok); }
+.kit-readouts .v.warn { color: var(--warn); }
+.kit-readouts .v.bad { color: var(--bad); }
+.kit-readouts .v.gold { color: var(--gold); }
+
+.kit-explain { font-size: 0.9rem; color: var(--ink-2); line-height: 1.45; }
+.kit-explain summary { cursor: pointer; color: var(--ink); font-weight: 600; margin-bottom: 6px; }
+.kit-explain p { margin: 6px 0; }
+.kit-explain .eq {
+  font-family: "STIX Two Math", "Cambria Math", "Times New Roman", serif; font-size: 1.05rem; color: var(--ink);
+  background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; margin: 6px 0;
+}
+.kit-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 0.82rem; color: var(--ink-2); }
+.kit-legend span::before { content: ""; display: inline-block; width: 12px; height: 4px; border-radius: 2px; margin-right: 5px; vertical-align: middle; background: var(--c); }
+.kit-note { font-size: 0.78rem; color: var(--ink-3); line-height: 1.4; }
+
+/* predict overlay */
+.kit-predict {
+  position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.72); backdrop-filter: blur(3px); z-index: 5;
+}
+.kit-predict.show { display: flex; }
+.kit-predict .card {
+  width: min(860px, 88%); background: var(--panel); border: 1px solid var(--line-2); border-radius: 14px;
+  padding: 28px 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+.kit-predict .tag { color: var(--gold); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.85rem; }
+.kit-predict h3 { font-size: 1.9rem; line-height: 1.25; margin: 10px 0 18px; }
+.kit-predict .choices { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+.kit-predict .choices button {
+  appearance: none; font: inherit; font-size: 1.15rem; padding: 12px 18px; border-radius: 999px; cursor: pointer;
+  background: var(--panel-2); color: var(--ink); border: 1px solid var(--line-2);
+}
+.kit-predict .choices button.on { border-color: var(--gold); color: var(--gold); }
+.kit-predict .hint { color: var(--ink-2); font-size: 1rem; margin: 0 0 18px; }
+.kit-predict .go { font-size: 1.15rem; padding: 12px 22px; }
+
+/* errors (also visible in headless screenshots) */
+#kit-errors {
+  display: none; position: fixed; left: 10px; bottom: 10px; z-index: 99; max-width: 60vw; white-space: pre-wrap;
+  background: #300; color: #fbb; border: 1px solid #f55; padding: 8px 10px; font: 12px/1.4 ui-monospace, Menlo, monospace;
+}
+
+</style>
+<style>
+  .keytab { width: 100%; border-collapse: collapse; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+  .keytab th, .keytab td { padding: 4px 6px; border-bottom: 1px solid var(--line); text-align: right; }
+  .keytab th:first-child, .keytab td:first-child { text-align: left; }
+  .keytab th { color: var(--ink-3); font-weight: 600; font-size: 0.78rem; }
+  .keytab tr.hl td { color: var(--gold); font-weight: 700; }
+  /* while the predict card is up, hide everything that gives the answer away */
+  body.predicting .kit-plots, body.predicting .hide-when-predicting { visibility: hidden; }
+</style>
+</head>
+<body>
+<!-- SIM-C: 0 -> 60 mph. Physics in sim_c_physics.js (tested by sims/test/test_sim_c.js).
+     URL options: ?t=SECONDS jumps ahead (paused), ?predict=0 hides the predict card, ?preset=video|tires|ordinary. -->
+<header class="kit-top">
+  <a class="kit-back" href="index.html">◀ All simulations</a>
+  <h1>SIM-C · 0 → 60 mph</h1>
+  <span class="kit-sub">Can a car reach 60 mph (96.6 km/h) in 0.81 s? What would it need?</span>
+  <span class="kit-spacer"></span>
+  <span class="kit-note">Teaching model · assumed values marked</span>
+</header>
+<section class="kit-stage" id="stage">
+  <canvas class="kit-main-canvas" id="cv"></canvas>
+  <div class="kit-hud"><div class="kit-hud-group" id="hudL"></div><div class="kit-hud-group" id="hudR"></div></div>
+  <div class="kit-timer" id="timer">00:00:00:00</div>
+</section>
+<footer class="kit-plots"><canvas id="p1"></canvas><canvas id="p2"></canvas><canvas id="p3"></canvas></footer>
+<aside class="kit-side" id="side"></aside>
+
+<script>
+/* Generated by sims/build.py from note/julia/params/*.json. Do not edit by hand. */
+window.PARAMS = {
+  "common": {
+    "_note": "Shared physical constants and vehicle assumptions. Values marked assumed are teaching estimates, not Tesla data.",
+    "g": 9.80665,
+    "rho_air": 1.225,
+    "mass_kg": 1900,
+    "mass_note": "assumed; reported as 4,000+ lb (about 1.8 t)",
+    "mu_tire": 1.1,
+    "mu_note": "assumed; racing tires",
+    "car_length_m": 4.6,
+    "car_width_m": 2.0,
+    "car_height_m": 1.2,
+    "mph": 0.44704,
+    "ft": 0.3048
+  },
+  "sim_a": {
+    "_note": "SIM-A: ramp climb, upside-down hold, release, thruster landing. Values marked assumed are teaching estimates, not Tesla data.",
+    "top_height_m": 20.57,
+    "top_height_note": "67.5 ft, from the stream ALTITUDE gauge at the top",
+    "top_pitch_deg": 170,
+    "top_pitch_note": "from the stream PITCH gauge at the top",
+    "runup_m": 14,
+    "j_R1_m": 6.0,
+    "j_R2_m": 4.0,
+    "j_note": "assumed radii for the optional tall J shape (arc, vertical straight, arc)",
+    "v_cruise_mps": 3.0,
+    "a_stop_mps2": 0.5,
+    "v_creep_mps": 0.15,
+    "k_speed": 2.0,
+    "drive_max_g": 2.0,
+    "cda_m2": 0.6,
+    "suction_max_mg": 2.47,
+    "suction_note": "4,697 kgf on the stream DOWNFORCE gauge / 1,900 kg assumed mass = 2.47 mg",
+    "suction_floor": 0.03,
+    "suction_schedule_note": "assumed: suction = max * (floor + (1 - floor) * (1 - cos pitch) / 2); matches the gauge at 1, 76 and 170 deg within ~15%",
+    "hold_s": 3.0,
+    "release_push_mps": 0.0,
+    "thrust_max_mg": 3.5,
+    "lat_max_mg": 0.6,
+    "torque_max_Nm": 40000,
+    "thruster_note": "assumed thruster limits",
+    "att_kp": 25,
+    "att_kd": 10,
+    "a_brake_g": 0.6,
+    "v_desc_max_mps": 14,
+    "v_touch_mps": 0.5,
+    "k_vz": 5.0,
+    "x_land_m": -7.0,
+    "kp_x": 1.5,
+    "kd_x": 2.2,
+    "crash_speed_mps": 2.0,
+    "fail_after_s": 1.0,
+    "video_release": [
+      [
+        0,
+        67.5,
+        0.2
+      ],
+      [
+        0.92,
+        63.6,
+        0.4
+      ],
+      [
+        1.16,
+        58.0,
+        0.5
+      ],
+      [
+        1.76,
+        31.4,
+        3.1
+      ],
+      [
+        3.02,
+        7.7,
+        0.3
+      ],
+      [
+        4.63,
+        0.4,
+        1.1
+      ]
+    ],
+    "video_release_note": "[seconds after release, altitude ft, G-FORCE] read from stills; times assume file names are video milliseconds",
+    "presets": {
+      "match": {
+        "label": "Match the video",
+        "overrides": {}
+      },
+      "weak": {
+        "label": "Not enough suction",
+        "overrides": {
+          "suction_max_mg": 1.0
+        }
+      },
+      "fail": {
+        "label": "Fans fail at the top",
+        "overrides": {
+          "fans_fail": true
+        }
+      },
+      "nothrust": {
+        "label": "No thrusters",
+        "overrides": {
+          "thrusters": false
+        }
+      },
+      "slippery": {
+        "label": "Slippery tires",
+        "overrides": {
+          "mu": 0.5
+        }
+      }
+    },
+    "presets_note": "scenario buttons; overrides are applied on top of the defaults above (keys as in sim_a_physics.js config())"
+  },
+  "sim_b": {
+    "_note": "SIM-B: jump over a line of 5 vehicles with a 360-degree roll. Vehicle dimensions are approximate public figures [assumed]. Thrust, torque, and controller values are teaching assumptions.",
+    "v0_mps": 20,
+    "x_start_m": -19,
+    "x_lift_m": -14,
+    "lift_thrust_mg": 2.5,
+    "lift_burn_s": 0.6,
+    "roll_on": true,
+    "roll_delay_s": 0.1,
+    "roll_duration_s": 1.4,
+    "roll_torque_pct": 100,
+    "roll_stop_spin": true,
+    "landing_on": true,
+    "landing_trigger_g": 1.5,
+    "landing_touchdown_mps": 0.5,
+    "thrust_max_mg": 4.0,
+    "brake_g": 0.6,
+    "gap_m": 0.8,
+    "side_by_side": false,
+    "x_end_m": 52,
+    "presets_note": "Scenario buttons in the page; overrides are applied on top of the defaults above. Shared with the Julia model.",
+    "presets": {
+      "video": {
+        "label": "Match the video",
+        "overrides": {
+          "roll_torque_pct": 100,
+          "roll_stop_spin": true,
+          "landing_on": true,
+          "roll_on": true
+        }
+      },
+      "under": {
+        "label": "Under-rotation",
+        "overrides": {
+          "roll_torque_pct": 60,
+          "roll_stop_spin": true,
+          "landing_on": true,
+          "roll_on": true
+        }
+      },
+      "noburn": {
+        "label": "No landing burn",
+        "overrides": {
+          "roll_torque_pct": 100,
+          "roll_stop_spin": true,
+          "landing_on": false,
+          "roll_on": true
+        }
+      },
+      "spin": {
+        "label": "Spin never stops",
+        "overrides": {
+          "roll_torque_pct": 100,
+          "roll_stop_spin": false,
+          "landing_on": true,
+          "roll_on": true
+        }
+      }
+    },
+    "vehicles": [
+      {
+        "name": "Cybercab",
+        "length_m": 4.3,
+        "width_m": 1.95,
+        "height_m": 1.15
+      },
+      {
+        "name": "Cybertruck",
+        "length_m": 5.68,
+        "width_m": 2.2,
+        "height_m": 1.79
+      },
+      {
+        "name": "Semi",
+        "length_m": 6.9,
+        "width_m": 2.6,
+        "height_m": 4.0
+      },
+      {
+        "name": "Model Y",
+        "length_m": 4.75,
+        "width_m": 1.92,
+        "height_m": 1.62
+      },
+      {
+        "name": "Model 3",
+        "length_m": 4.72,
+        "width_m": 1.85,
+        "height_m": 1.44
+      }
+    ]
+  },
+  "sim_c": {
+    "_note": "SIM-C 0-60 mph lanes. Each lane is a physical config tuned (bisection, sims/src/sim_c_physics.js tune()) so its time matches the target. All configs are teaching assumptions, not Tesla data. k = fan suction as a multiple of m*g. rollout_ft = 1 means the official time excludes the first foot (drag-strip convention).",
+    "dt": 0.001,
+    "tmax": 12,
+    "strip_m": 40,
+    "lanes": [
+      {
+        "key": "ordinary",
+        "label": "Ordinary car",
+        "basis": "typical family car, about 7 s",
+        "target_s": 7.0,
+        "color": "#8a96a3",
+        "mass": 1600,
+        "mu": 0.9,
+        "k": 0,
+        "thrust_kN": 0,
+        "pmax_MW": 0.1244,
+        "fmax_kN": 7,
+        "cda": 0.65,
+        "crr": 0.012,
+        "rollout_ft": 0
+      },
+      {
+        "key": "plaid",
+        "label": "Model S Plaid",
+        "basis": "official 1.99 s, with 1-ft rollout",
+        "target_s": 1.99,
+        "color": "#4fa3ff",
+        "mass": 2160,
+        "mu": 1.249,
+        "k": 0,
+        "thrust_kN": 0,
+        "pmax_MW": 0.76,
+        "fmax_kN": 40,
+        "cda": 0.55,
+        "crr": 0.01,
+        "rollout_ft": 1
+      },
+      {
+        "key": "roadster2017",
+        "label": "2017 Roadster promise",
+        "basis": "promised 1.9 s (2017), with 1-ft rollout assumed",
+        "target_s": 1.9,
+        "color": "#a78bfa",
+        "mass": 2000,
+        "mu": 1.304,
+        "k": 0,
+        "thrust_kN": 0,
+        "pmax_MW": 1.0,
+        "fmax_kN": 45,
+        "cda": 0.5,
+        "crr": 0.01,
+        "rollout_ft": 1
+      },
+      {
+        "key": "tires",
+        "label": "Tires only, \u03bc = 1.1",
+        "basis": "grip limit a = \u03bcg; drag and rolling resistance add about 1%",
+        "target_s": 2.49,
+        "color": "#ffb020",
+        "mass": 1900,
+        "mu": 1.1,
+        "k": 0,
+        "thrust_kN": 0,
+        "pmax_MW": 3.0,
+        "fmax_kN": 100,
+        "cda": 0.45,
+        "crr": 0.008,
+        "rollout_ft": 0
+      },
+      {
+        "key": "reported1s",
+        "label": "About 1 s (reported)",
+        "basis": "press reports; suction tuned",
+        "target_s": 1.0,
+        "color": "#ff8a65",
+        "mass": 1900,
+        "mu": 1.1,
+        "k": 1.513,
+        "thrust_kN": 0,
+        "pmax_MW": 2.5,
+        "fmax_kN": 100,
+        "cda": 0.5,
+        "crr": 0.01,
+        "rollout_ft": 0
+      },
+      {
+        "key": "video081",
+        "label": "0.81 s (on screen)",
+        "basis": "stream timer; suction 2 mg (Tesla: 'up to 2G') + small thrust",
+        "target_s": 0.81,
+        "color": "#e8473b",
+        "mass": 1900,
+        "mu": 1.1,
+        "k": 2.0,
+        "thrust_kN": 2.06,
+        "pmax_MW": 2.5,
+        "fmax_kN": 100,
+        "cda": 0.5,
+        "crr": 0.01,
+        "rollout_ft": 0
+      }
+    ],
+    "your_car": {
+      "label": "Your car",
+      "color": "#ffd84d",
+      "fmax_kN": 100,
+      "cda": 0.5,
+      "crr": 0.01,
+      "rollout_ft": 0,
+      "sliders": {
+        "mass": {
+          "min": 1000,
+          "max": 3000,
+          "step": 50,
+          "unit": "kg"
+        },
+        "mu": {
+          "min": 0.5,
+          "max": 1.6,
+          "step": 0.05,
+          "unit": ""
+        },
+        "k": {
+          "min": 0,
+          "max": 3,
+          "step": 0.1,
+          "unit": "\u00d7 mg"
+        },
+        "thrust_kN": {
+          "min": 0,
+          "max": 40,
+          "step": 0.5,
+          "unit": "kN"
+        },
+        "pmax_MW": {
+          "min": 0.05,
+          "max": 3,
+          "step": 0.05,
+          "unit": "MW"
+        }
+      },
+      "presets": {
+        "video": {
+          "label": "Match the video",
+          "mass": 1900,
+          "mu": 1.1,
+          "k": 2.0,
+          "thrust_kN": 2.06,
+          "pmax_MW": 2.5
+        },
+        "tires": {
+          "label": "Tires only",
+          "mass": 1900,
+          "mu": 1.1,
+          "k": 0,
+          "thrust_kN": 0,
+          "pmax_MW": 3.0
+        },
+        "ordinary": {
+          "label": "Ordinary car",
+          "mass": 1600,
+          "mu": 0.9,
+          "k": 0,
+          "thrust_kN": 0,
+          "pmax_MW": 0.1244,
+          "fmax_kN": 7,
+          "cda": 0.65,
+          "crr": 0.012
+        }
+      }
+    }
+  }
+};
+
+</script>
+<script>
+/* integrate.js - fixed-step RK4 shared by the browser pages and the Node tests. */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.Integrate = factory();
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+  // One RK4 step for dy/dt = f(t, y). y is an array; returns a new array.
+  function rk4(f, t, y, h) {
+    const n = y.length;
+    const k1 = f(t, y);
+    const y2 = new Array(n);
+    for (let i = 0; i < n; i++) y2[i] = y[i] + 0.5 * h * k1[i];
+    const k2 = f(t + 0.5 * h, y2);
+    const y3 = new Array(n);
+    for (let i = 0; i < n; i++) y3[i] = y[i] + 0.5 * h * k2[i];
+    const k3 = f(t + 0.5 * h, y3);
+    const y4 = new Array(n);
+    for (let i = 0; i < n; i++) y4[i] = y[i] + h * k3[i];
+    const k4 = f(t + h, y4);
+    const out = new Array(n);
+    for (let i = 0; i < n; i++) out[i] = y[i] + (h / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]);
+    return out;
+  }
+  // Linear interpolation of the crossing time when g changes sign between two steps.
+  function crossing(t0, g0, t1, g1) {
+    if (g1 === g0) return t1;
+    return t0 + (t1 - t0) * (g0 / (g0 - g1));
+  }
+  return { rk4, crossing };
+});
+
+</script>
+<script>
+/* kit.js - shared UI toolkit for the GIST Lab Roadster simulations.
+   Provides: units, canvas sizing, a fixed-step animation loop, stream-style gauges,
+   time-series plots, sliders, presets, transport controls, predict overlay, arrows, CSV export. */
+(function (global) {
+  'use strict';
+
+  const U = { g: 9.80665, mph: 0.44704, ft: 0.3048, kmh: 1 / 3.6 };
+  const qs = Object.fromEntries(new URLSearchParams(location.search));
+
+  // ---------- errors: show them on the page so headless screenshots reveal them ----------
+  function showError(msg) {
+    let el = document.getElementById('kit-errors');
+    if (!el) { el = document.createElement('div'); el.id = 'kit-errors'; document.body.appendChild(el); }
+    el.textContent += msg + '\n';
+    el.style.display = 'block';
+  }
+  global.addEventListener('error', (e) => showError('Error: ' + e.message + ' (line ' + e.lineno + ')'));
+  global.addEventListener('unhandledrejection', (e) => showError('Promise: ' + e.reason));
+
+  // ---------- helpers ----------
+  function el(tag, cls, html) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html !== undefined) e.innerHTML = html;
+    return e;
+  }
+  function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function fmt(x, d = 1) { return (Number.isFinite(x) ? x : 0).toFixed(d); }
+  function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+  // Stream-style timer HH:MM:SS:cc (cc = hundredths of a second)
+  function timer(t) {
+    t = Math.max(0, t);
+    const total = Math.floor(t * 100 + 1e-6);
+    const cs = total % 100, s = Math.floor(total / 100) % 60, m = Math.floor(total / 6000) % 60, h = Math.floor(total / 360000);
+    return [h, m, s, cs].map((v) => String(v).padStart(2, '0')).join(':');
+  }
+
+  // Size a canvas to its CSS box (HiDPI aware). Returns {ctx, w, h} in CSS pixels.
+  function fitCanvas(cv) {
+    const r = cv.getBoundingClientRect();
+    const dpr = Math.min(global.devicePixelRatio || 1, 2);
+    const w = Math.max(1, Math.round(r.width)), h = Math.max(1, Math.round(r.height));
+    const W = Math.round(w * dpr), H = Math.round(h * dpr);
+    if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx, w, h };
+  }
+
+  // Arrow from (x,y) by (dx,dy) in screen pixels, with optional label at the tip.
+  function arrow(ctx, x, y, dx, dy, opt = {}) {
+    const L = Math.hypot(dx, dy);
+    if (L < 2) return;
+    const color = opt.color || '#fff', width = opt.width || 3, head = Math.min(opt.head || 12, L * 0.6);
+    const ux = dx / L, uy = dy / L;
+    ctx.save();
+    ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = width; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + dx - ux * head * 0.8, y + dy - uy * head * 0.8); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + dx, y + dy);
+    ctx.lineTo(x + dx - ux * head - uy * head * 0.5, y + dy - uy * head + ux * head * 0.5);
+    ctx.lineTo(x + dx - ux * head + uy * head * 0.5, y + dy - uy * head - ux * head * 0.5);
+    ctx.closePath(); ctx.fill();
+    if (opt.label) {
+      ctx.font = opt.font || '600 14px -apple-system, Segoe UI, sans-serif';
+      ctx.textAlign = ux >= 0 ? 'left' : 'right'; ctx.textBaseline = 'middle';
+      ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,0.85)';
+      const lx = x + dx + ux * 8 + (ux >= 0 ? 4 : -4), ly = y + dy + uy * 12;
+      ctx.strokeText(opt.label, lx, ly); ctx.fillText(opt.label, lx, ly);
+    }
+    ctx.restore();
+  }
+
+  // ---------- fixed-step loop ----------
+  // step(dt) advances physics by dt and returns false to stop. draw() renders.
+  class Loop {
+    constructor({ dt = 0.001, step, draw, maxStepsPerFrame = 5000 }) {
+      this.dt = dt; this.stepFn = step; this.drawFn = draw; this.max = maxStepsPerFrame;
+      this.playing = false; this.speed = 1; this.acc = 0; this.last = null; this.listeners = [];
+      this._frame = this._frame.bind(this);
+      requestAnimationFrame(this._frame);
+    }
+    _frame(ts) {
+      if (this.last === null) this.last = ts;
+      let real = (ts - this.last) / 1000; this.last = ts;
+      if (real > 0.1) real = 0.1;
+      if (this.playing) {
+        this.acc += real * this.speed;
+        let n = 0;
+        while (this.acc >= this.dt && n < this.max) {
+          const cont = this.stepFn(this.dt);
+          this.acc -= this.dt; n++;
+          if (cont === false) { this.acc = 0; this.pause(); break; }
+        }
+      }
+      try { this.drawFn(); } catch (e) { showError('draw: ' + e.message); this.pause(); }
+      requestAnimationFrame(this._frame);
+    }
+    play() { this.playing = true; this.acc = 0; this._emit(); }
+    pause() { this.playing = false; this._emit(); }
+    toggle() { this.playing ? this.pause() : this.play(); }
+    // Advance one display frame (1/60 s of simulation) while paused.
+    stepOnce(simSeconds = 1 / 60) {
+      this.pause();
+      const n = Math.max(1, Math.round(simSeconds / this.dt));
+      for (let i = 0; i < n; i++) if (this.stepFn(this.dt) === false) break;
+    }
+    // Run synchronously until getT() >= t (used by ?t= for screenshots and jumping ahead).
+    runTo(t, getT) {
+      let guard = 0;
+      while (getT() < t && guard < 5e6) { if (this.stepFn(this.dt) === false) break; guard++; }
+      this.pause();
+    }
+    setSpeed(s) { this.speed = s; this._emit(); }
+    onChange(fn) { this.listeners.push(fn); }
+    _emit() { this.listeners.forEach((f) => f(this)); }
+  }
+
+  // ---------- stream-style circular gauge ----------
+  class Gauge {
+    constructor(parent, { label, unit = '', min = 0, max = 1, digits = 1 }) {
+      this.label = label; this.unit = unit; this.min = min; this.max = max; this.digits = digits;
+      this.box = el('div', 'kit-gauge'); this.cv = el('canvas'); this.box.appendChild(this.cv); parent.appendChild(this.box);
+      this.v = null; this.key = '';
+      this.set(min);
+    }
+    set(v) {
+      const key = fmt(v, this.digits);
+      if (key === this.key && this.cv.width > 1) return;
+      this.v = v; this.key = key; this.draw();
+    }
+    draw() {
+      const { ctx, w, h } = fitCanvas(this.cv);
+      const cx = w / 2, cy = h / 2, r = Math.min(w, h) / 2 - 6;
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.beginPath(); ctx.arc(cx, cy, r + 4, 0, Math.PI * 2); ctx.fill();
+      const a0 = Math.PI * 0.75, a1 = Math.PI * 2.25;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = 'rgba(255,255,255,0.16)'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(cx, cy, r, a0, a1); ctx.stroke();
+      const f = clamp((Math.abs(this.v) - this.min) / (this.max - this.min || 1), 0, 1);
+      if (f > 0.001) {
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 5;
+        ctx.beginPath(); ctx.arc(cx, cy, r, a0, a0 + (a1 - a0) * f); ctx.stroke();
+      }
+      ctx.fillStyle = 'rgba(255,255,255,0.65)'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.font = `600 ${Math.round(r * 0.2)}px -apple-system, Segoe UI, sans-serif`;
+      ctx.fillText(this.label, cx, cy - r * 0.45);
+      ctx.fillText(this.unit, cx, cy + r * 0.45);
+      ctx.fillStyle = '#fff';
+      ctx.font = `500 ${Math.round(r * (this.key.length > 5 ? 0.42 : 0.5))}px "Avenir Next", -apple-system, Segoe UI, sans-serif`;
+      ctx.fillText(this.key, cx, cy + r * 0.02);
+    }
+  }
+
+  // ---------- time-series plot ----------
+  function niceTicks(min, max, count = 5) {
+    const span = max - min || 1;
+    const raw = span / count, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((s) => span / s <= count) || 10 * mag;
+    const out = [];
+    for (let v = Math.ceil(min / step) * step; v <= max + 1e-9; v += step) out.push(Math.abs(v) < 1e-12 ? 0 : v);
+    return out;
+  }
+  class Plot {
+    constructor(canvas, o = {}) {
+      this.cv = canvas;
+      this.title = o.title || ''; this.xlabel = o.xlabel || 't (s)'; this.ylabel = o.ylabel || '';
+      this.x0 = o.xmin ?? 0; this.x1 = o.xmax ?? 1; this.y0 = o.ymin ?? 0; this.y1 = o.ymax ?? 1;
+      this.base = { x1: this.x1, y0: this.y0, y1: this.y1 };
+      this.autoY = !!o.autoY; this.autoX = o.autoX !== false;
+      this.series = (o.series || []).map((s) => ({ name: s.name, color: s.color || '#fff', width: s.width || 2, dash: s.dash || null, data: [] }));
+      this.hlines = o.hlines || []; this.vlines = []; this.markers = [];
+    }
+    clear() {
+      this.series.forEach((s) => (s.data.length = 0)); this.markers = []; this.vlines = [];
+      this.x1 = this.base.x1; this.y0 = this.base.y0; this.y1 = this.base.y1;
+    }
+    push(i, x, y) {
+      const d = this.series[i].data;
+      const minDx = (this.x1 - this.x0) / 700;
+      if (d.length && x - d[d.length - 1][0] < minDx) return;
+      d.push([x, y]);
+      if (this.autoX && x > this.x1) this.x1 = x * 1.3;
+      if (this.autoY) { if (y > this.y1) this.y1 = y * 1.15; if (y < this.y0) this.y0 = y * 1.15; }
+    }
+    setSeries(i, pts) { this.series[i].data = pts.slice(); }
+    marker(x, y, label, color = '#ffd84d') { this.markers.push({ x, y, label, color }); }
+    vline(x, label, color = 'rgba(255,255,255,0.4)') { this.vlines.push({ x, label, color }); }
+    draw() {
+      const { ctx, w, h } = fitCanvas(this.cv);
+      ctx.clearRect(0, 0, w, h);
+      const m = { l: 56, r: 14, t: 28, b: 34 };
+      const pw = w - m.l - m.r, ph = h - m.t - m.b;
+      if (pw < 20 || ph < 20) return;
+      const X = (x) => m.l + ((x - this.x0) / (this.x1 - this.x0)) * pw;
+      const Y = (y) => m.t + (1 - (y - this.y0) / (this.y1 - this.y0)) * ph;
+      ctx.font = '12px -apple-system, Segoe UI, sans-serif';
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.fillStyle = '#7d8894'; ctx.lineWidth = 1;
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      for (const v of niceTicks(this.y0, this.y1, 4)) {
+        ctx.beginPath(); ctx.moveTo(m.l, Y(v)); ctx.lineTo(m.l + pw, Y(v)); ctx.stroke();
+        ctx.fillText(+v.toPrecision(4) + '', m.l - 6, Y(v));
+      }
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (const v of niceTicks(this.x0, this.x1, 6)) {
+        ctx.beginPath(); ctx.moveTo(X(v), m.t); ctx.lineTo(X(v), m.t + ph); ctx.stroke();
+        ctx.fillText(+v.toPrecision(4) + '', X(v), m.t + ph + 5);
+      }
+      ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.strokeRect(m.l, m.t, pw, ph);
+      ctx.fillStyle = '#a3aeba'; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+      ctx.fillText(this.xlabel, m.l + pw, h - 2);
+      ctx.save(); ctx.translate(13, m.t + ph / 2); ctx.rotate(-Math.PI / 2); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(this.ylabel, 0, 0); ctx.restore();
+      ctx.fillStyle = '#eef2f6'; ctx.font = '600 13px -apple-system, Segoe UI, sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+      ctx.fillText(this.title, m.l, 7);
+      ctx.save(); ctx.beginPath(); ctx.rect(m.l, m.t, pw, ph); ctx.clip();
+      for (const hl of this.hlines) {
+        ctx.strokeStyle = hl.color || 'rgba(255,216,77,0.7)'; ctx.setLineDash([6, 5]); ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(m.l, Y(hl.y)); ctx.lineTo(m.l + pw, Y(hl.y)); ctx.stroke(); ctx.setLineDash([]);
+        if (hl.label) { ctx.fillStyle = hl.color || 'rgba(255,216,77,0.9)'; ctx.font = '12px -apple-system, sans-serif'; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText(hl.label, m.l + pw - 4, Y(hl.y) - 2); }
+      }
+      for (const vl of this.vlines) {
+        ctx.strokeStyle = vl.color; ctx.setLineDash([4, 4]); ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(X(vl.x), m.t); ctx.lineTo(X(vl.x), m.t + ph); ctx.stroke(); ctx.setLineDash([]);
+        if (vl.label) { ctx.fillStyle = '#a3aeba'; ctx.font = '11px -apple-system, sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(vl.label, X(vl.x) + 3, m.t + 3); }
+      }
+      for (const s of this.series) {
+        if (s.data.length < 2) continue;
+        ctx.strokeStyle = s.color; ctx.lineWidth = s.width; ctx.setLineDash(s.dash || []);
+        ctx.beginPath(); s.data.forEach(([x, y], k) => (k ? ctx.lineTo(X(x), Y(y)) : ctx.moveTo(X(x), Y(y)))); ctx.stroke();
+      }
+      ctx.setLineDash([]);
+      for (const mk of this.markers) {
+        ctx.fillStyle = mk.color; ctx.beginPath(); ctx.arc(X(mk.x), Y(mk.y), 4.5, 0, Math.PI * 2); ctx.fill();
+        if (mk.label) { ctx.font = '600 12px -apple-system, sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; ctx.fillText(mk.label, X(mk.x) + 6, Y(mk.y) - 4); }
+      }
+      ctx.restore();
+      // legend
+      let lx = m.l + pw, ly = 8;
+      ctx.font = '12px -apple-system, Segoe UI, sans-serif'; ctx.textBaseline = 'top'; ctx.textAlign = 'right';
+      for (let i = this.series.length - 1; i >= 0; i--) {
+        const s = this.series[i]; if (!s.name) continue;
+        const tw = ctx.measureText(s.name).width;
+        ctx.fillStyle = '#a3aeba'; ctx.fillText(s.name, lx, ly);
+        ctx.fillStyle = s.color; ctx.fillRect(lx - tw - 18, ly + 6, 12, 3);
+        lx -= tw + 30;
+      }
+    }
+  }
+
+  // ---------- controls ----------
+  function section(parent, title) {
+    const s = el('div', 'kit-section');
+    if (title) s.appendChild(el('h2', '', title));
+    parent.appendChild(s);
+    return s;
+  }
+  function slider(parent, { label, min, max, step = 'any', value, unit = '', fmt: f = (v) => v, onInput }) {
+    const row = el('div', 'kit-slider');
+    row.innerHTML = `<div class="kit-slider-head"><span>${label}</span><b></b></div><input type="range">`;
+    const out = row.querySelector('b'), inp = row.querySelector('input');
+    inp.min = min; inp.max = max; inp.step = step; inp.value = value;
+    const upd = () => (out.textContent = f(+inp.value) + (unit ? ' ' + unit : ''));
+    inp.addEventListener('input', () => { upd(); onInput && onInput(+inp.value); });
+    upd(); parent.appendChild(row);
+    return { el: row, input: inp, get value() { return +inp.value; }, set(v) { inp.value = v; upd(); } };
+  }
+  function check(parent, { label, value = false, onChange }) {
+    const row = el('label', 'kit-check');
+    row.innerHTML = `<input type="checkbox"><span>${label}</span>`;
+    const inp = row.querySelector('input'); inp.checked = value;
+    inp.addEventListener('change', () => onChange && onChange(inp.checked));
+    parent.appendChild(row);
+    return { el: row, input: inp, get value() { return inp.checked; }, set(v) { inp.checked = v; } };
+  }
+  function button(parent, label, onClick, cls = 'kit-btn') {
+    const b = el('button', cls, label); b.type = 'button'; b.addEventListener('click', onClick); parent.appendChild(b); return b;
+  }
+  // presets: [{key, label, apply()}]
+  function presets(parent, list, initialKey) {
+    const box = el('div', 'kit-presets'); parent.appendChild(box);
+    const api = { active: null, buttons: {} };
+    api.select = (key) => {
+      const p = list.find((q) => q.key === key); if (!p) return;
+      api.active = key; Object.entries(api.buttons).forEach(([k, b]) => b.classList.toggle('on', k === key)); p.apply();
+    };
+    api.clear = () => { api.active = null; Object.values(api.buttons).forEach((b) => b.classList.remove('on')); };
+    list.forEach((p) => { api.buttons[p.key] = button(box, p.label, () => api.select(p.key)); });
+    if (initialKey) api.select(initialKey);
+    return api;
+  }
+  // readouts: rows [{key, label}] -> api.set(key, text, status)
+  function readouts(parent, rows) {
+    const box = el('div', 'kit-readouts'); parent.appendChild(box);
+    const cells = {};
+    rows.forEach((r) => { box.appendChild(el('div', 'k', r.label)); const v = el('div', 'v', '—'); box.appendChild(v); cells[r.key] = v; });
+    return { set(key, text, status) { const c = cells[key]; if (!c) return; if (c.textContent !== text) c.textContent = text; c.className = 'v' + (status ? ' ' + status : ''); } };
+  }
+
+  // Transport: play/pause, reset, step, speed, forces, predict, CSV. Also binds keys.
+  function transport(parent, loop, h = {}) {
+    const box = el('div', 'kit-transport'); parent.appendChild(box);
+    const play = button(box, '▶ Play', () => (h.onPlay ? h.onPlay() : loop.toggle()), 'kit-btn primary');
+    button(box, '⟲ Reset', () => h.onReset && h.onReset());
+    button(box, 'Step ▸', () => loop.stepOnce());
+    const speeds = [0.1, 0.25, 0.5, 1, 2];
+    const seg = el('div', 'kit-seg'); box.appendChild(seg);
+    const sb = speeds.map((s) => { const b = el('button', '', s + '×'); b.type = 'button'; b.addEventListener('click', () => loop.setSpeed(s)); seg.appendChild(b); return b; });
+    const forces = h.onForces ? button(box, 'Forces', () => h.onForces()) : null;
+    const pred = h.onPredict ? button(box, 'Predict', () => h.onPredict()) : null;
+    if (h.onExport) button(box, 'CSV', () => h.onExport());
+    const sync = () => {
+      play.textContent = loop.playing ? '❚❚ Pause' : '▶ Play';
+      sb.forEach((b, i) => b.classList.toggle('on', loop.speed === speeds[i]));
+    };
+    loop.onChange(sync); sync();
+    global.addEventListener('keydown', (e) => {
+      if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName) && e.key !== ' ') return;
+      if (e.key === ' ') { e.preventDefault(); h.onPlay ? h.onPlay() : loop.toggle(); }
+      else if (e.key === 'r' || e.key === 'R') h.onReset && h.onReset();
+      else if (e.key === 'ArrowRight') loop.stepOnce();
+      else if (e.key === 's' || e.key === 'S') { const i = speeds.indexOf(loop.speed); loop.setSpeed(speeds[(i + speeds.length - 1) % speeds.length]); }
+      else if ((e.key === 'f' || e.key === 'F') && h.onForces) h.onForces();
+      else if ((e.key === 'p' || e.key === 'P') && h.onPredict) h.onPredict();
+    });
+    return { setForces(on) { forces && forces.classList.toggle('on', on); }, setPredict(on) { pred && pred.classList.toggle('on', on); } };
+  }
+
+  // Predict overlay: question first, students vote, then "Run it".
+  class Predict {
+    constructor(stage, { tag = 'Predict first', question, choices = [], hint = '', onGo }) {
+      this.box = el('div', 'kit-predict');
+      const card = el('div', 'card');
+      card.appendChild(el('div', 'tag', tag));
+      card.appendChild(el('h3', '', question));
+      if (choices.length) {
+        const c = el('div', 'choices');
+        choices.forEach((t) => { const b = el('button', '', t); b.type = 'button'; b.addEventListener('click', () => { c.querySelectorAll('button').forEach((x) => x.classList.remove('on')); b.classList.add('on'); }); c.appendChild(b); });
+        card.appendChild(c);
+      }
+      if (hint) card.appendChild(el('p', 'hint', hint));
+      const go = el('button', 'kit-btn primary go', 'Run it ▶'); go.type = 'button';
+      go.addEventListener('click', () => { this.hide(); onGo && onGo(); });
+      card.appendChild(go);
+      this.box.appendChild(card); stage.appendChild(this.box);
+      this.onToggle = null;
+    }
+    get shown() { return this.box.classList.contains('show'); }
+    show() { this.box.classList.add('show'); this.onToggle && this.onToggle(true); }
+    hide() { this.box.classList.remove('show'); this.onToggle && this.onToggle(false); }
+    toggle() { this.shown ? this.hide() : this.show(); }
+  }
+
+  function downloadCSV(name, header, rows) {
+    const text = [header.join(',')].concat(rows.map((r) => r.map((v) => (typeof v === 'number' ? +v.toPrecision(8) : v)).join(','))).join('\n');
+    const a = el('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/csv' })); a.download = name;
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+
+  global.Kit = { U, qs, el, css, fmt, clamp, timer, fitCanvas, arrow, Loop, Gauge, Plot, niceTicks,
+    section, slider, check, button, presets, readouts, transport, Predict, downloadCSV, showError };
+})(window);
+
+</script>
+<script>
+/* sim_c_physics.js - 1D straight-line acceleration model for SIM-C (0 -> 60 mph).
+   m dv/dt = min(F_motor(v), mu (m g + F_s)) + T - 0.5 rho CdA v^2 - Crr (m g + F_s)
+   F_motor(v) = min(F_max, P_max / v), F_s = k m g (fan suction), T = thruster force.
+   Pure functions: pass the lane config and the common params (g, rho_air). */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory(require('./integrate.js'));
+  else root.SimC = factory(root.Integrate);
+})(typeof self !== 'undefined' ? self : this, function (Integrate) {
+  'use strict';
+  const MPH = 0.44704, FT = 0.3048;
+  const V60 = 60 * MPH;
+
+  // All forces at speed v (N). cfg: mass, mu, k, thrust_kN, pmax_MW, fmax_kN, cda, crr.
+  function forces(cfg, v, common) {
+    const g = common.g, m = cfg.mass;
+    const Fs = cfg.k * m * g;
+    const N = m * g + Fs;
+    const Fgrip = cfg.mu * N;
+    const Fmax = cfg.fmax_kN * 1e3, Pmax = cfg.pmax_MW * 1e6;
+    const Fpow = v > 1e-9 ? Pmax / v : Infinity;
+    const Fmotor = Math.min(Fmax, Fpow);
+    const Fdrive = Math.min(Fmotor, Fgrip);
+    const limit = Fgrip <= Fmotor ? 'tire grip' : (Fpow < Fmax ? 'motor power' : 'motor force');
+    const T = (cfg.thrust_kN || 0) * 1e3;
+    const Fdrag = 0.5 * common.rho_air * cfg.cda * v * v;
+    const Frr = cfg.crr * N;
+    const Fnet = Fdrive + T - Fdrag - Frr;
+    const a = v <= 0 && Fnet < 0 ? 0 : Fnet / m;
+    return { Fs, N, Fgrip, Fmotor, Fdrive, T, Fdrag, Frr, Fnet, a, power: Fdrive * v, limit };
+  }
+
+  function newRun(cfg, common) {
+    const F = forces(cfg, 0, common);
+    return { t: 0, x: 0, v: 0, a: F.a, peakA: F.a, limit: F.limit, t60: null, x60: null, tRoll: null, p60: null, done: false };
+  }
+
+  // Advance one step of dt. With stopAt60 the run ends exactly at 60 mph (interpolated crossing).
+  function stepRun(r, cfg, common, dt, stopAt60 = true) {
+    if (r.done) return r;
+    const f = (t, y) => [y[1], forces(cfg, y[1], common).a];
+    const y1 = Integrate.rk4(f, r.t, [r.x, r.v], dt);
+    const t1 = r.t + dt;
+    const rollX = (cfg.rollout_ft || 0) * FT;
+    if (rollX > 0 && r.tRoll === null && y1[0] >= rollX) r.tRoll = Integrate.crossing(r.t, r.x - rollX, t1, y1[0] - rollX);
+    if (r.t60 === null && y1[1] >= V60) {
+      r.t60 = Integrate.crossing(r.t, r.v - V60, t1, y1[1] - V60);
+      const s = (r.t60 - r.t) / dt;
+      r.x60 = r.x + s * (y1[0] - r.x);
+      const F = forces(cfg, V60, common);
+      r.p60 = F.power;
+      if (stopAt60) {
+        r.t = r.t60; r.x = r.x60; r.v = V60; r.a = F.a; r.limit = F.limit;
+        if (F.a > r.peakA) r.peakA = F.a;
+        r.done = true;
+        return r;
+      }
+    }
+    r.t = t1; r.x = y1[0]; r.v = y1[1];
+    const F = forces(cfg, r.v, common);
+    r.a = F.a; r.limit = F.limit;
+    if (F.a > r.peakA) r.peakA = F.a;
+    return r;
+  }
+
+  // Reported 0-60 time: subtract the 1-ft rollout when the lane's official figure uses it.
+  function reported(r, cfg) {
+    if (r.t60 === null) return null;
+    return r.t60 - (cfg.rollout_ft ? r.tRoll || 0 : 0);
+  }
+
+  function simulate(cfg, common, dt = 1e-3, tmax = 30) {
+    const r = newRun(cfg, common);
+    while (!r.done && r.t < tmax) stepRun(r, cfg, common, dt);
+    return { t60: r.t60, x60: r.x60, reported: reported(r, cfg), peakG: r.peakA / common.g, p60: r.p60, tRoll: r.tRoll };
+  }
+
+  // Find the value of cfg[key] in [lo, hi] that gives the target reported time (bisection).
+  function tune(cfg, key, target, lo, hi, common, iters = 45) {
+    const time = (val) => simulate(Object.assign({}, cfg, { [key]: val }), common).reported ?? Infinity;
+    let a = lo, b = hi;
+    const dec = time(a) > time(b);
+    for (let i = 0; i < iters; i++) {
+      const mid = 0.5 * (a + b);
+      if ((time(mid) > target) === dec) a = mid; else b = mid;
+    }
+    return 0.5 * (a + b);
+  }
+
+  return { MPH, FT, V60, forces, newRun, stepRun, reported, simulate, tune };
+});
+
+</script>
+<script>
+'use strict';
+const C = window.PARAMS.common, SC = window.PARAMS.sim_c, YC = SC.your_car;
+const g = C.g, MPH = SimC.MPH, V60 = SimC.V60;
+const LANES = SC.lanes;
+const HIDDEN = ['fmax_kN', 'cda', 'crr'];           // Your-car fields not on sliders (set by presets)
+
+let your = Object.assign({}, YC, YC.presets.video);
+let runs = [], yrun = null, simT = 0, finished = false, showForces = true, rec = [], lastRec = 0;
+
+// ---------- small drawing helpers (local to this page) ----------
+function rrect(ctx, x, y, w, h, r) {
+  r = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h); ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath();
+}
+function fitText(ctx, text, maxW) {
+  if (ctx.measureText(text).width <= maxW) return text;
+  let t = text;
+  while (t.length > 3 && ctx.measureText(t + '…').width > maxW) t = t.slice(0, -1);
+  return t + '…';
+}
+function cfgLine(c) {
+  const parts = ['μ ' + c.mu.toFixed(2)];
+  parts.push(c.k > 0 ? 'suction ' + c.k.toFixed(1) + ' mg' : 'no suction');
+  if (c.thrust_kN > 0) parts.push('thrust ' + c.thrust_kN.toFixed(1) + ' kN');
+  parts.push((c.pmax_MW >= 1 ? c.pmax_MW.toFixed(1) : c.pmax_MW.toFixed(2)) + ' MW');
+  return parts.join(' · ');
+}
+function drawCar(ctx, xf, yc, L, W, color, plume) {
+  ctx.save();
+  if (plume > 0) {
+    const pl = L * (0.5 + plume);
+    const grd = ctx.createLinearGradient(xf - L, 0, xf - L - pl, 0);
+    grd.addColorStop(0, 'rgba(225,242,255,0.9)'); grd.addColorStop(1, 'rgba(225,242,255,0)');
+    ctx.fillStyle = grd; ctx.beginPath();
+    ctx.moveTo(xf - L + 2, yc - W * 0.28); ctx.lineTo(xf - L - pl, yc - W * 0.75);
+    ctx.lineTo(xf - L - pl, yc + W * 0.75); ctx.lineTo(xf - L + 2, yc + W * 0.28); ctx.closePath(); ctx.fill();
+  }
+  ctx.fillStyle = '#030303';
+  const ww = L * 0.17, wh = W * 0.2;
+  for (const fx of [0.2, 0.78]) for (const s of [-1, 1]) ctx.fillRect(xf - L * fx - ww / 2, yc + s * W / 2 - wh / 2, ww, wh);
+  rrect(ctx, xf - L, yc - W / 2, L, W, W * 0.38); ctx.fillStyle = color; ctx.fill();
+  rrect(ctx, xf - L * 0.64, yc - W * 0.32, L * 0.38, W * 0.64, W * 0.22); ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fill();
+  ctx.restore();
+}
+
+// ---------- state ----------
+function reset() {
+  runs = LANES.map((l) => SimC.newRun(l, C));
+  yrun = SimC.newRun(your, C);
+  simT = 0; finished = false; rec = [[0, 0, 0, yrun.a]]; lastRec = 0;
+  const pred = SimC.simulate(your, C, SC.dt, SC.tmax);
+  const tEnd = Math.min(SC.tmax, Math.max(3, (pred.t60 || SC.tmax) * 1.15));
+  for (const p of [p1, p2, p3]) { p.clear(); p.base.x1 = tEnd; p.x1 = tEnd; }
+  p2.hlines = [
+    { y: your.mu, label: `tires only (no suction): μg = ${your.mu.toFixed(2)} g`, color: 'rgba(255,176,32,0.9)' },
+    { y: 3.38, label: 'average needed for 0.81 s: 3.38 g', color: 'rgba(255,216,77,0.75)' },
+  ];
+  pushPlots(true);
+  updateReadouts();
+}
+function lastT60() { return Math.max(...runs.map((r) => r.t60 || 0), yrun.t60 || 0); }
+
+function step(dt) {
+  simT += dt;
+  runs.forEach((r, i) => { if (!r.done) SimC.stepRun(r, LANES[i], C, dt); });
+  if (!yrun.done) SimC.stepRun(yrun, your, C, dt);
+  if (simT - lastRec >= 0.005 || (yrun.done && rec[rec.length - 1][0] < yrun.t)) {
+    if (!yrun.done || rec[rec.length - 1][0] < yrun.t) rec.push([yrun.t, yrun.x, yrun.v, yrun.a]);
+    lastRec = simT;
+  }
+  pushPlots(false);
+  const allDone = (yrun.done && runs.every((r) => r.done));
+  if ((allDone && simT > lastT60() + 0.3) || simT >= SC.tmax) { finished = true; return false; }
+  return true;
+}
+
+function pushPt(p, i, x, y, force) {
+  if (force) { const d = p.series[i].data; if (!d.length || x > d[d.length - 1][0]) d.push([x, y]); }
+  else p.push(i, x, y);
+}
+function pushPlots(force) {
+  runs.forEach((r, i) => {
+    if (r._fin) return;
+    pushPt(p1, i, r.t, r.v / MPH, force || r.done);
+    if (r.done) r._fin = true;
+  });
+  if (!yrun._fin) {
+    const F = SimC.forces(your, yrun.v, C), f = force || yrun.done, t = yrun.t;
+    pushPt(p1, LANES.length, t, yrun.v / MPH, f);
+    pushPt(p2, 0, t, yrun.a / g, f);
+    pushPt(p3, 0, t, F.Fgrip / 1e3, f);
+    pushPt(p3, 1, t, Math.min(F.Fmotor, 2e5) / 1e3, f);
+    pushPt(p3, 2, t, F.Fdrive / 1e3, f);
+    pushPt(p3, 3, t, F.T / 1e3, f);
+    pushPt(p3, 4, t, F.Fdrag / 1e3, f);
+    if (yrun.done) yrun._fin = true;
+  }
+}
+
+// ---------- drawing ----------
+const cv = document.getElementById('cv');
+function drawStage() {
+  const { ctx, w, h } = Kit.fitCanvas(cv);
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h);
+  const n = LANES.length + 1;
+  const top = 50, bottom = h - 168;
+  const laneH = (bottom - top) / n;
+  const LW = Kit.clamp(w * 0.21, 220, 330);
+  const xEnd = w - 24;
+  const carLen = C.car_length_m;
+  const scale = (xEnd - LW - 14) / (SC.strip_m + carLen);
+  const x0 = LW + 14 + carLen * scale;
+  const fs = Math.max(0.82, Math.min(1, laneH / 78));
+
+  // track surface and rulers (like the drag strip in the stream)
+  ctx.fillStyle = '#15181c'; ctx.fillRect(LW, top - 10, w - LW, bottom - top + 20);
+  ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.lineWidth = 2;
+  ctx.font = `600 ${Math.round(12 * Math.max(fs, 0.85))}px -apple-system, Segoe UI, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+  for (const [yy, dir] of [[top - 10, -1], [bottom + 10, 1]]) {
+    ctx.beginPath(); ctx.moveTo(x0, yy); ctx.lineTo(xEnd, yy); ctx.stroke();
+    for (let m = 0; m <= SC.strip_m; m++) {
+      const x = x0 + m * scale, len = m % 5 === 0 ? 12 : 6;
+      ctx.beginPath(); ctx.moveTo(x, yy); ctx.lineTo(x, yy + dir * len); ctx.stroke();
+      if (dir < 0 && m % 5 === 0) ctx.fillText(m + ' m', x, yy - 14);
+    }
+  }
+  ctx.textBaseline = 'top'; ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  ctx.fillText('distance from the start line', (x0 + xEnd) / 2, bottom + 26);
+  // start line
+  ctx.fillStyle = '#fff'; ctx.fillRect(x0 - 2, top - 10, 4, bottom - top + 20);
+
+  for (let i = 0; i < n; i++) {
+    const isYou = i === LANES.length;
+    const cfg = isYou ? your : LANES[i], r = isYou ? yrun : runs[i];
+    const color = isYou ? YC.color : cfg.color;
+    const y0 = top + laneH * i, yc = y0 + laneH / 2;
+    if (i > 0) {
+      ctx.strokeStyle = 'rgba(255,255,255,0.18)'; ctx.setLineDash([14, 12]); ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(LW, y0); ctx.lineTo(w, y0); ctx.stroke(); ctx.setLineDash([]);
+    }
+    if (isYou) { ctx.fillStyle = 'rgba(255,216,77,0.07)'; ctx.fillRect(0, y0 + 1, w, laneH - 2); }
+
+    // label column
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = color; ctx.font = `700 ${Math.round(17 * fs)}px -apple-system, Segoe UI, sans-serif`;
+    ctx.fillText(fitText(ctx, isYou ? 'Your car (sliders)' : cfg.label, LW - 24), 14, yc - laneH * 0.24);
+    ctx.fillStyle = '#c3ccd5'; ctx.font = `${Math.round(13 * fs)}px -apple-system, Segoe UI, sans-serif`;
+    ctx.fillText(fitText(ctx, cfgLine(cfg), LW - 24), 14, yc + laneH * 0.03);
+    ctx.fillStyle = '#7d8894'; ctx.font = `${Math.round(12 * fs)}px -apple-system, Segoe UI, sans-serif`;
+    ctx.fillText(fitText(ctx, isYou ? 'mass ' + cfg.mass + ' kg' : cfg.basis, LW - 24), 14, yc + laneH * 0.27);
+
+    // car
+    const Lpx = carLen * scale, Wpx = Math.min(laneH * 0.52, C.car_width_m * scale);
+    let xf = x0 + r.x * scale;
+    const off = xf > xEnd;
+    ctx.save(); ctx.beginPath(); ctx.rect(LW, y0, xEnd - LW, laneH); ctx.clip();
+    if (off) xf = xEnd + Lpx * 0.3;
+    const thrusting = cfg.thrust_kN > 0 && !r.done && r.t > 0;
+    drawCar(ctx, xf, yc, Lpx, Wpx, isYou ? YC.color : color, thrusting ? Math.min(1.2, cfg.thrust_kN / 10 + 0.3) : 0);
+    ctx.restore();
+
+    // 60 mph marker and labels
+    ctx.textBaseline = 'middle';
+    if (r.done) {
+      const xm = off ? xEnd : x0 + r.x60 * scale;
+      ctx.strokeStyle = 'rgba(255,216,77,0.9)'; ctx.setLineDash([5, 4]); ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(xm, y0 + 4); ctx.lineTo(xm, y0 + laneH - 4); ctx.stroke(); ctx.setLineDash([]);
+      const rep = SimC.reported(r, cfg);
+      const txt = rep.toFixed(2) + ' s · ' + r.x60.toFixed(1) + ' m' + (off ? ' →' : '');
+      ctx.font = `700 ${Math.round(17 * fs)}px -apple-system, Segoe UI, sans-serif`;
+      const tw = ctx.measureText(txt).width;
+      let tx = xm + 10, align = 'left';
+      if (off || tx + tw > xEnd) { tx = (off ? xEnd - Lpx * 0.75 : xm - Lpx) - 10; align = 'right'; }
+      ctx.textAlign = align; ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(0,0,0,0.85)';
+      ctx.strokeText(txt, tx, yc); ctx.fillStyle = color; ctx.fillText(txt, tx, yc);
+    } else if (r.t > 0 || isYou) {
+      const txt = (r.v / MPH).toFixed(0) + ' mph';
+      ctx.font = `600 ${Math.round(14 * fs)}px -apple-system, Segoe UI, sans-serif`;
+      ctx.textAlign = 'left'; ctx.fillStyle = '#c3ccd5';
+      const ty = isYou && showForces ? y0 + laneH * 0.16 : yc;
+      ctx.fillText(txt, Math.min(xf + 8, xEnd - 60), ty);
+    }
+
+    // force arrows on Your car
+    if (isYou && showForces && !yrun.done) {
+      const F = SimC.forces(your, yrun.v, C);
+      const k = w / 800, xfr = Math.min(xf, xEnd), xr = xfr - Lpx;
+      const len = (N) => (N > 1 ? Math.max(16, (N / 1e3) * k) : 0);
+      const font = `600 ${Math.round(13 * fs)}px -apple-system, Segoe UI, sans-serif`;
+      Kit.arrow(ctx, xfr + 4, yc - Wpx * 0.25, len(F.Fdrive), 0, { color: Kit.css('--f-friction'), label: 'drive (tire grip) ' + (F.Fdrive / 1e3).toFixed(0) + ' kN', font, width: 3 });
+      if (F.T > 0) Kit.arrow(ctx, xfr + 4, yc + Wpx * 0.25, len(F.T), 0, { color: Kit.css('--f-thrust'), label: 'thrust ' + (F.T / 1e3).toFixed(1) + ' kN', font, width: 3 });
+      if (F.Fdrag + F.Frr > 1) { const room = xr - 4 - len(F.Fdrag + F.Frr) - LW > 150; Kit.arrow(ctx, xr - 4, yc - Wpx * 0.25, -len(F.Fdrag + F.Frr), 0, { color: Kit.css('--f-drag'), label: room ? 'drag + rolling ' + ((F.Fdrag + F.Frr) / 1e3).toFixed(1) + ' kN' : null, font, width: 2.5 }); }
+      if (your.k > 0) {
+        ctx.fillStyle = Kit.css('--f-suction'); ctx.font = font; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+        ctx.fillText('suction ' + Math.round(your.k * your.mass).toLocaleString() + ' kgf ↓ (into the road)', Math.max(LW + 8, Math.min(xf, xEnd) - Lpx), y0 + laneH * 0.88);
+      }
+    }
+  }
+}
+
+function draw() {
+  drawStage();
+  const F = SimC.forces(your, yrun.v, C);
+  gSpeed.set(yrun.v / MPH); gG.set(yrun.a / g); gDown.set(your.k * your.mass); gPow.set(yrun.done ? (yrun.p60 || 0) / 1e6 : F.power / 1e6);
+  document.getElementById('timer').textContent = Kit.timer(simT);
+  p1.draw(); p2.draw(); p3.draw();
+  updateReadouts();
+}
+
+function updateReadouts() {
+  if (!yrun) return;
+  const rep = SimC.reported(yrun, your);
+  ro.set('t60', rep !== null ? rep.toFixed(2) + ' s' : simT >= SC.tmax ? 'not reached in 12 s' : (simT > 0 ? 'running…' : '—'), rep !== null ? 'gold' : '');
+  ro.set('x60', yrun.x60 !== null ? yrun.x60.toFixed(1) + ' m' : '—');
+  ro.set('peak', (yrun.peakA / g).toFixed(2) + ' g');
+  ro.set('p60', yrun.p60 !== null ? (yrun.p60 / 1e6).toFixed(2) + ' MW (' + Math.round(yrun.p60 / 745.7).toLocaleString() + ' hp)' : '—');
+  ro.set('limit', yrun.done ? '—' : yrun.limit, yrun.limit === 'tire grip' ? 'warn' : '');
+  ro.set('down', Math.round(your.k * your.mass).toLocaleString() + ' kgf');
+  ro.set('best0', (V60 / (your.mu * g)).toFixed(2) + ' s');
+  ro.set('bestk', (V60 / (your.mu * g * (1 + your.k))).toFixed(2) + ' s');
+}
+
+// ---------- UI ----------
+const laneSeries = LANES.map((l) => ({ name: '', color: l.color, width: 1.5 }));
+const p1 = new Kit.Plot(document.getElementById('p1'), {
+  title: 'Speed (all lanes)', ylabel: 'mph', xmax: 3, ymax: 70, autoX: false,
+  series: laneSeries.concat([{ name: 'Your car', color: YC.color, width: 3 }]),
+  hlines: [{ y: 60, label: '60 mph', color: 'rgba(255,255,255,0.55)' }],
+});
+const p2 = new Kit.Plot(document.getElementById('p2'), {
+  title: 'Acceleration of Your car', ylabel: 'g', xmax: 3, ymax: 4, autoX: false, autoY: true,
+  series: [{ name: 'Your car', color: YC.color, width: 3 }],
+});
+const p3 = new Kit.Plot(document.getElementById('p3'), {
+  title: 'Forces', ylabel: 'kN', xmax: 3, ymax: 80, autoX: false, autoY: true,
+  series: [
+    { name: 'grip limit', color: Kit.css('--f-friction'), width: 1.5, dash: [5, 4] },
+    { name: '', color: '#8fd3ff', width: 1.5, dash: [2, 3] },
+    { name: 'drive', color: Kit.css('--f-friction'), width: 2.5 },
+    { name: 'thrust', color: Kit.css('--f-thrust'), width: 2 },
+    { name: 'drag', color: Kit.css('--f-drag'), width: 2 },
+  ],
+});
+const gSpeed = new Kit.Gauge(document.getElementById('hudL'), { label: 'SPEED', unit: 'MPH', max: 70, digits: 1 });
+const gG = new Kit.Gauge(document.getElementById('hudL'), { label: 'G-FORCE', unit: 'G', max: 4, digits: 2 });
+const gDown = new Kit.Gauge(document.getElementById('hudR'), { label: 'DOWNFORCE', unit: 'KG', max: 6000, digits: 0 });
+const gPow = new Kit.Gauge(document.getElementById('hudR'), { label: 'POWER', unit: 'MW', max: 3, digits: 2 });
+
+const loop = new Kit.Loop({ dt: SC.dt, step, draw });
+const side = document.getElementById('side');
+const tr = Kit.transport(Kit.section(side, 'Run'), loop, {
+  onPlay: () => { if (finished) reset(); loop.toggle(); },
+  onReset: () => { reset(); loop.pause(); },
+  onForces: () => { showForces = !showForces; tr.setForces(showForces); },
+  onPredict: () => pred.toggle(),
+  onExport: () => Kit.downloadCSV('sim_c_your_car.csv', ['t_s', 'x_m', 'v_mps', 'a_mps2'], rec),
+});
+tr.setForces(showForces);
+
+const presetBox = Kit.section(side, 'Your car presets');
+const carBox = Kit.section(side, 'Your car');
+const S = YC.sliders;
+function fromSliders() {
+  your.mass = sl.mass.value; your.mu = sl.mu.value; your.k = sl.k.value; your.thrust_kN = sl.thrust_kN.value; your.pmax_MW = sl.pmax_MW.value;
+}
+function onSlider() { presets.clear(); fromSliders(); reset(); loop.pause(); }
+const sl = {
+  mass: Kit.slider(carBox, { label: 'Mass', min: S.mass.min, max: S.mass.max, step: S.mass.step, value: your.mass, unit: 'kg', fmt: (v) => v.toLocaleString(), onInput: onSlider }),
+  mu: Kit.slider(carBox, { label: 'Tire grip μ', min: S.mu.min, max: S.mu.max, step: S.mu.step, value: your.mu, fmt: (v) => v.toFixed(2), onInput: onSlider }),
+  k: Kit.slider(carBox, { label: 'Fan suction', min: S.k.min, max: S.k.max, step: S.k.step, value: your.k, unit: '× mg', fmt: (v) => v.toFixed(1), onInput: onSlider }),
+  thrust_kN: Kit.slider(carBox, { label: 'Thruster force', min: S.thrust_kN.min, max: S.thrust_kN.max, step: S.thrust_kN.step, value: your.thrust_kN, unit: 'kN', fmt: (v) => v.toFixed(1), onInput: onSlider }),
+  pmax_MW: Kit.slider(carBox, { label: 'Max motor power', min: S.pmax_MW.min, max: S.pmax_MW.max, step: S.pmax_MW.step, value: your.pmax_MW, unit: 'MW', fmt: (v) => v.toFixed(2), onInput: onSlider }),
+};
+
+const resBox = Kit.section(side, 'Your car results');
+resBox.classList.add('hide-when-predicting');
+const ro = Kit.readouts(resBox, [
+  { key: 't60', label: '0–60 mph time' },
+  { key: 'x60', label: 'Distance to 60 mph' },
+  { key: 'peak', label: 'Peak acceleration' },
+  { key: 'p60', label: 'Power at 60 mph' },
+  { key: 'limit', label: 'Limited by (now)' },
+  { key: 'down', label: 'Suction force' },
+  { key: 'best0', label: 'Best with tires only (μg)' },
+  { key: 'bestk', label: 'Best with grip + suction' },
+]);
+
+const keyBox = Kit.section(side, 'Key numbers');
+keyBox.classList.add('hide-when-predicting');
+keyBox.insertAdjacentHTML('beforeend', `<table class="keytab">
+  <tr><th>0–60 mph time</th><th>average a</th><th>in g</th></tr>
+  <tr><td>1.90 s</td><td>14.1 m/s²</td><td>1.44 g</td></tr>
+  <tr><td>1.60 s</td><td>16.8 m/s²</td><td>1.71 g</td></tr>
+  <tr><td>1.00 s</td><td>26.8 m/s²</td><td>2.74 g</td></tr>
+  <tr class="hl"><td>0.81 s</td><td>33.1 m/s²</td><td>3.38 g</td></tr>
+</table>`);
+
+side.insertAdjacentHTML('beforeend', `<details class="kit-explain hide-when-predicting" open>
+  <summary>Explain the physics</summary>
+  <p>Average acceleration:</p>
+  <div class="eq">a = Δv / Δt = 26.8 m/s ÷ 0.81 s = 33.1 m/s² ≈ 3.4 g</div>
+  <p>Tires push the car forward by friction. The most they can give is</p>
+  <div class="eq">f ≤ μN</div>
+  <p>Fans that suck the car onto the road raise the normal force:</p>
+  <div class="eq">N = mg + F<sub>s</sub></div>
+  <p>So the best acceleration from grip is a ≤ μ(g + F<sub>s</sub>/m). With μ = 1.1 and F<sub>s</sub> = 2mg: a ≤ 3.3 g, about 0.83 s.</p>
+  <p>Motors are limited by power:</p>
+  <div class="eq">P = F v</div>
+  <p>At 60 mph, a 1.9 t car pulling 3.4 g needs about 1.7 MW (2,200 hp). Thrusters push gas backward, and the gas pushes the car forward (action and reaction).</p>
+</details>
+<p class="kit-note">Teaching model. Event numbers as reported (Tesla live stream, 2026-10-15); mass, suction and thrust are assumptions. Plaid and 2017 Roadster times use the 1-ft rollout convention (the clock starts after the first foot). Each lane's settings are tuned to match its time.</p>
+<p class="kit-note">Keys: Space play/pause · R reset · → step · S slower · F forces · P predict</p>`);
+
+const presetList = Object.entries(YC.presets).map(([key, p]) => ({
+  key, label: p.label,
+  apply: () => {
+    your = Object.assign({}, YC, p);
+    HIDDEN.forEach((h) => { if (p[h] === undefined) your[h] = YC[h]; });
+    if (typeof sl !== 'undefined') ['mass', 'mu', 'k', 'thrust_kN', 'pmax_MW'].forEach((f) => sl[f].set(your[f]));
+    reset(); loop.pause();
+  },
+}));
+const presets = Kit.presets(presetBox, presetList);
+presetBox.parentNode.insertBefore(presetBox, carBox);
+
+const pred = new Kit.Predict(document.getElementById('stage'), {
+  question: 'To reach 60 mph in 0.81 s, how many g would you feel?',
+  choices: ['1 g', '2 g', '3.4 g', '10 g'],
+  hint: 'Then ask: can tires alone do it?',
+  onGo: () => { reset(); loop.play(); },
+});
+pred.onToggle = (on) => { tr.setPredict(on); document.body.classList.toggle('predicting', on); };
+
+presets.select(YC.presets[Kit.qs.preset] ? Kit.qs.preset : 'video');
+if (Kit.qs.t) loop.runTo(+Kit.qs.t, () => simT);
+else if (Kit.qs.predict !== '0') pred.show();
+</script>
+</body>
+</html>

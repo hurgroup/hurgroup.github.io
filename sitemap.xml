@@ -38,6 +38,12 @@
     <priority>0.5</priority>
 </url>
 <url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20260805/index.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20260422/index.html</loc>
     <lastmod>2026-05-05</lastmod>
     <changefreq>monthly</changefreq>
@@ -178,6 +184,12 @@
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20160408/index.html</loc>
     <lastmod>2024-05-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20260828/index.html</loc>
+    <lastmod>2026-10-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -381,7 +393,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/index.html</loc>
-    <lastmod>2026-07-27</lastmod>
+    <lastmod>2026-10-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -411,7 +423,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/index.html</loc>
-    <lastmod>2026-07-27</lastmod>
+    <lastmod>2026-10-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -482,6 +494,12 @@
     <priority>0.5</priority>
 </url>
 <url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20260823/index.html</loc>
+    <lastmod>2026-10-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20170419/index.html</loc>
     <lastmod>2025-01-01</lastmod>
     <changefreq>monthly</changefreq>
@@ -543,7 +561,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20230714/index.html</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2024-04-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -712,6 +730,12 @@
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20230922/index.html</loc>
     <lastmod>2024-04-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20260826/index.html</loc>
+    <lastmod>2026-10-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>

@@ -1,0 +1,1435 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SIM-B Jump and Roll — GIST Lab Simulation</title>
+<style>
+/* kit.css - shared look for the GIST Lab Roadster simulations (projector-friendly dark theme). */
+:root {
+  --bg: #05070a;
+  --panel: #0d1116;
+  --panel-2: #141a21;
+  --line: #222a33;
+  --line-2: #2e3742;
+  --ink: #eef2f6;
+  --ink-2: #a3aeba;
+  --ink-3: #66717d;
+  --accent: #e8473b;
+  --gold: #ffd84d;
+  --ok: #3ddc84;
+  --warn: #ffb020;
+  --bad: #ff5a5a;
+  /* force colors: use the same color for the same force in every simulation */
+  --f-gravity: #b48cff;
+  --f-normal: #3ddc84;
+  --f-friction: #ffb020;
+  --f-suction: #ff6bd6;
+  --f-thrust: #62c6ff;
+  --f-drag: #a3aeba;
+  --f-velocity: #ffffff;
+  --side-w: clamp(300px, 23vw, 400px);
+  --plots-h: clamp(150px, 25vh, 270px);
+  --top-h: 58px;
+  font-size: 16px;
+}
+@media (min-width: 1700px) { :root { font-size: 18px; } }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  display: grid;
+  grid-template-rows: var(--top-h) minmax(0, 1fr) var(--plots-h);
+  grid-template-columns: 1fr var(--side-w);
+  grid-template-areas: "top top" "stage side" "plots side";
+  overflow: hidden;
+}
+
+/* top bar */
+.kit-top {
+  grid-area: top; display: flex; align-items: center; gap: 18px;
+  padding: 0 18px; border-bottom: 1px solid var(--line); background: var(--panel);
+  min-width: 0;
+}
+.kit-top a.kit-back { color: var(--ink-2); text-decoration: none; font-size: 0.9rem; white-space: nowrap; }
+.kit-top a.kit-back:hover { color: var(--ink); }
+.kit-top h1 { font-size: 1.25rem; margin: 0; font-weight: 700; letter-spacing: 0.01em; white-space: nowrap; }
+.kit-top .kit-sub { color: var(--ink-2); font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.kit-top .kit-spacer { flex: 1; }
+
+/* stage */
+.kit-stage { grid-area: stage; position: relative; overflow: hidden; background: #000; min-height: 0; }
+.kit-stage > canvas.kit-main-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.kit-hud {
+  position: absolute; left: 0; right: 0; bottom: 10px; display: flex; justify-content: space-between;
+  align-items: flex-end; padding: 0 16px; pointer-events: none; gap: 10px;
+}
+.kit-hud .kit-hud-group { display: flex; gap: 10px; align-items: flex-end; }
+.kit-gauge { width: 118px; height: 118px; }
+.kit-gauge canvas { width: 100%; height: 100%; display: block; }
+.kit-timer {
+  position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%);
+  font: italic 700 2.2rem/1 "Avenir Next Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  letter-spacing: 0.02em; color: #fff; text-shadow: 0 2px 8px #000; pointer-events: none;
+}
+.kit-badge {
+  position: absolute; top: 12px; left: 14px; padding: 6px 10px; border-radius: 6px;
+  background: rgba(13,17,22,0.8); border: 1px solid var(--line-2); color: var(--ink-2); font-size: 0.85rem;
+}
+.kit-badge b { color: var(--ink); }
+.kit-badge:empty { display: none; }
+.kit-status {
+  position: absolute; top: 12px; right: 14px; padding: 8px 14px; border-radius: 8px;
+  font-weight: 700; font-size: 1.05rem; background: rgba(13,17,22,0.85); border: 1px solid var(--line-2);
+}
+.kit-status.ok { color: var(--ok); border-color: var(--ok); }
+.kit-status.warn { color: var(--warn); border-color: var(--warn); }
+.kit-status.bad { color: var(--bad); border-color: var(--bad); }
+
+/* plots */
+.kit-plots {
+  grid-area: plots; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 1px;
+  background: var(--line); border-top: 1px solid var(--line); min-height: 0;
+  grid-template-rows: minmax(0, 1fr); overflow: hidden;
+}
+.kit-plots canvas { width: 100%; height: 100%; display: block; background: var(--panel); min-width: 0; min-height: 0; }
+
+/* side panel */
+.kit-side {
+  grid-area: side; background: var(--panel); border-left: 1px solid var(--line);
+  overflow-y: auto; padding: 14px 16px 24px; display: flex; flex-direction: column; gap: 14px; min-height: 0;
+}
+.kit-section h2 {
+  font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-3);
+  margin: 0 0 8px; font-weight: 700;
+}
+.kit-transport { display: flex; flex-wrap: wrap; gap: 6px; }
+.kit-btn {
+  appearance: none; border: 1px solid var(--line-2); background: var(--panel-2); color: var(--ink);
+  border-radius: 8px; padding: 8px 12px; font: inherit; font-size: 0.92rem; cursor: pointer; line-height: 1.1;
+}
+.kit-btn:hover { border-color: var(--ink-3); }
+.kit-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; min-width: 92px; }
+.kit-btn.on { border-color: var(--gold); color: var(--gold); }
+.kit-seg { display: inline-flex; border: 1px solid var(--line-2); border-radius: 8px; overflow: hidden; }
+.kit-seg button {
+  appearance: none; border: 0; background: var(--panel-2); color: var(--ink-2); font: inherit; font-size: 0.85rem;
+  padding: 7px 9px; cursor: pointer; border-right: 1px solid var(--line-2);
+}
+.kit-seg button:last-child { border-right: 0; }
+.kit-seg button.on { background: var(--ink); color: #000; font-weight: 700; }
+.kit-presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.kit-presets .kit-btn.on { background: var(--ink); color: #000; border-color: var(--ink); font-weight: 700; }
+
+.kit-slider { margin: 2px 0 10px; }
+.kit-slider-head { display: flex; justify-content: space-between; gap: 8px; font-size: 0.9rem; color: var(--ink-2); margin-bottom: 3px; }
+.kit-slider-head b { color: var(--ink); font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+.kit-slider input[type=range] { width: 100%; accent-color: var(--accent); }
+.kit-check { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--ink-2); margin: 4px 0; cursor: pointer; }
+.kit-check input { accent-color: var(--accent); width: 16px; height: 16px; }
+
+.kit-readouts { display: grid; grid-template-columns: 1fr auto; gap: 5px 10px; font-size: 0.92rem; }
+.kit-readouts .k { color: var(--ink-2); }
+.kit-readouts .v { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+.kit-readouts .v.ok { color: var(--ok); }
+.kit-readouts .v.warn { color: var(--warn); }
+.kit-readouts .v.bad { color: var(--bad); }
+.kit-readouts .v.gold { color: var(--gold); }
+
+.kit-explain { font-size: 0.9rem; color: var(--ink-2); line-height: 1.45; }
+.kit-explain summary { cursor: pointer; color: var(--ink); font-weight: 600; margin-bottom: 6px; }
+.kit-explain p { margin: 6px 0; }
+.kit-explain .eq {
+  font-family: "STIX Two Math", "Cambria Math", "Times New Roman", serif; font-size: 1.05rem; color: var(--ink);
+  background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; margin: 6px 0;
+}
+.kit-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 0.82rem; color: var(--ink-2); }
+.kit-legend span::before { content: ""; display: inline-block; width: 12px; height: 4px; border-radius: 2px; margin-right: 5px; vertical-align: middle; background: var(--c); }
+.kit-note { font-size: 0.78rem; color: var(--ink-3); line-height: 1.4; }
+
+/* predict overlay */
+.kit-predict {
+  position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.72); backdrop-filter: blur(3px); z-index: 5;
+}
+.kit-predict.show { display: flex; }
+.kit-predict .card {
+  width: min(860px, 88%); background: var(--panel); border: 1px solid var(--line-2); border-radius: 14px;
+  padding: 28px 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+.kit-predict .tag { color: var(--gold); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.85rem; }
+.kit-predict h3 { font-size: 1.9rem; line-height: 1.25; margin: 10px 0 18px; }
+.kit-predict .choices { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+.kit-predict .choices button {
+  appearance: none; font: inherit; font-size: 1.15rem; padding: 12px 18px; border-radius: 999px; cursor: pointer;
+  background: var(--panel-2); color: var(--ink); border: 1px solid var(--line-2);
+}
+.kit-predict .choices button.on { border-color: var(--gold); color: var(--gold); }
+.kit-predict .hint { color: var(--ink-2); font-size: 1rem; margin: 0 0 18px; }
+.kit-predict .go { font-size: 1.15rem; padding: 12px 22px; }
+
+/* errors (also visible in headless screenshots) */
+#kit-errors {
+  display: none; position: fixed; left: 10px; bottom: 10px; z-index: 99; max-width: 60vw; white-space: pre-wrap;
+  background: #300; color: #fbb; border: 1px solid #f55; padding: 8px 10px; font: 12px/1.4 ui-monospace, Menlo, monospace;
+}
+
+</style>
+<style>
+  .kit-explain ul { margin: 6px 0; padding-left: 18px; }
+</style>
+</head>
+<body>
+<!-- SIM-B: run-up, thruster lift-off, flight over 5 vehicles with a 360-degree roll, landing burn.
+     URL options: ?t=SECONDS jumps ahead and pauses, ?predict=0 hides the predict card, ?preset=video|under|noburn|spin -->
+<header class="kit-top">
+  <a class="kit-back" href="index.html">◀ All simulations</a>
+  <h1>SIM-B · Jump and mid-air roll</h1>
+  <span class="kit-sub">Fly over 5 vehicles, roll 360°, stop the spin, land level</span>
+  <span class="kit-spacer"></span>
+  <span class="kit-note">Teaching model · assumed values marked</span>
+</header>
+<section class="kit-stage" id="stage">
+  <canvas class="kit-main-canvas" id="cv"></canvas>
+  <div class="kit-badge" id="badge"></div>
+  <div class="kit-status" id="status" style="display:none"></div>
+  <div class="kit-hud"><div class="kit-hud-group" id="hudL"></div><div class="kit-hud-group" id="hudR"></div></div>
+  <div class="kit-timer" id="timer">00:00:00:00</div>
+</section>
+<footer class="kit-plots"><canvas id="p1"></canvas><canvas id="p2"></canvas><canvas id="p3"></canvas></footer>
+<aside class="kit-side" id="side"></aside>
+
+<script>
+/* Generated by sims/build.py from note/julia/params/*.json. Do not edit by hand. */
+window.PARAMS = {
+  "common": {
+    "_note": "Shared physical constants and vehicle assumptions. Values marked assumed are teaching estimates, not Tesla data.",
+    "g": 9.80665,
+    "rho_air": 1.225,
+    "mass_kg": 1900,
+    "mass_note": "assumed; reported as 4,000+ lb (about 1.8 t)",
+    "mu_tire": 1.1,
+    "mu_note": "assumed; racing tires",
+    "car_length_m": 4.6,
+    "car_width_m": 2.0,
+    "car_height_m": 1.2,
+    "mph": 0.44704,
+    "ft": 0.3048
+  },
+  "sim_a": {
+    "_note": "SIM-A: ramp climb, upside-down hold, release, thruster landing. Values marked assumed are teaching estimates, not Tesla data.",
+    "top_height_m": 20.57,
+    "top_height_note": "67.5 ft, from the stream ALTITUDE gauge at the top",
+    "top_pitch_deg": 170,
+    "top_pitch_note": "from the stream PITCH gauge at the top",
+    "runup_m": 14,
+    "j_R1_m": 6.0,
+    "j_R2_m": 4.0,
+    "j_note": "assumed radii for the optional tall J shape (arc, vertical straight, arc)",
+    "v_cruise_mps": 3.0,
+    "a_stop_mps2": 0.5,
+    "v_creep_mps": 0.15,
+    "k_speed": 2.0,
+    "drive_max_g": 2.0,
+    "cda_m2": 0.6,
+    "suction_max_mg": 2.47,
+    "suction_note": "4,697 kgf on the stream DOWNFORCE gauge / 1,900 kg assumed mass = 2.47 mg",
+    "suction_floor": 0.03,
+    "suction_schedule_note": "assumed: suction = max * (floor + (1 - floor) * (1 - cos pitch) / 2); matches the gauge at 1, 76 and 170 deg within ~15%",
+    "hold_s": 3.0,
+    "release_push_mps": 0.0,
+    "thrust_max_mg": 3.5,
+    "lat_max_mg": 0.6,
+    "torque_max_Nm": 40000,
+    "thruster_note": "assumed thruster limits",
+    "att_kp": 25,
+    "att_kd": 10,
+    "a_brake_g": 0.6,
+    "v_desc_max_mps": 14,
+    "v_touch_mps": 0.5,
+    "k_vz": 5.0,
+    "x_land_m": -7.0,
+    "kp_x": 1.5,
+    "kd_x": 2.2,
+    "crash_speed_mps": 2.0,
+    "fail_after_s": 1.0,
+    "video_release": [
+      [
+        0,
+        67.5,
+        0.2
+      ],
+      [
+        0.92,
+        63.6,
+        0.4
+      ],
+      [
+        1.16,
+        58.0,
+        0.5
+      ],
+      [
+        1.76,
+        31.4,
+        3.1
+      ],
+      [
+        3.02,
+        7.7,
+        0.3
+      ],
+      [
+        4.63,
+        0.4,
+        1.1
+      ]
+    ],
+    "video_release_note": "[seconds after release, altitude ft, G-FORCE] read from stills; times assume file names are video milliseconds",
+    "presets": {
+      "match": {
+        "label": "Match the video",
+        "overrides": {}
+      },
+      "weak": {
+        "label": "Not enough suction",
+        "overrides": {
+          "suction_max_mg": 1.0
+        }
+      },
+      "fail": {
+        "label": "Fans fail at the top",
+        "overrides": {
+          "fans_fail": true
+        }
+      },
+      "nothrust": {
+        "label": "No thrusters",
+        "overrides": {
+          "thrusters": false
+        }
+      },
+      "slippery": {
+        "label": "Slippery tires",
+        "overrides": {
+          "mu": 0.5
+        }
+      }
+    },
+    "presets_note": "scenario buttons; overrides are applied on top of the defaults above (keys as in sim_a_physics.js config())"
+  },
+  "sim_b": {
+    "_note": "SIM-B: jump over a line of 5 vehicles with a 360-degree roll. Vehicle dimensions are approximate public figures [assumed]. Thrust, torque, and controller values are teaching assumptions.",
+    "v0_mps": 20,
+    "x_start_m": -19,
+    "x_lift_m": -14,
+    "lift_thrust_mg": 2.5,
+    "lift_burn_s": 0.6,
+    "roll_on": true,
+    "roll_delay_s": 0.1,
+    "roll_duration_s": 1.4,
+    "roll_torque_pct": 100,
+    "roll_stop_spin": true,
+    "landing_on": true,
+    "landing_trigger_g": 1.5,
+    "landing_touchdown_mps": 0.5,
+    "thrust_max_mg": 4.0,
+    "brake_g": 0.6,
+    "gap_m": 0.8,
+    "side_by_side": false,
+    "x_end_m": 52,
+    "presets_note": "Scenario buttons in the page; overrides are applied on top of the defaults above. Shared with the Julia model.",
+    "presets": {
+      "video": {
+        "label": "Match the video",
+        "overrides": {
+          "roll_torque_pct": 100,
+          "roll_stop_spin": true,
+          "landing_on": true,
+          "roll_on": true
+        }
+      },
+      "under": {
+        "label": "Under-rotation",
+        "overrides": {
+          "roll_torque_pct": 60,
+          "roll_stop_spin": true,
+          "landing_on": true,
+          "roll_on": true
+        }
+      },
+      "noburn": {
+        "label": "No landing burn",
+        "overrides": {
+          "roll_torque_pct": 100,
+          "roll_stop_spin": true,
+          "landing_on": false,
+          "roll_on": true
+        }
+      },
+      "spin": {
+        "label": "Spin never stops",
+        "overrides": {
+          "roll_torque_pct": 100,
+          "roll_stop_spin": false,
+          "landing_on": true,
+          "roll_on": true
+        }
+      }
+    },
+    "vehicles": [
+      {
+        "name": "Cybercab",
+        "length_m": 4.3,
+        "width_m": 1.95,
+        "height_m": 1.15
+      },
+      {
+        "name": "Cybertruck",
+        "length_m": 5.68,
+        "width_m": 2.2,
+        "height_m": 1.79
+      },
+      {
+        "name": "Semi",
+        "length_m": 6.9,
+        "width_m": 2.6,
+        "height_m": 4.0
+      },
+      {
+        "name": "Model Y",
+        "length_m": 4.75,
+        "width_m": 1.92,
+        "height_m": 1.62
+      },
+      {
+        "name": "Model 3",
+        "length_m": 4.72,
+        "width_m": 1.85,
+        "height_m": 1.44
+      }
+    ]
+  },
+  "sim_c": {
+    "_note": "SIM-C 0-60 mph lanes. Each lane is a physical config tuned (bisection, sims/src/sim_c_physics.js tune()) so its time matches the target. All configs are teaching assumptions, not Tesla data. k = fan suction as a multiple of m*g. rollout_ft = 1 means the official time excludes the first foot (drag-strip convention).",
+    "dt": 0.001,
+    "tmax": 12,
+    "strip_m": 40,
+    "lanes": [
+      {
+        "key": "ordinary",
+        "label": "Ordinary car",
+        "basis": "typical family car, about 7 s",
+        "target_s": 7.0,
+        "color": "#8a96a3",
+        "mass": 1600,
+        "mu": 0.9,
+        "k": 0,
+        "thrust_kN": 0,
+        "pmax_MW": 0.1244,
+        "fmax_kN": 7,
+        "cda": 0.65,
+        "crr": 0.012,
+        "rollout_ft": 0
+      },
+      {
+        "key": "plaid",
+        "label": "Model S Plaid",
+        "basis": "official 1.99 s, with 1-ft rollout",
+        "target_s": 1.99,
+        "color": "#4fa3ff",
+        "mass": 2160,
+        "mu": 1.249,
+        "k": 0,
+        "thrust_kN": 0,
+        "pmax_MW": 0.76,
+        "fmax_kN": 40,
+        "cda": 0.55,
+        "crr": 0.01,
+        "rollout_ft": 1
+      },
+      {
+        "key": "roadster2017",
+        "label": "2017 Roadster promise",
+        "basis": "promised 1.9 s (2017), with 1-ft rollout assumed",
+        "target_s": 1.9,
+        "color": "#a78bfa",
+        "mass": 2000,
+        "mu": 1.304,
+        "k": 0,
+        "thrust_kN": 0,
+        "pmax_MW": 1.0,
+        "fmax_kN": 45,
+        "cda": 0.5,
+        "crr": 0.01,
+        "rollout_ft": 1
+      },
+      {
+        "key": "tires",
+        "label": "Tires only, \u03bc = 1.1",
+        "basis": "grip limit a = \u03bcg; drag and rolling resistance add about 1%",
+        "target_s": 2.49,
+        "color": "#ffb020",
+        "mass": 1900,
+        "mu": 1.1,
+        "k": 0,
+        "thrust_kN": 0,
+        "pmax_MW": 3.0,
+        "fmax_kN": 100,
+        "cda": 0.45,
+        "crr": 0.008,
+        "rollout_ft": 0
+      },
+      {
+        "key": "reported1s",
+        "label": "About 1 s (reported)",
+        "basis": "press reports; suction tuned",
+        "target_s": 1.0,
+        "color": "#ff8a65",
+        "mass": 1900,
+        "mu": 1.1,
+        "k": 1.513,
+        "thrust_kN": 0,
+        "pmax_MW": 2.5,
+        "fmax_kN": 100,
+        "cda": 0.5,
+        "crr": 0.01,
+        "rollout_ft": 0
+      },
+      {
+        "key": "video081",
+        "label": "0.81 s (on screen)",
+        "basis": "stream timer; suction 2 mg (Tesla: 'up to 2G') + small thrust",
+        "target_s": 0.81,
+        "color": "#e8473b",
+        "mass": 1900,
+        "mu": 1.1,
+        "k": 2.0,
+        "thrust_kN": 2.06,
+        "pmax_MW": 2.5,
+        "fmax_kN": 100,
+        "cda": 0.5,
+        "crr": 0.01,
+        "rollout_ft": 0
+      }
+    ],
+    "your_car": {
+      "label": "Your car",
+      "color": "#ffd84d",
+      "fmax_kN": 100,
+      "cda": 0.5,
+      "crr": 0.01,
+      "rollout_ft": 0,
+      "sliders": {
+        "mass": {
+          "min": 1000,
+          "max": 3000,
+          "step": 50,
+          "unit": "kg"
+        },
+        "mu": {
+          "min": 0.5,
+          "max": 1.6,
+          "step": 0.05,
+          "unit": ""
+        },
+        "k": {
+          "min": 0,
+          "max": 3,
+          "step": 0.1,
+          "unit": "\u00d7 mg"
+        },
+        "thrust_kN": {
+          "min": 0,
+          "max": 40,
+          "step": 0.5,
+          "unit": "kN"
+        },
+        "pmax_MW": {
+          "min": 0.05,
+          "max": 3,
+          "step": 0.05,
+          "unit": "MW"
+        }
+      },
+      "presets": {
+        "video": {
+          "label": "Match the video",
+          "mass": 1900,
+          "mu": 1.1,
+          "k": 2.0,
+          "thrust_kN": 2.06,
+          "pmax_MW": 2.5
+        },
+        "tires": {
+          "label": "Tires only",
+          "mass": 1900,
+          "mu": 1.1,
+          "k": 0,
+          "thrust_kN": 0,
+          "pmax_MW": 3.0
+        },
+        "ordinary": {
+          "label": "Ordinary car",
+          "mass": 1600,
+          "mu": 0.9,
+          "k": 0,
+          "thrust_kN": 0,
+          "pmax_MW": 0.1244,
+          "fmax_kN": 7,
+          "cda": 0.65,
+          "crr": 0.012
+        }
+      }
+    }
+  }
+};
+
+</script>
+<script>
+/* integrate.js - fixed-step RK4 shared by the browser pages and the Node tests. */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.Integrate = factory();
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+  // One RK4 step for dy/dt = f(t, y). y is an array; returns a new array.
+  function rk4(f, t, y, h) {
+    const n = y.length;
+    const k1 = f(t, y);
+    const y2 = new Array(n);
+    for (let i = 0; i < n; i++) y2[i] = y[i] + 0.5 * h * k1[i];
+    const k2 = f(t + 0.5 * h, y2);
+    const y3 = new Array(n);
+    for (let i = 0; i < n; i++) y3[i] = y[i] + 0.5 * h * k2[i];
+    const k3 = f(t + 0.5 * h, y3);
+    const y4 = new Array(n);
+    for (let i = 0; i < n; i++) y4[i] = y[i] + h * k3[i];
+    const k4 = f(t + h, y4);
+    const out = new Array(n);
+    for (let i = 0; i < n; i++) out[i] = y[i] + (h / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]);
+    return out;
+  }
+  // Linear interpolation of the crossing time when g changes sign between two steps.
+  function crossing(t0, g0, t1, g1) {
+    if (g1 === g0) return t1;
+    return t0 + (t1 - t0) * (g0 / (g0 - g1));
+  }
+  return { rk4, crossing };
+});
+
+</script>
+<script>
+/* sim_b_physics.js - SIM-B: run-up, thruster lift-off, flight over 5 vehicles with a 360-degree roll,
+   landing burn, roll-out. Teaching model (side view x-z plus roll angle phi about the car's long axis).
+   State y = [x, z, vx, vz, phi, omega]; z = height of the car's center; phi = roll angle (rad). */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory(require('./integrate.js'));
+  else root.SimB = factory(root.Integrate);
+})(typeof self !== 'undefined' ? self : this, function (Integrate) {
+  'use strict';
+  const TAU = 2 * Math.PI;
+
+  // Merge shared constants and SIM-B defaults into one flat config.
+  function config(PARAMS, over) {
+    const c = PARAMS.common, b = PARAMS.sim_b;
+    const cfg = Object.assign({
+      g: c.g, m: c.mass_kg, L: c.car_length_m, w: c.car_width_m, h: c.car_height_m,
+      vehiclesList: b.vehicles, obstacles: true
+    }, b);
+    delete cfg.vehicles; delete cfg._note; delete cfg.presets; delete cfg.presets_note;
+    return Object.assign(cfg, over || {});
+  }
+  function inertia(cfg) { return cfg.m * (cfg.w * cfg.w + cfg.h * cfg.h) / 12; }
+  function requiredTorque(cfg) { return 4 * TAU * inertia(cfg) / (cfg.roll_duration_s * cfg.roll_duration_s); }
+  // Half-height of the rolled body box seen from the side.
+  function halfExtent(cfg, phi) { return Math.abs(cfg.w / 2 * Math.sin(phi)) + Math.abs(cfg.h / 2 * Math.cos(phi)); }
+
+  function vehicles(cfg) {
+    if (!cfg.obstacles) return [];
+    let x = 0; const out = [];
+    for (const v of cfg.vehiclesList) {
+      const span = cfg.side_by_side ? v.width_m : v.length_m;
+      out.push({ name: v.name, x0: x, x1: x + span, h: v.height_m });
+      x += span + cfg.gap_m;
+    }
+    return out;
+  }
+
+  // Roll torque schedule: +tau for the first half, -tau for the second half (if stop_spin), else 0.
+  function rollTorque(cfg, tr) {
+    if (!cfg.roll_on || tr < 0 || tr >= cfg.roll_duration_s) return 0;
+    const tau = requiredTorque(cfg) * cfg.roll_torque_pct / 100;
+    if (tr < cfg.roll_duration_s / 2) return tau;
+    return cfg.roll_stop_spin ? -tau : 0;
+  }
+
+  function create(cfg) {
+    const s = {
+      t: 0, y: [cfg.x_start_m, cfg.h / 2, cfg.v0_mps, 0, 0, 0], phase: 'run',
+      tLift: null, tLiftoff: null, thrust: 0, tau: 0, G: 1, onGround: true,
+      peak: cfg.h / 2, peakBottom: 0, vehicles: vehicles(cfg), minClear: null, minClearName: '',
+      hit: null, touch: null, result: null, done: false
+    };
+    s.clear = s.vehicles.map(() => Infinity);
+    return s;
+  }
+
+  // Advance one step of dt. Returns false when the run is over.
+  function step(s, cfg, dt) {
+    if (s.done) return false;
+    const g = cfg.g, m = cfg.m, I = inertia(cfg);
+    let [x, z, vx, vz, phi, om] = s.y;
+    // --- phase logic and commands (held constant over the step) ---
+    if (s.phase === 'run' && x >= cfg.x_lift_m) { s.phase = 'lift'; s.tLift = s.t; }
+    let thrust = 0, ax = 0;
+    if (s.phase === 'lift') {
+      if (s.t - s.tLift < cfg.lift_burn_s) thrust = cfg.lift_thrust_mg * m * g;
+      else s.phase = 'flight';
+    }
+    const ext = halfExtent(cfg, phi), dz = z - ext;
+    if (s.phase === 'flight' && cfg.landing_on && vz < 0) {
+      const vt = cfg.landing_touchdown_mps;
+      const aReq = (vz * vz - vt * vt) / (2 * Math.max(dz, 0.02));
+      if (aReq >= cfg.landing_trigger_g * g) s.phase = 'land';
+    }
+    const cosp = Math.cos(phi);
+    if (s.phase === 'land') {
+      const vt = cfg.landing_touchdown_mps;
+      const aReq = Math.max(0, (vz * vz - vt * vt) / (2 * Math.max(dz, 0.02)));
+      // Thrusters are fixed to the body: they only help when the car is roughly upright.
+      if (cosp > 0.5 && vz < -vt * 0.5) thrust = Math.min(cfg.thrust_max_mg * m * g, m * (g + aReq) / cosp);
+    }
+    if (s.phase === 'rollout') ax = -cfg.brake_g * g;
+    const tr = s.tLift === null ? -1 : s.t - (s.tLift + cfg.lift_burn_s + cfg.roll_delay_s);
+    const tau = s.phase === 'rollout' ? 0 : rollTorque(cfg, tr);
+    const vertical = thrust * (s.phase === 'lift' ? 1 : cosp); // lift happens before the roll
+    // --- dynamics ---
+    const onGround = (s.phase === 'run' || s.phase === 'rollout' || (s.phase === 'lift' && z <= cfg.h / 2 + 1e-9 && vertical <= m * g));
+    let y;
+    if (onGround) {
+      const nvx = Math.max(0, vx + ax * dt);
+      y = [x + 0.5 * (vx + nvx) * dt, cfg.h / 2, nvx, 0, phi, om];
+      s.G = Math.hypot(1, ax / g);
+    } else {
+      const az = -g + vertical / m, al = tau / I;
+      y = Integrate.rk4((t, q) => [q[2], q[3], 0, az, q[5], al], s.t, [x, z, vx, vz, phi, om], dt);
+      s.G = thrust / (m * g);
+      if (s.tLiftoff === null) s.tLiftoff = s.t;
+    }
+    s.t += dt; s.y = y; s.thrust = thrust; s.tau = tau; s.onGround = onGround;
+    [x, z, vx, vz, phi, om] = y;
+    if (z > s.peak) s.peak = z;
+    // --- obstacle clearance ---
+    const bottom = z - halfExtent(cfg, phi);
+    s.vehicles.forEach((v, i) => {
+      if (x + cfg.L / 2 > v.x0 && x - cfg.L / 2 < v.x1) {
+        const c = bottom - v.h;
+        if (c < s.clear[i]) s.clear[i] = c;
+        if (s.minClear === null || c < s.minClear) { s.minClear = c; s.minClearName = v.name; }
+        if (c < 0 && !s.hit) s.hit = v.name;
+      }
+    });
+    if (s.hit) { s.done = true; s.result = { text: 'HIT the ' + s.hit, level: 'bad' }; return false; }
+    // --- touchdown ---
+    if ((s.phase === 'flight' || s.phase === 'land') && s.tLiftoff !== null && vz < 0 && bottom <= 0) {
+      const d = ((phi % TAU) + TAU) % TAU, tilt = Math.min(d, TAU - d);
+      s.touch = { t: s.t, vz: -vz, tiltDeg: tilt * 180 / Math.PI, rollDeg: phi * 180 / Math.PI, rateDeg: om * 180 / Math.PI, x };
+      s.y[3] = 0; s.y[1] = cfg.h / 2;
+      if (Math.abs(s.touch.rateDeg) > 30) s.result = { text: 'CRASH: still spinning at touchdown', level: 'bad' };
+      else if (s.touch.tiltDeg > 25) s.result = { text: 'CRASH: landed at ' + s.touch.tiltDeg.toFixed(0) + '° tilt', level: 'bad' };
+      else if (s.touch.vz > 6) s.result = { text: 'HARD LANDING: ' + (s.touch.vz * 3.6).toFixed(0) + ' km/h down', level: 'bad' };
+      else if (s.touch.vz > 3) s.result = { text: 'HARD LANDING: ' + (s.touch.vz * 3.6).toFixed(0) + ' km/h down', level: 'warn' };
+      else s.result = { text: 'LANDED LEVEL', level: 'ok' };
+      if (s.result.level === 'bad') { s.done = true; return false; }
+      s.phase = 'rollout'; s.y[4] = Math.round(phi / TAU) * TAU; s.y[5] = 0;
+    }
+    if (s.phase === 'rollout' && (vx <= 0 || x > cfg.x_end_m)) { s.done = true; return false; }
+    if (s.t > 20) { s.done = true; return false; }
+    return true;
+  }
+
+  function run(cfg, dt = 0.001, onStep) {
+    const s = create(cfg);
+    while (step(s, cfg, dt)) { if (onStep) onStep(s); }
+    return s;
+  }
+
+  // Scenario presets live in note/julia/params/sim_b.json (shared with the Julia model).
+  // presets(PARAMS) -> {key: overrides}; presetList(PARAMS) -> [{key, label}] in file order.
+  function presets(PARAMS) {
+    const out = {};
+    for (const [k, p] of Object.entries(PARAMS.sim_b.presets)) out[k] = Object.assign({}, p.overrides);
+    return out;
+  }
+  function presetList(PARAMS) { return Object.entries(PARAMS.sim_b.presets).map(([key, p]) => ({ key, label: p.label })); }
+
+  return { config, inertia, requiredTorque, halfExtent, vehicles, rollTorque, create, step, run, presets, presetList };
+});
+
+</script>
+<script>
+/* kit.js - shared UI toolkit for the GIST Lab Roadster simulations.
+   Provides: units, canvas sizing, a fixed-step animation loop, stream-style gauges,
+   time-series plots, sliders, presets, transport controls, predict overlay, arrows, CSV export. */
+(function (global) {
+  'use strict';
+
+  const U = { g: 9.80665, mph: 0.44704, ft: 0.3048, kmh: 1 / 3.6 };
+  const qs = Object.fromEntries(new URLSearchParams(location.search));
+
+  // ---------- errors: show them on the page so headless screenshots reveal them ----------
+  function showError(msg) {
+    let el = document.getElementById('kit-errors');
+    if (!el) { el = document.createElement('div'); el.id = 'kit-errors'; document.body.appendChild(el); }
+    el.textContent += msg + '\n';
+    el.style.display = 'block';
+  }
+  global.addEventListener('error', (e) => showError('Error: ' + e.message + ' (line ' + e.lineno + ')'));
+  global.addEventListener('unhandledrejection', (e) => showError('Promise: ' + e.reason));
+
+  // ---------- helpers ----------
+  function el(tag, cls, html) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html !== undefined) e.innerHTML = html;
+    return e;
+  }
+  function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function fmt(x, d = 1) { return (Number.isFinite(x) ? x : 0).toFixed(d); }
+  function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+  // Stream-style timer HH:MM:SS:cc (cc = hundredths of a second)
+  function timer(t) {
+    t = Math.max(0, t);
+    const total = Math.floor(t * 100 + 1e-6);
+    const cs = total % 100, s = Math.floor(total / 100) % 60, m = Math.floor(total / 6000) % 60, h = Math.floor(total / 360000);
+    return [h, m, s, cs].map((v) => String(v).padStart(2, '0')).join(':');
+  }
+
+  // Size a canvas to its CSS box (HiDPI aware). Returns {ctx, w, h} in CSS pixels.
+  function fitCanvas(cv) {
+    const r = cv.getBoundingClientRect();
+    const dpr = Math.min(global.devicePixelRatio || 1, 2);
+    const w = Math.max(1, Math.round(r.width)), h = Math.max(1, Math.round(r.height));
+    const W = Math.round(w * dpr), H = Math.round(h * dpr);
+    if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx, w, h };
+  }
+
+  // Arrow from (x,y) by (dx,dy) in screen pixels, with optional label at the tip.
+  function arrow(ctx, x, y, dx, dy, opt = {}) {
+    const L = Math.hypot(dx, dy);
+    if (L < 2) return;
+    const color = opt.color || '#fff', width = opt.width || 3, head = Math.min(opt.head || 12, L * 0.6);
+    const ux = dx / L, uy = dy / L;
+    ctx.save();
+    ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = width; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + dx - ux * head * 0.8, y + dy - uy * head * 0.8); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + dx, y + dy);
+    ctx.lineTo(x + dx - ux * head - uy * head * 0.5, y + dy - uy * head + ux * head * 0.5);
+    ctx.lineTo(x + dx - ux * head + uy * head * 0.5, y + dy - uy * head - ux * head * 0.5);
+    ctx.closePath(); ctx.fill();
+    if (opt.label) {
+      ctx.font = opt.font || '600 14px -apple-system, Segoe UI, sans-serif';
+      ctx.textAlign = ux >= 0 ? 'left' : 'right'; ctx.textBaseline = 'middle';
+      ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,0.85)';
+      const lx = x + dx + ux * 8 + (ux >= 0 ? 4 : -4), ly = y + dy + uy * 12;
+      ctx.strokeText(opt.label, lx, ly); ctx.fillText(opt.label, lx, ly);
+    }
+    ctx.restore();
+  }
+
+  // ---------- fixed-step loop ----------
+  // step(dt) advances physics by dt and returns false to stop. draw() renders.
+  class Loop {
+    constructor({ dt = 0.001, step, draw, maxStepsPerFrame = 5000 }) {
+      this.dt = dt; this.stepFn = step; this.drawFn = draw; this.max = maxStepsPerFrame;
+      this.playing = false; this.speed = 1; this.acc = 0; this.last = null; this.listeners = [];
+      this._frame = this._frame.bind(this);
+      requestAnimationFrame(this._frame);
+    }
+    _frame(ts) {
+      if (this.last === null) this.last = ts;
+      let real = (ts - this.last) / 1000; this.last = ts;
+      if (real > 0.1) real = 0.1;
+      if (this.playing) {
+        this.acc += real * this.speed;
+        let n = 0;
+        while (this.acc >= this.dt && n < this.max) {
+          const cont = this.stepFn(this.dt);
+          this.acc -= this.dt; n++;
+          if (cont === false) { this.acc = 0; this.pause(); break; }
+        }
+      }
+      try { this.drawFn(); } catch (e) { showError('draw: ' + e.message); this.pause(); }
+      requestAnimationFrame(this._frame);
+    }
+    play() { this.playing = true; this.acc = 0; this._emit(); }
+    pause() { this.playing = false; this._emit(); }
+    toggle() { this.playing ? this.pause() : this.play(); }
+    // Advance one display frame (1/60 s of simulation) while paused.
+    stepOnce(simSeconds = 1 / 60) {
+      this.pause();
+      const n = Math.max(1, Math.round(simSeconds / this.dt));
+      for (let i = 0; i < n; i++) if (this.stepFn(this.dt) === false) break;
+    }
+    // Run synchronously until getT() >= t (used by ?t= for screenshots and jumping ahead).
+    runTo(t, getT) {
+      let guard = 0;
+      while (getT() < t && guard < 5e6) { if (this.stepFn(this.dt) === false) break; guard++; }
+      this.pause();
+    }
+    setSpeed(s) { this.speed = s; this._emit(); }
+    onChange(fn) { this.listeners.push(fn); }
+    _emit() { this.listeners.forEach((f) => f(this)); }
+  }
+
+  // ---------- stream-style circular gauge ----------
+  class Gauge {
+    constructor(parent, { label, unit = '', min = 0, max = 1, digits = 1 }) {
+      this.label = label; this.unit = unit; this.min = min; this.max = max; this.digits = digits;
+      this.box = el('div', 'kit-gauge'); this.cv = el('canvas'); this.box.appendChild(this.cv); parent.appendChild(this.box);
+      this.v = null; this.key = '';
+      this.set(min);
+    }
+    set(v) {
+      const key = fmt(v, this.digits);
+      if (key === this.key && this.cv.width > 1) return;
+      this.v = v; this.key = key; this.draw();
+    }
+    draw() {
+      const { ctx, w, h } = fitCanvas(this.cv);
+      const cx = w / 2, cy = h / 2, r = Math.min(w, h) / 2 - 6;
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.beginPath(); ctx.arc(cx, cy, r + 4, 0, Math.PI * 2); ctx.fill();
+      const a0 = Math.PI * 0.75, a1 = Math.PI * 2.25;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = 'rgba(255,255,255,0.16)'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(cx, cy, r, a0, a1); ctx.stroke();
+      const f = clamp((Math.abs(this.v) - this.min) / (this.max - this.min || 1), 0, 1);
+      if (f > 0.001) {
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 5;
+        ctx.beginPath(); ctx.arc(cx, cy, r, a0, a0 + (a1 - a0) * f); ctx.stroke();
+      }
+      ctx.fillStyle = 'rgba(255,255,255,0.65)'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.font = `600 ${Math.round(r * 0.2)}px -apple-system, Segoe UI, sans-serif`;
+      ctx.fillText(this.label, cx, cy - r * 0.45);
+      ctx.fillText(this.unit, cx, cy + r * 0.45);
+      ctx.fillStyle = '#fff';
+      ctx.font = `500 ${Math.round(r * (this.key.length > 5 ? 0.42 : 0.5))}px "Avenir Next", -apple-system, Segoe UI, sans-serif`;
+      ctx.fillText(this.key, cx, cy + r * 0.02);
+    }
+  }
+
+  // ---------- time-series plot ----------
+  function niceTicks(min, max, count = 5) {
+    const span = max - min || 1;
+    const raw = span / count, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((s) => span / s <= count) || 10 * mag;
+    const out = [];
+    for (let v = Math.ceil(min / step) * step; v <= max + 1e-9; v += step) out.push(Math.abs(v) < 1e-12 ? 0 : v);
+    return out;
+  }
+  class Plot {
+    constructor(canvas, o = {}) {
+      this.cv = canvas;
+      this.title = o.title || ''; this.xlabel = o.xlabel || 't (s)'; this.ylabel = o.ylabel || '';
+      this.x0 = o.xmin ?? 0; this.x1 = o.xmax ?? 1; this.y0 = o.ymin ?? 0; this.y1 = o.ymax ?? 1;
+      this.base = { x1: this.x1, y0: this.y0, y1: this.y1 };
+      this.autoY = !!o.autoY; this.autoX = o.autoX !== false;
+      this.series = (o.series || []).map((s) => ({ name: s.name, color: s.color || '#fff', width: s.width || 2, dash: s.dash || null, data: [] }));
+      this.hlines = o.hlines || []; this.vlines = []; this.markers = [];
+    }
+    clear() {
+      this.series.forEach((s) => (s.data.length = 0)); this.markers = []; this.vlines = [];
+      this.x1 = this.base.x1; this.y0 = this.base.y0; this.y1 = this.base.y1;
+    }
+    push(i, x, y) {
+      const d = this.series[i].data;
+      const minDx = (this.x1 - this.x0) / 700;
+      if (d.length && x - d[d.length - 1][0] < minDx) return;
+      d.push([x, y]);
+      if (this.autoX && x > this.x1) this.x1 = x * 1.3;
+      if (this.autoY) { if (y > this.y1) this.y1 = y * 1.15; if (y < this.y0) this.y0 = y * 1.15; }
+    }
+    setSeries(i, pts) { this.series[i].data = pts.slice(); }
+    marker(x, y, label, color = '#ffd84d') { this.markers.push({ x, y, label, color }); }
+    vline(x, label, color = 'rgba(255,255,255,0.4)') { this.vlines.push({ x, label, color }); }
+    draw() {
+      const { ctx, w, h } = fitCanvas(this.cv);
+      ctx.clearRect(0, 0, w, h);
+      const m = { l: 56, r: 14, t: 28, b: 34 };
+      const pw = w - m.l - m.r, ph = h - m.t - m.b;
+      if (pw < 20 || ph < 20) return;
+      const X = (x) => m.l + ((x - this.x0) / (this.x1 - this.x0)) * pw;
+      const Y = (y) => m.t + (1 - (y - this.y0) / (this.y1 - this.y0)) * ph;
+      ctx.font = '12px -apple-system, Segoe UI, sans-serif';
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.fillStyle = '#7d8894'; ctx.lineWidth = 1;
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      for (const v of niceTicks(this.y0, this.y1, 4)) {
+        ctx.beginPath(); ctx.moveTo(m.l, Y(v)); ctx.lineTo(m.l + pw, Y(v)); ctx.stroke();
+        ctx.fillText(+v.toPrecision(4) + '', m.l - 6, Y(v));
+      }
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (const v of niceTicks(this.x0, this.x1, 6)) {
+        ctx.beginPath(); ctx.moveTo(X(v), m.t); ctx.lineTo(X(v), m.t + ph); ctx.stroke();
+        ctx.fillText(+v.toPrecision(4) + '', X(v), m.t + ph + 5);
+      }
+      ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.strokeRect(m.l, m.t, pw, ph);
+      ctx.fillStyle = '#a3aeba'; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+      ctx.fillText(this.xlabel, m.l + pw, h - 2);
+      ctx.save(); ctx.translate(13, m.t + ph / 2); ctx.rotate(-Math.PI / 2); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(this.ylabel, 0, 0); ctx.restore();
+      ctx.fillStyle = '#eef2f6'; ctx.font = '600 13px -apple-system, Segoe UI, sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+      ctx.fillText(this.title, m.l, 7);
+      ctx.save(); ctx.beginPath(); ctx.rect(m.l, m.t, pw, ph); ctx.clip();
+      for (const hl of this.hlines) {
+        ctx.strokeStyle = hl.color || 'rgba(255,216,77,0.7)'; ctx.setLineDash([6, 5]); ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(m.l, Y(hl.y)); ctx.lineTo(m.l + pw, Y(hl.y)); ctx.stroke(); ctx.setLineDash([]);
+        if (hl.label) { ctx.fillStyle = hl.color || 'rgba(255,216,77,0.9)'; ctx.font = '12px -apple-system, sans-serif'; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText(hl.label, m.l + pw - 4, Y(hl.y) - 2); }
+      }
+      for (const vl of this.vlines) {
+        ctx.strokeStyle = vl.color; ctx.setLineDash([4, 4]); ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(X(vl.x), m.t); ctx.lineTo(X(vl.x), m.t + ph); ctx.stroke(); ctx.setLineDash([]);
+        if (vl.label) { ctx.fillStyle = '#a3aeba'; ctx.font = '11px -apple-system, sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(vl.label, X(vl.x) + 3, m.t + 3); }
+      }
+      for (const s of this.series) {
+        if (s.data.length < 2) continue;
+        ctx.strokeStyle = s.color; ctx.lineWidth = s.width; ctx.setLineDash(s.dash || []);
+        ctx.beginPath(); s.data.forEach(([x, y], k) => (k ? ctx.lineTo(X(x), Y(y)) : ctx.moveTo(X(x), Y(y)))); ctx.stroke();
+      }
+      ctx.setLineDash([]);
+      for (const mk of this.markers) {
+        ctx.fillStyle = mk.color; ctx.beginPath(); ctx.arc(X(mk.x), Y(mk.y), 4.5, 0, Math.PI * 2); ctx.fill();
+        if (mk.label) { ctx.font = '600 12px -apple-system, sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; ctx.fillText(mk.label, X(mk.x) + 6, Y(mk.y) - 4); }
+      }
+      ctx.restore();
+      // legend
+      let lx = m.l + pw, ly = 8;
+      ctx.font = '12px -apple-system, Segoe UI, sans-serif'; ctx.textBaseline = 'top'; ctx.textAlign = 'right';
+      for (let i = this.series.length - 1; i >= 0; i--) {
+        const s = this.series[i]; if (!s.name) continue;
+        const tw = ctx.measureText(s.name).width;
+        ctx.fillStyle = '#a3aeba'; ctx.fillText(s.name, lx, ly);
+        ctx.fillStyle = s.color; ctx.fillRect(lx - tw - 18, ly + 6, 12, 3);
+        lx -= tw + 30;
+      }
+    }
+  }
+
+  // ---------- controls ----------
+  function section(parent, title) {
+    const s = el('div', 'kit-section');
+    if (title) s.appendChild(el('h2', '', title));
+    parent.appendChild(s);
+    return s;
+  }
+  function slider(parent, { label, min, max, step = 'any', value, unit = '', fmt: f = (v) => v, onInput }) {
+    const row = el('div', 'kit-slider');
+    row.innerHTML = `<div class="kit-slider-head"><span>${label}</span><b></b></div><input type="range">`;
+    const out = row.querySelector('b'), inp = row.querySelector('input');
+    inp.min = min; inp.max = max; inp.step = step; inp.value = value;
+    const upd = () => (out.textContent = f(+inp.value) + (unit ? ' ' + unit : ''));
+    inp.addEventListener('input', () => { upd(); onInput && onInput(+inp.value); });
+    upd(); parent.appendChild(row);
+    return { el: row, input: inp, get value() { return +inp.value; }, set(v) { inp.value = v; upd(); } };
+  }
+  function check(parent, { label, value = false, onChange }) {
+    const row = el('label', 'kit-check');
+    row.innerHTML = `<input type="checkbox"><span>${label}</span>`;
+    const inp = row.querySelector('input'); inp.checked = value;
+    inp.addEventListener('change', () => onChange && onChange(inp.checked));
+    parent.appendChild(row);
+    return { el: row, input: inp, get value() { return inp.checked; }, set(v) { inp.checked = v; } };
+  }
+  function button(parent, label, onClick, cls = 'kit-btn') {
+    const b = el('button', cls, label); b.type = 'button'; b.addEventListener('click', onClick); parent.appendChild(b); return b;
+  }
+  // presets: [{key, label, apply()}]
+  function presets(parent, list, initialKey) {
+    const box = el('div', 'kit-presets'); parent.appendChild(box);
+    const api = { active: null, buttons: {} };
+    api.select = (key) => {
+      const p = list.find((q) => q.key === key); if (!p) return;
+      api.active = key; Object.entries(api.buttons).forEach(([k, b]) => b.classList.toggle('on', k === key)); p.apply();
+    };
+    api.clear = () => { api.active = null; Object.values(api.buttons).forEach((b) => b.classList.remove('on')); };
+    list.forEach((p) => { api.buttons[p.key] = button(box, p.label, () => api.select(p.key)); });
+    if (initialKey) api.select(initialKey);
+    return api;
+  }
+  // readouts: rows [{key, label}] -> api.set(key, text, status)
+  function readouts(parent, rows) {
+    const box = el('div', 'kit-readouts'); parent.appendChild(box);
+    const cells = {};
+    rows.forEach((r) => { box.appendChild(el('div', 'k', r.label)); const v = el('div', 'v', '—'); box.appendChild(v); cells[r.key] = v; });
+    return { set(key, text, status) { const c = cells[key]; if (!c) return; if (c.textContent !== text) c.textContent = text; c.className = 'v' + (status ? ' ' + status : ''); } };
+  }
+
+  // Transport: play/pause, reset, step, speed, forces, predict, CSV. Also binds keys.
+  function transport(parent, loop, h = {}) {
+    const box = el('div', 'kit-transport'); parent.appendChild(box);
+    const play = button(box, '▶ Play', () => (h.onPlay ? h.onPlay() : loop.toggle()), 'kit-btn primary');
+    button(box, '⟲ Reset', () => h.onReset && h.onReset());
+    button(box, 'Step ▸', () => loop.stepOnce());
+    const speeds = [0.1, 0.25, 0.5, 1, 2];
+    const seg = el('div', 'kit-seg'); box.appendChild(seg);
+    const sb = speeds.map((s) => { const b = el('button', '', s + '×'); b.type = 'button'; b.addEventListener('click', () => loop.setSpeed(s)); seg.appendChild(b); return b; });
+    const forces = h.onForces ? button(box, 'Forces', () => h.onForces()) : null;
+    const pred = h.onPredict ? button(box, 'Predict', () => h.onPredict()) : null;
+    if (h.onExport) button(box, 'CSV', () => h.onExport());
+    const sync = () => {
+      play.textContent = loop.playing ? '❚❚ Pause' : '▶ Play';
+      sb.forEach((b, i) => b.classList.toggle('on', loop.speed === speeds[i]));
+    };
+    loop.onChange(sync); sync();
+    global.addEventListener('keydown', (e) => {
+      if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName) && e.key !== ' ') return;
+      if (e.key === ' ') { e.preventDefault(); h.onPlay ? h.onPlay() : loop.toggle(); }
+      else if (e.key === 'r' || e.key === 'R') h.onReset && h.onReset();
+      else if (e.key === 'ArrowRight') loop.stepOnce();
+      else if (e.key === 's' || e.key === 'S') { const i = speeds.indexOf(loop.speed); loop.setSpeed(speeds[(i + speeds.length - 1) % speeds.length]); }
+      else if ((e.key === 'f' || e.key === 'F') && h.onForces) h.onForces();
+      else if ((e.key === 'p' || e.key === 'P') && h.onPredict) h.onPredict();
+    });
+    return { setForces(on) { forces && forces.classList.toggle('on', on); }, setPredict(on) { pred && pred.classList.toggle('on', on); } };
+  }
+
+  // Predict overlay: question first, students vote, then "Run it".
+  class Predict {
+    constructor(stage, { tag = 'Predict first', question, choices = [], hint = '', onGo }) {
+      this.box = el('div', 'kit-predict');
+      const card = el('div', 'card');
+      card.appendChild(el('div', 'tag', tag));
+      card.appendChild(el('h3', '', question));
+      if (choices.length) {
+        const c = el('div', 'choices');
+        choices.forEach((t) => { const b = el('button', '', t); b.type = 'button'; b.addEventListener('click', () => { c.querySelectorAll('button').forEach((x) => x.classList.remove('on')); b.classList.add('on'); }); c.appendChild(b); });
+        card.appendChild(c);
+      }
+      if (hint) card.appendChild(el('p', 'hint', hint));
+      const go = el('button', 'kit-btn primary go', 'Run it ▶'); go.type = 'button';
+      go.addEventListener('click', () => { this.hide(); onGo && onGo(); });
+      card.appendChild(go);
+      this.box.appendChild(card); stage.appendChild(this.box);
+      this.onToggle = null;
+    }
+    get shown() { return this.box.classList.contains('show'); }
+    show() { this.box.classList.add('show'); this.onToggle && this.onToggle(true); }
+    hide() { this.box.classList.remove('show'); this.onToggle && this.onToggle(false); }
+    toggle() { this.shown ? this.hide() : this.show(); }
+  }
+
+  function downloadCSV(name, header, rows) {
+    const text = [header.join(',')].concat(rows.map((r) => r.map((v) => (typeof v === 'number' ? +v.toPrecision(8) : v)).join(','))).join('\n');
+    const a = el('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/csv' })); a.download = name;
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+
+  global.Kit = { U, qs, el, css, fmt, clamp, timer, fitCanvas, arrow, Loop, Gauge, Plot, niceTicks,
+    section, slider, check, button, presets, readouts, transport, Predict, downloadCSV, showError };
+})(window);
+
+</script>
+<script>
+'use strict';
+const DEG = 180 / Math.PI, FT = Kit.U.ft;
+const C = { grav: Kit.css('--f-gravity'), thrust: Kit.css('--f-thrust'), vel: Kit.css('--f-velocity'), ok: Kit.css('--ok'), bad: Kit.css('--bad'), warn: Kit.css('--warn'), gold: Kit.css('--gold') };
+const PHASE = { run: 'RUN-UP', lift: 'LIFT BURN', flight: 'FLIGHT', land: 'LANDING BURN', rollout: 'ROLL-OUT' };
+
+// ---------- state ----------
+let over = {}, cfg, s, trail, rows, showForces = true, maxTau = 0;
+function buildCfg() { cfg = SimB.config(window.PARAMS, over); }
+
+function reset() {
+  buildCfg();
+  s = SimB.create(cfg); trail = []; rows = []; maxTau = 0;
+  [p1, p2, p3].forEach((p) => p.clear());
+  p1.setSeries(0, outline());
+  p1.x0 = cfg.x_start_m - 2; p1.x1 = cfg.x_end_m;
+  updateStatus(); updateReadouts();
+}
+function outline() {
+  const pts = [[cfg.x_start_m - 2, 0]];
+  for (const v of s.vehicles) pts.push([v.x0, 0], [v.x0, v.h], [v.x1, v.h], [v.x1, 0]);
+  pts.push([cfg.x_end_m, 0]);
+  return pts;
+}
+
+function step(dt) {
+  const cont = SimB.step(s, cfg, dt);
+  const [x, z, vx, vz, phi, om] = s.y;
+  maxTau = Math.max(maxTau, Math.abs(s.tau));
+  const k = Math.round(s.t * 1000);
+  if (k % 5 === 0 || !cont) {
+    const bottom = z - SimB.halfExtent(cfg, phi);
+    p1.push(1, x, Math.max(0, bottom));
+    p2.push(0, s.t, phi * DEG); p2.push(1, s.t, om * DEG);
+    p3.push(0, s.t, s.tau / 1000); p3.push(1, s.t, s.G);
+    rows.push([s.t, x, z, vx, vz, phi * DEG, om * DEG, s.tau, s.thrust, s.G]);
+  }
+  if (k % 20 === 0) trail.push([x, z]);
+  if (!cont) { updateStatus(); }
+  return cont;
+}
+
+// ---------- drawing ----------
+const cv = document.getElementById('cv');
+function drawCarSide(ctx, X, Y, sc, x, z, phi) {
+  const L = cfg.L, h = cfg.h, w = cfg.w;
+  const c = Math.cos(phi), sOff = (w / 2) * Math.sin(phi);
+  // body profile (u along length, v up from center) for a low sports car
+  const prof = [[-2.3, -0.32], [2.3, -0.32], [2.3, -0.08], [1.7, 0.02], [0.5, 0.55], [-0.9, 0.6], [-2.05, 0.22], [-2.3, 0.1]];
+  const P = (u, v, off) => [X(x + u * L / 4.6), Y(z + v * (h / 1.2) * c + off)];
+  const face = (off, fill) => {
+    ctx.beginPath(); prof.forEach(([u, v], i) => { const [px, py] = P(u, v, off); i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); });
+    ctx.closePath(); ctx.fillStyle = fill; ctx.fill();
+  };
+  face(-sOff, '#6c737b');
+  const top = Y(z + Math.abs(sOff)), bot = Y(z - Math.abs(sOff));
+  ctx.fillStyle = '#9aa1a8'; ctx.fillRect(X(x - L / 2), top, (L) * sc, bot - top);
+  face(sOff, c >= 0 ? '#e9ecef' : '#b8bdc3');
+  // windows on the visible side
+  if (c > 0.25) {
+    ctx.beginPath(); [[0.35, 0.47], [-0.85, 0.52], [-1.75, 0.22], [1.45, 0.08]].forEach(([u, v], i) => { const [px, py] = P(u, v, sOff); i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); });
+    ctx.closePath(); ctx.fillStyle = '#1b2430'; ctx.fill();
+  }
+  // wheels: on the bottom when upright, on top when upside down
+  for (const u of [-1.45, 1.45]) {
+    const [wx, wy] = P(u, -0.32, sOff * 0.6);
+    ctx.fillStyle = '#111'; ctx.beginPath(); ctx.ellipse(wx, wy, 0.33 * sc, Math.max(0.06, 0.33 * Math.abs(c)) * sc, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#555'; ctx.beginPath(); ctx.ellipse(wx, wy, 0.16 * sc, Math.max(0.03, 0.16 * Math.abs(c)) * sc, 0, 0, Math.PI * 2); ctx.fill();
+  }
+}
+function plume(ctx, x0, y0, dx, dy, len, width) {
+  const gr = ctx.createLinearGradient(x0, y0, x0 + dx * len, y0 + dy * len);
+  gr.addColorStop(0, 'rgba(210,240,255,0.95)'); gr.addColorStop(1, 'rgba(98,198,255,0)');
+  ctx.fillStyle = gr; ctx.beginPath();
+  ctx.moveTo(x0 - dy * width * 0.3, y0 + dx * width * 0.3); ctx.lineTo(x0 + dy * width * 0.3, y0 - dx * width * 0.3);
+  ctx.lineTo(x0 + dx * len + dy * width, y0 + dy * len - dx * width); ctx.lineTo(x0 + dx * len - dy * width, y0 + dy * len + dx * width);
+  ctx.closePath(); ctx.fill();
+}
+function drawVehicle(ctx, X, Y, sc, v, idx) {
+  const x0 = X(v.x0), x1 = X(v.x1), yT = Y(v.h), yG = Y(0), wpx = x1 - x0;
+  ctx.fillStyle = '#2a3038'; ctx.strokeStyle = '#59636e'; ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  if (v.name === 'Semi' && !cfg.side_by_side) { // tall cab at the front, low chassis behind
+    ctx.moveTo(x0, yG - 0.5 * sc); ctx.lineTo(x0, Y(v.h * 0.9)); ctx.lineTo(x0 + wpx * 0.08, yT); ctx.lineTo(x0 + wpx * 0.5, yT); ctx.lineTo(x0 + wpx * 0.52, Y(1.5)); ctx.lineTo(x1, Y(1.5)); ctx.lineTo(x1, yG - 0.5 * sc);
+  } else {
+    const r = Math.min(10, wpx * 0.2);
+    ctx.moveTo(x0, yG - 0.35 * sc); ctx.lineTo(x0, yT + r); ctx.quadraticCurveTo(x0, yT, x0 + r, yT); ctx.lineTo(x1 - r, yT); ctx.quadraticCurveTo(x1, yT, x1, yT + r); ctx.lineTo(x1, yG - 0.35 * sc);
+  }
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#0c0f13';
+  for (const f of cfg.side_by_side ? [0.5] : [0.2, 0.8]) { ctx.beginPath(); ctx.arc(x0 + wpx * f, yG - 0.35 * sc, 0.35 * sc, 0, Math.PI * 2); ctx.fill(); }
+  // labels sit above the vehicle so nothing is hidden under the HUD gauges
+  ctx.font = '600 13px -apple-system, Segoe UI, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+  ctx.fillStyle = '#c9d1d9'; ctx.fillText(v.name + ' · ' + v.h.toFixed(1) + ' m', (x0 + x1) / 2, yT - 6);
+  const c = s.clear[idx];
+  if (Number.isFinite(c)) {
+    ctx.font = '700 14px -apple-system, Segoe UI, sans-serif';
+    ctx.fillStyle = c >= 0 ? C.ok : C.bad; ctx.fillText(c >= 0 ? 'clear +' + c.toFixed(1) + ' m' : 'HIT', (x0 + x1) / 2, yT - 24);
+  }
+}
+function drawInset(ctx, w) {
+  const bw = 290, bh = 220, bx = w - bw - 14, by = 64;
+  ctx.fillStyle = 'rgba(13,17,22,0.88)'; ctx.strokeStyle = '#2e3742'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, 10); ctx.fill(); ctx.stroke();
+  const phi = s.y[4], om = s.y[5];
+  ctx.fillStyle = '#a3aeba'; ctx.font = '600 12px -apple-system, Segoe UI, sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  ctx.fillText('FRONT VIEW (roll about the long axis)', bx + 12, by + 10);
+  ctx.fillStyle = '#fff'; ctx.font = '700 30px -apple-system, Segoe UI, sans-serif';
+  ctx.fillText(Math.round(phi * DEG) + '°', bx + 12, by + 30);
+  ctx.fillStyle = '#a3aeba'; ctx.font = '13px -apple-system, Segoe UI, sans-serif';
+  ctx.fillText(Math.round(om * DEG) + ' °/s', bx + 12, by + 66);
+  const cx = bx + bw / 2 + 30, cy = by + bh / 2 + 22, k = 52;
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(-phi);
+  const W = cfg.w * k, Hh = cfg.h * k;
+  ctx.fillStyle = '#e9ecef'; ctx.beginPath(); ctx.roundRect(-W / 2, -Hh * 0.05, W, Hh * 0.45, 6); ctx.fill();
+  ctx.fillStyle = '#1b2430'; ctx.beginPath(); ctx.moveTo(-W * 0.38, -Hh * 0.05); ctx.lineTo(-W * 0.26, -Hh * 0.5); ctx.lineTo(W * 0.26, -Hh * 0.5); ctx.lineTo(W * 0.38, -Hh * 0.05); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#111'; ctx.fillRect(-W / 2 + 2, Hh * 0.32, W * 0.18, Hh * 0.2); ctx.fillRect(W / 2 - 2 - W * 0.18, Hh * 0.32, W * 0.18, Hh * 0.2);
+  // roll thrusters fire in opposite directions on the two sides
+  if (Math.abs(s.tau) > 1) {
+    const sg = Math.sign(s.tau);
+    plume(ctx, -W / 2, 0, 0, -sg, 34, 7); plume(ctx, W / 2, 0, 0, sg, 34, 7);
+  }
+  ctx.restore();
+  if (showForces && Math.abs(s.tau) > 1) { // curved torque arrow
+    const r = 66, sg = Math.sign(s.tau), a0 = -Math.PI / 2, a1 = a0 - sg * 1.6;
+    ctx.strokeStyle = C.thrust; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(cx, cy, r, a0, a1, sg > 0); ctx.stroke();
+    const ex = cx + r * Math.cos(a1), ey = cy + r * Math.sin(a1), tx = -Math.sin(a1) * -sg, ty = Math.cos(a1) * -sg;
+    ctx.fillStyle = C.thrust; ctx.beginPath(); ctx.moveTo(ex + tx * 10, ey + ty * 10); ctx.lineTo(ex - ty * 6, ey + tx * 6); ctx.lineTo(ex + ty * 6, ey - tx * 6); ctx.fill();
+    ctx.font = '600 13px -apple-system, sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText('τ = ' + (s.tau / 1000).toFixed(1) + ' kN·m', bx + 12, by + bh - 18);
+  } else if (!s.onGround && Math.abs(om) > 0.05) {
+    ctx.fillStyle = C.gold; ctx.font = '600 12px -apple-system, sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText('No torque → spin keeps going (L = Iω)', bx + 12, by + bh - 18);
+  }
+}
+function draw() {
+  const { ctx, w, h } = Kit.fitCanvas(cv);
+  const groundY = h - 150;
+  // camera follows the car: about 40 m of road in view
+  const x0m = cfg.x_start_m - 2, span = cfg.x_end_m - x0m;
+  const sc = Math.min(w / Math.min(span, 40), (groundY - 40) / 9.5), vis = w / sc;
+  const xc = Kit.clamp(s.y[0] + 4, x0m + vis / 2, Math.max(x0m + vis / 2, cfg.x_end_m - vis / 2));
+  const X = (x) => w / 2 + (x - xc) * sc, Y = (z) => groundY - z * sc;
+  // night sky and ground
+  const sky = ctx.createLinearGradient(0, 0, 0, groundY); sky.addColorStop(0, '#000'); sky.addColorStop(1, '#0b1118');
+  ctx.fillStyle = sky; ctx.fillRect(0, 0, w, groundY);
+  ctx.fillStyle = '#121519'; ctx.fillRect(0, groundY, w, h - groundY);
+  ctx.fillStyle = '#2a3038'; ctx.fillRect(0, groundY, w, 2);
+  for (let xm = Math.ceil(x0m); xm < cfg.x_end_m; xm += 3) { ctx.fillStyle = 'rgba(232,71,59,0.55)'; ctx.fillRect(X(xm), groundY + 4, 10, 2); }
+  // height scale
+  ctx.fillStyle = '#4d5762'; ctx.font = '12px -apple-system, sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  for (let zm = 2; zm <= 8; zm += 2) { ctx.fillRect(6, Y(zm), 8, 1); ctx.fillText(zm + ' m', 18, Y(zm)); }
+  // lift marker
+  ctx.strokeStyle = 'rgba(98,198,255,0.35)'; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(X(cfg.x_lift_m), groundY); ctx.lineTo(X(cfg.x_lift_m), groundY - 40); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(98,198,255,0.7)'; ctx.textAlign = 'center'; ctx.fillText('lift burn', X(cfg.x_lift_m), groundY - 48);
+  s.vehicles.forEach((v, i) => drawVehicle(ctx, X, Y, sc, v, i));
+  // trail
+  if (trail.length > 1) {
+    ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.setLineDash([5, 6]); ctx.lineWidth = 1.5; ctx.beginPath();
+    trail.forEach(([x, z], i) => (i ? ctx.lineTo(X(x), Y(z)) : ctx.moveTo(X(x), Y(z)))); ctx.stroke(); ctx.setLineDash([]);
+  }
+  const [x, z, vx, vz, phi] = s.y;
+  // vertical thrust plumes (body-fixed: they point along the car's "down")
+  if (s.thrust > 0) {
+    const len = 18 + 26 * s.thrust / (cfg.m * cfg.g), dir = Math.cos(phi) >= 0 ? 1 : -1;
+    for (const u of [-1.6, -0.6, 0.6, 1.6]) plume(ctx, X(x + u), Y(z - dir * 0.3 * Math.abs(Math.cos(phi))), 0, dir, len, 6);
+  }
+  drawCarSide(ctx, X, Y, sc, x, z, phi);
+  if (showForces) {
+    const k = 55; // px per mg
+    Kit.arrow(ctx, X(x), Y(z), 0, k, { color: C.grav, label: 'mg' });
+    const vert = s.thrust * (s.phase === 'lift' ? 1 : Math.cos(phi));
+    if (Math.abs(vert) > 1) Kit.arrow(ctx, X(x) + 14, Y(z), 0, -k * vert / (cfg.m * cfg.g), { color: C.thrust, label: 'thrust' });
+    Kit.arrow(ctx, X(x), Y(z) - 30, vx * 3, -vz * 3, { color: C.vel, width: 2, label: 'v' });
+  }
+  drawInset(ctx, w);
+  // HUD
+  const bottom = Math.max(0, z - SimB.halfExtent(cfg, phi));
+  gAlt.set(bottom / FT); gG.set(s.G); gRoll.set(phi * DEG); gRate.set(s.y[5] * DEG);
+  document.getElementById('timer').textContent = Kit.timer(s.t);
+  const rollMsg = Math.abs(s.tau) > 1 ? (s.tau * s.y[5] >= 0 ? 'speeding up the spin' : 'braking the spin') : (!s.onGround && Math.abs(s.y[5]) > 0.05 ? 'coasting: no torque, spin continues' : '');
+  document.getElementById('badge').innerHTML = '<b>' + (PHASE[s.phase] || '') + '</b>' + (rollMsg ? ' · roll: ' + rollMsg : '');
+  p1.draw(); p2.draw(); p3.draw();
+  updateReadouts();
+}
+function updateStatus() {
+  const el = document.getElementById('status');
+  if (s && s.result) { el.style.display = 'block'; el.textContent = s.result.text; el.className = 'kit-status ' + s.result.level; }
+  else el.style.display = 'none';
+}
+let roTick = 0;
+function updateReadouts() {
+  if (!ro) return;
+  if (loop && loop.playing && (roTick++ % 4)) return; // throttle only while playing
+  const air = s.tLiftoff === null ? 0 : (s.touch ? s.touch.t : s.t) - s.tLiftoff;
+  ro.set('phase', PHASE[s.phase] || (s.result ? 'done' : ''));
+  ro.set('air', air.toFixed(2) + ' s');
+  ro.set('peak', Math.max(0, s.peak - cfg.h / 2).toFixed(2) + ' m');
+  ro.set('clear', s.minClear === null ? '—' : (s.minClear >= 0 ? '+' : '') + s.minClear.toFixed(2) + ' m (' + s.minClearName + ')', s.minClear === null ? '' : s.minClear >= 0 ? 'ok' : 'bad');
+  if (s.touch) {
+    ro.set('rollTD', s.touch.rollDeg.toFixed(0) + '° (' + s.touch.rateDeg.toFixed(0) + ' °/s)', s.touch.tiltDeg < 25 && Math.abs(s.touch.rateDeg) < 30 ? 'ok' : 'bad');
+    ro.set('vTD', s.touch.vz.toFixed(1) + ' m/s (' + (s.touch.vz * 3.6).toFixed(0) + ' km/h)', s.touch.vz < 3 ? 'ok' : s.touch.vz < 6 ? 'warn' : 'bad');
+  } else { ro.set('rollTD', '—'); ro.set('vTD', '—'); }
+  ro.set('I', SimB.inertia(cfg).toFixed(0) + ' kg·m²');
+  ro.set('req', (SimB.requiredTorque(cfg) / 1000).toFixed(1) + ' kN·m', 'gold');
+  ro.set('used', (maxTau / 1000).toFixed(1) + ' kN·m');
+}
+
+// ---------- plots ----------
+const p1 = new Kit.Plot(document.getElementById('p1'), { title: 'Car bottom height', xlabel: 'x (m)', ylabel: 'm', xmin: -21, xmax: 52, ymin: 0, ymax: 9, autoX: false,
+  series: [{ name: 'vehicles', color: '#59636e', width: 1.5 }, { name: 'car', color: '#fff' }] });
+const p2 = new Kit.Plot(document.getElementById('p2'), { title: 'Roll', ylabel: '° , °/s', xmax: 4, ymin: -100, ymax: 600,
+  series: [{ name: 'angle (°)', color: '#fff' }, { name: 'rate (°/s)', color: '#62c6ff' }], hlines: [{ y: 360, label: '360° = one full roll' }] });
+const p3 = new Kit.Plot(document.getElementById('p3'), { title: 'Torque & G', ylabel: 'kN·m , g', xmax: 4, ymin: -14, ymax: 14,
+  series: [{ name: 'τ (kN·m)', color: '#62c6ff' }, { name: 'G (g)', color: '#ffd84d' }] });
+
+// ---------- HUD ----------
+const gAlt = new Kit.Gauge(document.getElementById('hudL'), { label: 'ALTITUDE', unit: 'FT', max: 30, digits: 1 });
+const gG = new Kit.Gauge(document.getElementById('hudL'), { label: 'G-FORCE', unit: 'G', max: 4, digits: 1 });
+const gRoll = new Kit.Gauge(document.getElementById('hudR'), { label: 'ROLL', unit: 'DEG', max: 360, digits: 0 });
+const gRate = new Kit.Gauge(document.getElementById('hudR'), { label: 'ROLL RATE', unit: 'DEG/S', max: 600, digits: 0 });
+
+// ---------- side panel ----------
+const loop = new Kit.Loop({ dt: 0.001, step, draw });
+const side = document.getElementById('side');
+const tr = Kit.transport(Kit.section(side, 'Run'), loop, {
+  onPlay: () => { if (s.done) { reset(); } loop.toggle(); },
+  onReset: () => { reset(); loop.pause(); },
+  onForces: () => { showForces = !showForces; tr.setForces(showForces); },
+  onPredict: () => pred.toggle(),
+  onExport: () => Kit.downloadCSV('sim_b_jump.csv', ['t_s', 'x_m', 'z_m', 'vx_mps', 'vz_mps', 'roll_deg', 'rollrate_degps', 'torque_Nm', 'thrust_N', 'G'], rows)
+});
+tr.setForces(showForces);
+
+const B = window.PARAMS.sim_b, CM = window.PARAMS.common;
+const PRESETS = SimB.presets(window.PARAMS);   // from note/julia/params/sim_b.json
+const presetSec = Kit.section(side, 'Presets');
+const ctl = {};
+function setOver(key, val) { over[key] = val; }
+function applyPreset(key) {
+  const p = PRESETS[key];
+  Object.assign(over, { v0_mps: B.v0_mps, lift_thrust_mg: B.lift_thrust_mg, lift_burn_s: B.lift_burn_s, roll_duration_s: B.roll_duration_s, m: CM.mass_kg }, p);
+  ctl.v0.set(over.v0_mps); ctl.k.set(over.lift_thrust_mg); ctl.burn.set(over.lift_burn_s); ctl.T.set(over.roll_duration_s);
+  ctl.pct.set(over.roll_torque_pct); ctl.m.set(over.m);
+  ctl.roll.set(over.roll_on); ctl.stop.set(over.roll_stop_spin); ctl.land.set(over.landing_on);
+  reset(); loop.pause();
+}
+const pre = Kit.presets(presetSec, SimB.presetList(window.PARAMS).map((q) => ({ key: q.key, label: q.label, apply: () => applyPreset(q.key) })));
+
+const sl = Kit.section(side, 'Parameters');
+const changed = (key) => (v) => { setOver(key, v); pre.clear(); reset(); loop.pause(); };
+ctl.v0 = Kit.slider(sl, { label: 'Run-up speed', min: 10, max: 30, step: 0.5, value: B.v0_mps, fmt: (v) => v.toFixed(1) + ' m/s (' + (v * 3.6).toFixed(0) + ' km/h)', onInput: changed('v0_mps') });
+ctl.k = Kit.slider(sl, { label: 'Lift thrust', min: 1.2, max: 4, step: 0.1, value: B.lift_thrust_mg, fmt: (v) => v.toFixed(1) + ' × mg', onInput: changed('lift_thrust_mg') });
+ctl.burn = Kit.slider(sl, { label: 'Lift burn time', min: 0.2, max: 1.2, step: 0.05, value: B.lift_burn_s, unit: 's', fmt: (v) => v.toFixed(2), onInput: changed('lift_burn_s') });
+ctl.T = Kit.slider(sl, { label: 'Roll duration T', min: 0.6, max: 2.4, step: 0.05, value: B.roll_duration_s, unit: 's', fmt: (v) => v.toFixed(2), onInput: changed('roll_duration_s') });
+ctl.pct = Kit.slider(sl, { label: 'Roll torque (% of needed)', min: 0, max: 150, step: 5, value: B.roll_torque_pct, unit: '%', fmt: (v) => v.toFixed(0), onInput: changed('roll_torque_pct') });
+ctl.m = Kit.slider(sl, { label: 'Mass [assumed]', min: 1200, max: 2600, step: 50, value: CM.mass_kg, unit: 'kg', fmt: (v) => v.toFixed(0), onInput: changed('m') });
+ctl.roll = Kit.check(sl, { label: 'Roll on', value: B.roll_on, onChange: changed('roll_on') });
+ctl.stop = Kit.check(sl, { label: 'Stop the spin (reverse torque in 2nd half)', value: B.roll_stop_spin, onChange: changed('roll_stop_spin') });
+ctl.land = Kit.check(sl, { label: 'Landing burn', value: B.landing_on, onChange: changed('landing_on') });
+ctl.side = Kit.check(sl, { label: 'Vehicles parked side by side', value: B.side_by_side, onChange: changed('side_by_side') });
+
+let ro = null;
+ro = Kit.readouts(Kit.section(side, 'Results'), [
+  { key: 'phase', label: 'Phase' }, { key: 'air', label: 'Time in the air' }, { key: 'peak', label: 'Peak height (lift)' },
+  { key: 'clear', label: 'Min clearance' }, { key: 'rollTD', label: 'Roll at touchdown' }, { key: 'vTD', label: 'Touchdown speed (down)' },
+  { key: 'I', label: 'Roll inertia I = m(w²+h²)/12' }, { key: 'req', label: 'Needed torque 4·2π·I/T²' }, { key: 'used', label: 'Max torque used' }
+]);
+
+const ex = Kit.section(side, '');
+ex.innerHTML = `<details class="kit-explain" open><summary>Explain</summary>
+<p><b>Flight</b> (after the lift burn, only gravity acts on the path):</p>
+<div class="eq">h = v<sub>z</sub>² / 2g &nbsp;&nbsp; x = v<sub>x</sub> · T</div>
+<p><b>Roll</b>: thrusters on opposite sides push in opposite directions. That makes a torque but no net force.</p>
+<div class="eq">τ = I α &nbsp;&nbsp; I = m(w² + h²)/12</div>
+<p>Speed up the spin for T/2, then brake it for T/2: one full turn needs τ = 4·2π·I / T².</p>
+<div class="eq">L = I ω stays constant when τ = 0</div>
+<p>So the spin <b>does not stop by itself</b>. The thrusters must push the other way to stop it.</p>
+<p><b>Same idea elsewhere</b>:</p><ul><li>A figure skater keeps spinning until something brakes the spin.</li><li>A falling cat turns itself upright in the air.</li><li>A humanoid robot doing a backflip (Lab 2: flip motion) must start and stop its rotation.</li></ul>
+</details>
+<div class="kit-legend" style="margin-top:8px"><span style="--c:var(--f-gravity)">gravity mg</span><span style="--c:var(--f-thrust)">thrust / torque</span><span style="--c:#fff">velocity v</span></div>
+<p class="kit-note">Teaching model. Roll inferred from the stills; event as shown on the Tesla live stream (2026-10-15). Vehicle dimensions, mass, thrust, and torque are assumptions.</p>`;
+
+const pred = new Kit.Predict(document.getElementById('stage'), {
+  question: 'Halfway over the trucks the car is upside down. To finish the roll and land level, what must the thrusters do?',
+  choices: ['Keep pushing the same way', 'Push the other way to stop the spin', 'Nothing — it stops by itself'],
+  hint: 'Think: a spinning skater keeps spinning.',
+  onGo: () => { if (s.done) reset(); loop.play(); }
+});
+pred.onToggle = (on) => tr.setPredict(on);
+
+// ---------- start ----------
+pre.select(PRESETS[Kit.qs.preset] ? Kit.qs.preset : 'video');
+if (Kit.qs.t) { loop.runTo(+Kit.qs.t, () => s.t); updateStatus(); updateReadouts(); }
+else if (Kit.qs.predict !== '0') pred.show();
+</script>
+</body>
+</html>
