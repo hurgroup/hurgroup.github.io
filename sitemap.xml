@@ -51,7 +51,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/research/ongoing_projects/index.html</loc>
-    <lastmod>2025-06-01</lastmod>
+    <lastmod>2026-11-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -225,7 +225,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/publications/conference/index.html</loc>
-    <lastmod>2025-09-08</lastmod>
+    <lastmod>2026-11-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -316,6 +316,12 @@
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20240625_1/index.html</loc>
     <lastmod>2025-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/worklog/2026-11-08/index.html</loc>
+    <lastmod>2026-11-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -525,7 +531,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/publications/journal/index.html</loc>
-    <lastmod>2025-09-28</lastmod>
+    <lastmod>2026-11-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -567,13 +573,13 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/blog/20230714/index.html</loc>
-    <lastmod>2024-04-08</lastmod>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/research/research_interests/index.html</loc>
-    <lastmod>2025-03-01</lastmod>
+    <lastmod>2026-11-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -777,7 +783,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/research/completed_projects/index.html</loc>
-    <lastmod>2025-05-31</lastmod>
+    <lastmod>2026-11-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
